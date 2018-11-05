@@ -1,0 +1,16 @@
+---
+# This play will only get consumed in osh-images.
+# For depends-on to osh-images and osh changes triggering a rebuild of
+# osh-infra or osh, this play won't be used, as we won't know what to build, and
+# therefore will build everything for a 'standard' distribution.
+# No need to change zuul.project.src_dir to static paths then.
+- hosts: all[0]
+  tasks:
+    - name: Build image
+      docker_image:
+        buildargs: "{{ buildargs | default(omit) }}"
+        state: present
+        path: "{{ zuul.project.src_dir }}/{{ image_path }}"
+        dockerfile: "Dockerfile.{{ distro }}"
+        name: "openstackhelm/{{ image_path }}"
+        tag: "{{ version | default('latest') }}-{{ distro }}"

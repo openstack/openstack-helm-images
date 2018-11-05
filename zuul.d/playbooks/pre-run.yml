@@ -1,0 +1,31 @@
+---
+- hosts: all[0]
+  pre_tasks:
+    - name: Create docker folder
+      file:
+        path: /var/lib/docker
+        state: directory
+      become: True
+    - name: Mount tmpfs to build faster
+      mount:
+        path: /var/lib/docker/
+        src: tmpfs
+        fstype: tmpfs
+        opts: size=25g
+        state: mounted
+      become: True
+  roles:
+    - role: install-docker
+  post_tasks:
+    - name: Install extra docker libraries for ansible
+      become: True
+      package:
+        name:
+          - python3-docker
+          - python-docker
+        state: present
+    - name: Ensure docker service is started
+      become: true
+      service:
+        name: docker.service
+        state: started
