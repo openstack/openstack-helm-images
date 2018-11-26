@@ -20,16 +20,16 @@
         # Alternatively, we can add a deploy using vbmc, and reuse
         # the deploy's functional testing
         - openstack-helm-images-vbmc-centos_7
+        - openstack-helm-images-vbmc-suse_15
     gate:
       jobs:
         - openstack-helm-images-vbmc-centos_7
+        - openstack-helm-images-vbmc-suse_15
 
 - job:
     name: openstack-helm-images-vbmc
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^vbmc/.*
     vars:
       image_path: vbmc
 
@@ -46,10 +46,12 @@
 # This is an example of how to re-use the jobs for
 # multi-distro. The image would get built with a
 # different tag, based on distro argument.
-#- job:
-#    name: openstack-helm-images-vbmc-ubuntu_bionic
-#    parent: openstack-helm-images-vbmc
-#    files:
-#      - ^vbmc/Dockerfile.ubuntu_bionic$
-#    vars:
-#      distro: "ubuntu_bionic"
+- job:
+    name: openstack-helm-images-vbmc-suse_15
+    parent: openstack-helm-images-vbmc
+    files:
+      - ^vbmc/Dockerfile.suse_15
+      - ^vbmc/build.sh
+      - ^zuul.d/vbmc.yaml
+    vars:
+      distro: "suse_15"

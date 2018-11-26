@@ -1,0 +1,33 @@
+ARG FROM=docker.io/opensuse/leap:15
+FROM ${FROM}
+LABEL maintainers=stephane@alum.mit.edu
+ARG PROJECT_REF=master
+RUN set -ex ;\
+   zypper update -y ;\
+   zypper install -y --type pattern devel_basis ;\
+   zypper install -y \
+     ceph-common \
+     git \
+     libguestfs \
+     libvirt \
+     libvirt-daemon \
+     libvirt-daemon-config-nwfilter \
+     libvirt-daemon-driver-lxc \
+     libvirt-daemon-driver-nwfilter \
+     libvirt-devel \
+     openvswitch \
+     python-devel \
+     python-xml \
+     qemu-kvm ;\
+   zypper clean ;\
+   curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py ;\
+   python /tmp/get-pip.py ;\
+   rm -f /tmp/get-pip.py ;\
+   TMP_DIR=$(mktemp -d) ;\
+   git clone https://github.com/openstack/virtualbmc ${TMP_DIR} ;\
+   cd ${TMP_DIR} && git checkout ${PROJECT_REF} && cd - ;\
+   pip install -U ${TMP_DIR} ;\
+   rm -rf ${TMP_DIR} ;\
+   useradd --user-group --create-home --home-dir /var/lib/nova nova ;\
+   chmod 755 /var/lib/nova ;\
+   usermod -a -G qemu nova
