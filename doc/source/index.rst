@@ -63,7 +63,11 @@ an overview of the build process for each container.
    :maxdepth: 2
    :caption: Contents:
 
+   ceph-config-helper
+   gate-utils
    libvirt
    mariadb
+   openvswitch
+   tempest
    vbmc
    loci
