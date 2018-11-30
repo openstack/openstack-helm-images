@@ -18,3 +18,13 @@ Alternatively, this step can be performed by running the script directly:
 .. code-block:: shell
 
   ./libvirt/build.sh
+
+openSUSE Leap 15
+----------------
+
+To build and openSUSE leap 15 image, you can export variables before running
+the build script:
+
+.. code-block:: shell
+
+  DISTRO=suse_15 ./libvirt/build.sh

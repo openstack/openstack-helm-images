@@ -1,0 +1,40 @@
+FROM opensuse/leap:15.0
+LABEL maintainer="containers@suse.com"
+
+ARG PROJECT=nova
+ARG UID=42424
+ARG GID=42424
+
+COPY suse_leap15_virtualization_repo.key /tmp/
+COPY suse_sle15_ceph_repo.key /tmp/
+RUN rpm --import /tmp/suse_leap15_virtualization_repo.key
+RUN rpm --import /tmp/suse_sle15_ceph_repo.key
+
+RUN set -ex ;\
+    zypper ar "http://download.opensuse.org/repositories/filesystems:/ceph/SLE_15/filesystems:ceph.repo" ;\
+    zypper ar "http://download.opensuse.org/repositories/Virtualization/openSUSE_Leap_15.0/Virtualization.repo" ;\
+    zypper ar http://download.opensuse.org/update/leap/15.0/oss/ leap_15_oss ;\
+    zypper refresh ;\
+    zypper -n install \
+      ceph-common \
+      systemd \
+      dmidecode \
+      ebtables \
+      iproute2 \
+      libcgroup1 \
+      libcgroup-tools \
+      libvirt \
+      python2-libvirt-python \
+      qemu \
+      qemu-kvm \
+      openvswitch ;\
+    groupadd -g ${GID} ${PROJECT} ;\
+    useradd -u ${UID} -g ${PROJECT} -M -d /var/lib/${PROJECT} -s /usr/sbin/nologin -c "${PROJECT} user" ${PROJECT} ;\
+    mkdir -p /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} ;\
+    chown ${PROJECT}:${PROJECT} /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} ;\
+    usermod -a -G kvm ${PROJECT} ;\
+    zypper clean -a ;\
+    rm -rf \
+       /var/log/* \
+       /tmp/* \
+       /var/tmp/*

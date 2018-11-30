@@ -17,9 +17,11 @@
     check:
       jobs:
         - openstack-helm-images-libvirt-ubuntu_xenial
+        - openstack-helm-images-libvirt-suse_15
     gate:
       jobs:
         - openstack-helm-images-libvirt-ubuntu_xenial
+        - openstack-helm-images-libvirt-suse_15
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -42,3 +44,15 @@
       - ^zuul.d/libvirt.yaml
     vars:
       distro: "ubuntu_xenial"
+
+- job:
+    name: openstack-helm-images-libvirt-suse_15
+    parent: openstack-helm-images-libvirt
+    files:
+      - ^libvirt/build.sh
+      - ^libvirt/Dockerfile.suse_15$
+      - ^libvirt/suse_leap15_virtualization_repo.key$
+      - ^libvirt/suse_sle15_ceph_repo.key$
+      - ^zuul.d/libvirt.yaml
+    vars:
+      distro: "suse_15"
