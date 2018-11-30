@@ -1,0 +1,5 @@
+ARG FROM=docker.io/opensuse/leap:15
+FROM ${FROM}
+LABEL maintainers=stephane@alum.mit.edu
+
+RUN zypper install -y ipcalc
