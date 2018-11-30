@@ -1,0 +1,10 @@
+ARG FROM=docker.io/opensuse/leap:15
+FROM ${FROM}
+LABEL maintainers=stephane@alum.mit.edu
+
+RUN set -ex ;\
+    zypper refresh ;\
+    zypper up -y ;\
+    zypper install -y bash ;\
+    zypper install -y \
+        openvswitch
