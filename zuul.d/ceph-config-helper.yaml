@@ -17,12 +17,15 @@
     check:
       jobs:
         - openstack-helm-images-ceph-config-helper-ubuntu_xenial
+        - openstack-helm-images-ceph-config-helper-suse_15
     gate:
       jobs:
         - openstack-helm-images-ceph-config-helper-ubuntu_xenial
+        - openstack-helm-images-ceph-config-helper-suse_15
     periodic:
       jobs:
         - openstack-helm-images-ceph-config-helper-ubuntu_xenial
+        - openstack-helm-images-ceph-config-helper-suse_15
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -45,3 +48,13 @@
       - ^zuul.d/ceph-config-helper.yaml
     vars:
       distro: "ubuntu_xenial"
+
+- job:
+    name: openstack-helm-images-ceph-config-helper-suse_15
+    parent: openstack-helm-images-ceph-config-helper
+    files:
+      - ^ceph-config-helper/build.sh
+      - ^ceph-config-helper/Dockerfile.suse_15$
+      - ^zuul.d/ceph-config-helper.yaml
+    vars:
+      distro: "suse_15"
