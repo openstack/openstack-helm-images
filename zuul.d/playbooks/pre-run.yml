@@ -14,6 +14,7 @@
         opts: size=25g
         state: mounted
       become: True
+      when: (use_tmpfs | default(True)) | bool
   roles:
     - role: install-docker
   post_tasks:
