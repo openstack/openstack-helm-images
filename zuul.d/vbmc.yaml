@@ -32,6 +32,12 @@
             files: *vbmc-centos7-files
         - openstack-helm-images-vbmc-suse_15:
             files: *vbmc-suse15-files
+    post:
+      jobs:
+        - publish-openstack-helm-images-vbmc-centos_7:
+            files: *vbmc-centos7-files
+        - publish-openstack-helm-images-vbmc-suse_15:
+            files: *vbmc-suse15-files
     periodic:
       jobs:
         - openstack-helm-images-vbmc-centos_7
@@ -55,3 +61,19 @@
     parent: openstack-helm-images-vbmc
     vars:
       distro: "suse_15"
+
+- job:
+    name: publish-openstack-helm-images-vbmc-centos_7
+    parent: openstack-helm-images-vbmc-centos_7
+    post-run: zuul.d/playbooks/publish.yml
+    post-review: true
+    secrets:
+      - openstack_helm_images_publish_credentials
+
+- job:
+    name: publish-openstack-helm-images-vbmc-suse_15
+    parent: openstack-helm-images-vbmc-suse_15
+    post-run: zuul.d/playbooks/publish.yml
+    post-review: true
+    secrets:
+      - openstack_helm_images_publish_credentials

@@ -32,6 +32,12 @@
             files: *gate-debian-files
         - openstack-helm-images-gate-utils-suse_15:
             files: *gate-suse15-files
+    post:
+      jobs:
+        - publish-openstack-helm-images-gate-utils-debian:
+            files: *gate-debian-files
+        - publish-openstack-helm-images-gate-utils-suse_15:
+            files: *gate-suse15-files
     periodic:
       jobs:
         - openstack-helm-images-gate-utils-debian
@@ -58,3 +64,19 @@
     parent: openstack-helm-images-gate-utils
     vars:
       distro: "suse_15"
+
+- job:
+    name: publish-openstack-helm-images-gate-utils-debian
+    parent: openstack-helm-images-gate-utils-debian
+    post-review: true
+    post-run: zuul.d/playbooks/publish.yml
+    secrets:
+      - openstack_helm_images_publish_credentials
+
+- job:
+    name: publish-openstack-helm-images-gate-utils-suse_15
+    parent: openstack-helm-images-gate-utils-suse_15
+    post-review: true
+    post-run: zuul.d/playbooks/publish.yml
+    secrets:
+      - openstack_helm_images_publish_credentials
