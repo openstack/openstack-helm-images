@@ -25,6 +25,10 @@
       jobs:
         - openstack-helm-images-vbmc-centos_7
         - openstack-helm-images-vbmc-suse_15
+    periodic:
+      jobs:
+        - openstack-helm-images-vbmc-centos_7
+        - openstack-helm-images-vbmc-suse_15
 
 - job:
     name: openstack-helm-images-vbmc

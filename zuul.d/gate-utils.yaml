@@ -18,6 +18,10 @@
       jobs:
         - openstack-helm-images-gate-utils-debian
         - openstack-helm-images-gate-utils-suse_15
+    periodic:
+      jobs:
+        - openstack-helm-images-gate-utils-debian
+        - openstack-helm-images-gate-utils-suse_15
     gate:
       jobs:
         - openstack-helm-images-gate-utils-debian

@@ -22,6 +22,10 @@
       jobs:
         - openstack-helm-images-openvswitch-debian
         - openstack-helm-images-openvswitch-suse_15
+    periodic:
+      jobs:
+        - openstack-helm-images-openvswitch-debian
+        - openstack-helm-images-openvswitch-suse_15
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu

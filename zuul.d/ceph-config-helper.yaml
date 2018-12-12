@@ -20,6 +20,9 @@
     gate:
       jobs:
         - openstack-helm-images-ceph-config-helper-ubuntu_xenial
+    periodic:
+      jobs:
+        - openstack-helm-images-ceph-config-helper-ubuntu_xenial
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
