@@ -17,9 +17,11 @@
     check:
       jobs:
         - openstack-helm-images-openvswitch-debian
+        - openstack-helm-images-openvswitch-suse_15
     gate:
       jobs:
         - openstack-helm-images-openvswitch-debian
+        - openstack-helm-images-openvswitch-suse_15
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -42,3 +44,13 @@
       - ^zuul.d/openvswitch.yaml
     vars:
       distro: "debian"
+
+- job:
+    name: openstack-helm-images-openvswitch-suse_15
+    parent: openstack-helm-images-openvswitch
+    files:
+      - ^openvswitch/build.sh
+      - ^openvswitch/Dockerfile.suse_15$
+      - ^zuul.d/openvswitch.yaml
+    vars:
+      distro: "suse_15"
