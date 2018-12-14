@@ -17,9 +17,11 @@
     check:
       jobs:
         - openstack-helm-images-gate-utils-debian
+        - openstack-helm-images-gate-utils-suse_15
     gate:
       jobs:
         - openstack-helm-images-gate-utils-debian
+        - openstack-helm-images-gate-utils-suse_15
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -42,3 +44,13 @@
       - ^zuul.d/gate-utils.yaml
     vars:
       distro: "debian"
+
+- job:
+    name: openstack-helm-images-gate-utils-suse_15
+    parent: openstack-helm-images-gate-utils
+    files:
+      - ^gate-utils/build.sh
+      - ^gate-utils/Dockerfile.suse_15$
+      - ^zuul.d/gate-utils.yaml
+    vars:
+      distro: "suse_15"
