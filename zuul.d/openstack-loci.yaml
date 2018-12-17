@@ -20,13 +20,16 @@
             voting: false
         - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-queens-suse_leap15:
+            voting: false
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+
     gate:
       jobs:
         - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-    experimental:
-      jobs:
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+    #experimental:
+    #  jobs:
     #    - openstack-helm-infra-five-ubuntu
 
 - job:
@@ -87,3 +90,10 @@
 - job:
     name: openstack-helm-images-openstack-loci-queens-ubuntu_xenial
     parent: openstack-helm-images-openstack-loci-queens
+
+- job:
+    name: openstack-helm-images-openstack-loci-queens-suse_leap15
+    parent: openstack-helm-images-openstack-loci-queens
+    vars:
+      build_environment:
+        BASE_IMAGE: leap15
