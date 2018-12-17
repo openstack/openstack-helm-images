@@ -8,10 +8,24 @@ the LOCI images by default.
 Mechanism used
 ==============
 
-The images are built by passing an extra series of bindep
-in the LOCI build system.
+Currently, we are passing arguments to the loci build,
+which is enough to customize the build system.
 
-Code
-====
+LOCI build process is a relatively staged process:
 
-The code to pass and build the image can be found in <TODO>
+1. Build (or re-use) a base image
+2. Build a requirements image, building wheels.
+3. Build the 'project' image, re-using requirements.
+
+Code and parameters
+===================
+
+OpenStack-Helm-Images can build multiple OpenStack images based on LOCI.
+
+By default, OpenStack-Helm-Image has one `build.sh` script, in the
+`openstack/loci/` folder.
+
+For convenience, default overrides per OpenStack branch are provided in
+the same folder:
+`build-newton.sh` builds an OpenStack newton image, `build-ocata.sh` builds
+an ocata image, and so on.

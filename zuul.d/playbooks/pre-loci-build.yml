@@ -1,0 +1,47 @@
+---
+- hosts: all[0]
+  vars:
+    dockerconf_path: "/etc/docker/daemon.json"
+    dockerconf_extra_config:
+      debug: True
+      insecure-registries:
+        - 172.17.0.1:5000
+  become: true
+  tasks:
+    # LOCI needs a local registry -- Add docker insecure mode
+    # First two tasks can be removed when the feature is added
+    # in upstream role: https://review.openstack.org/#/c/624484/3
+    - name: Get docker configuration
+      slurp:
+        src: "{{ dockerconf_path }}"
+      register: dockerconf
+
+    - name: Add insecure registries into dockerconf
+      copy:
+        content: "{{ ( ((dockerconf.content | b64decode) | from_json) | combine(dockerconf_extra_config) )| to_json }}"
+        dest: "{{ dockerconf_path }}"
+
+    - name: Ensure docker service is restarted
+      service:
+        name: docker.service
+        state: restarted
+
+    - name: Run docker registry
+      docker_container:
+        name: registry
+        image: registry:2
+        state: started
+        published_ports:
+          - 5000:5000
+
+    - name: Allow connections from containers to registry
+      iptables:
+        action: insert
+        chain: INPUT
+        in_interface: docker0
+        jump: ACCEPT
+
+    - name: Ensure parallel is installed
+      package:
+        name: parallel
+        state: present

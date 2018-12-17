@@ -1,0 +1,89 @@
+---
+# Copyright 2018, SUSE LINUX GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-openstack-loci-newton-ubuntu_xenial:
+            voting: false
+        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+    gate:
+      jobs:
+        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+    experimental:
+      jobs:
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+    #    - openstack-helm-infra-five-ubuntu
+
+- job:
+    name: openstack-helm-images-openstack-loci
+    parent: openstack-helm-images-base
+    abstract: true
+    vars:
+      use_tmpfs: False
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+    required-projects:
+      - name: openstack/loci
+    pre-run:
+      - zuul.d/playbooks/pre-loci-build.yml
+    run: zuul.d/playbooks/loci-build.yml
+
+- job:
+    name: openstack-helm-images-openstack-loci-newton
+    parent: openstack-helm-images-openstack-loci
+    abstract: true
+    vars:
+      build_command: './build-newton.sh'
+
+- job:
+    name: openstack-helm-images-openstack-loci-newton-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-newton
+
+- job:
+    name: openstack-helm-images-openstack-loci-ocata
+    parent: openstack-helm-images-openstack-loci
+    abstract: true
+    vars:
+      build_command: './build-ocata.sh'
+
+- job:
+    name: openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-ocata
+
+- job:
+    name: openstack-helm-images-openstack-loci-pike
+    parent: openstack-helm-images-openstack-loci
+    abstract: true
+    vars:
+      build_command: './build-pike.sh'
+
+- job:
+    name: openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-pike
+
+- job:
+    name: openstack-helm-images-openstack-loci-queens
+    parent: openstack-helm-images-openstack-loci
+    abstract: true
+    vars:
+      build_command: './build-queens.sh'
+
+- job:
+    name: openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-queens
