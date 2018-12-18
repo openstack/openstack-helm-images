@@ -16,10 +16,15 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-tempest-ubuntu_xenial
+        - openstack-helm-images-tempest-ubuntu_xenial:
+            files: &tempest-ubuntuxenial-files
+              - ^tempest/build.sh
+              - ^tempest/Dockerfile.ubuntu_xenial$
+              - ^zuul.d/tempest.yaml
     gate:
       jobs:
-        - openstack-helm-images-tempest-ubuntu_xenial
+        - openstack-helm-images-tempest-ubuntu_xenial:
+            files: *tempest-ubuntuxenial-files
     periodic:
       jobs:
         - openstack-helm-images-tempest-ubuntu_xenial
@@ -31,17 +36,11 @@
     name: openstack-helm-images-tempest
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^tempest/.*
     vars:
       image_path: tempest
 
 - job:
     name: openstack-helm-images-tempest-ubuntu_xenial
     parent: openstack-helm-images-tempest
-    files:
-      - ^tempest/build.sh
-      - ^tempest/Dockerfile.ubuntu_xenial$
-      - ^zuul.d/tempest.yaml
     vars:
       distro: "ubuntu_xenial"

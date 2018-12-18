@@ -18,16 +18,33 @@
       jobs:
         - openstack-helm-images-openstack-loci-newton-ubuntu_xenial:
             voting: false
-        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-queens-suse_leap15:
-            voting: false
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
-
+            files: &loci-files
+              - ^openstack/loci/.*
+              - zuul.d/openstack-loci.yaml
+        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial:
+            files: *loci-files
+        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial:
+            files: *loci-files
+        - openstack-helm-images-openstack-loci-queens-suse_15:
+            files: *loci-files
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial:
+            files: *loci-files
     gate:
+      jobs:
+        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial:
+            files: *loci-files
+        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial:
+            files: *loci-files
+        - openstack-helm-images-openstack-loci-queens-suse_15:
+            files: *loci-files
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial:
+            files: *loci-files
+    periodic:
       jobs:
         - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-queens-suse_15
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -38,9 +55,6 @@
     abstract: true
     vars:
       use_tmpfs: False
-    files:
-      - ^openstack/loci/.*
-      - zuul.d/openstack-loci.yaml
     required-projects:
       - name: openstack/loci
     pre-run:
@@ -55,19 +69,11 @@
       build_command: './build-newton.sh'
 
 - job:
-    name: openstack-helm-images-openstack-loci-newton-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-newton
-
-- job:
     name: openstack-helm-images-openstack-loci-ocata
     parent: openstack-helm-images-openstack-loci
     abstract: true
     vars:
       build_command: './build-ocata.sh'
-
-- job:
-    name: openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-ocata
 
 - job:
     name: openstack-helm-images-openstack-loci-pike
@@ -77,10 +83,6 @@
       build_command: './build-pike.sh'
 
 - job:
-    name: openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-pike
-
-- job:
     name: openstack-helm-images-openstack-loci-queens
     parent: openstack-helm-images-openstack-loci
     abstract: true
@@ -88,12 +90,24 @@
       build_command: './build-queens.sh'
 
 - job:
-    name: openstack-helm-images-openstack-loci-queens-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-queens
+    name: openstack-helm-images-openstack-loci-newton-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-newton
 
 - job:
-    name: openstack-helm-images-openstack-loci-queens-suse_leap15
+    name: openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-ocata
+
+- job:
+    name: openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-pike
+
+- job:
+    name: openstack-helm-images-openstack-loci-queens-suse_15
     parent: openstack-helm-images-openstack-loci-queens
     vars:
       build_environment:
         BASE_IMAGE: leap15
+
+- job:
+    name: openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+    parent: openstack-helm-images-openstack-loci-queens

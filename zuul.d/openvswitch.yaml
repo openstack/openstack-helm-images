@@ -16,12 +16,22 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-openvswitch-debian
-        - openstack-helm-images-openvswitch-suse_15
+        - openstack-helm-images-openvswitch-debian:
+            files: &ovs-debian-files
+              - ^openvswitch/build.sh
+              - ^openvswitch/Dockerfile.debian$
+              - ^zuul.d/openvswitch.yaml
+        - openstack-helm-images-openvswitch-suse_15:
+            files: &ovs-suse15-files
+              - ^openvswitch/build.sh
+              - ^openvswitch/Dockerfile.suse_15$
+              - ^zuul.d/openvswitch.yaml
     gate:
       jobs:
-        - openstack-helm-images-openvswitch-debian
-        - openstack-helm-images-openvswitch-suse_15
+        - openstack-helm-images-openvswitch-debian:
+            files: *ovs-debian-files
+        - openstack-helm-images-openvswitch-suse_15:
+            files: *ovs-suse15-files
     periodic:
       jobs:
         - openstack-helm-images-openvswitch-debian
@@ -34,27 +44,17 @@
     name: openstack-helm-images-openvswitch
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^openvswitch/.*
     vars:
       image_path: openvswitch
 
 - job:
     name: openstack-helm-images-openvswitch-debian
     parent: openstack-helm-images-openvswitch
-    files:
-      - ^openvswitch/build.sh
-      - ^openvswitch/Dockerfile.debian$
-      - ^zuul.d/openvswitch.yaml
     vars:
       distro: "debian"
 
 - job:
     name: openstack-helm-images-openvswitch-suse_15
     parent: openstack-helm-images-openvswitch
-    files:
-      - ^openvswitch/build.sh
-      - ^openvswitch/Dockerfile.suse_15$
-      - ^zuul.d/openvswitch.yaml
     vars:
       distro: "suse_15"

@@ -16,15 +16,22 @@
 - project:
     check:
       jobs:
-        # We should add a job here that tests the vbmc image
-        # Alternatively, we can add a deploy using vbmc, and reuse
-        # the deploy's functional testing
-        - openstack-helm-images-vbmc-centos_7
-        - openstack-helm-images-vbmc-suse_15
+        - openstack-helm-images-vbmc-centos_7:
+            files: &vbmc-centos7-files
+              - ^vbmc/build.sh
+              - ^vbmc/Dockerfile.centos_7$
+              - ^zuul.d/vbmc.yaml
+        - openstack-helm-images-vbmc-suse_15:
+            files: &vbmc-suse15-files
+              - ^vbmc/Dockerfile.suse_15
+              - ^vbmc/build.sh
+              - ^zuul.d/vbmc.yaml
     gate:
       jobs:
-        - openstack-helm-images-vbmc-centos_7
-        - openstack-helm-images-vbmc-suse_15
+        - openstack-helm-images-vbmc-centos_7:
+            files: *vbmc-centos7-files
+        - openstack-helm-images-vbmc-suse_15:
+            files: *vbmc-suse15-files
     periodic:
       jobs:
         - openstack-helm-images-vbmc-centos_7
@@ -40,22 +47,11 @@
 - job:
     name: openstack-helm-images-vbmc-centos_7
     parent: openstack-helm-images-vbmc
-    files:
-      - ^vbmc/build.sh
-      - ^vbmc/Dockerfile.centos_7$
-      - ^zuul.d/vbmc.yaml
     vars:
       distro: "centos_7"
 
-# This is an example of how to re-use the jobs for
-# multi-distro. The image would get built with a
-# different tag, based on distro argument.
 - job:
     name: openstack-helm-images-vbmc-suse_15
     parent: openstack-helm-images-vbmc
-    files:
-      - ^vbmc/Dockerfile.suse_15
-      - ^vbmc/build.sh
-      - ^zuul.d/vbmc.yaml
     vars:
       distro: "suse_15"

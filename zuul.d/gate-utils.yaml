@@ -16,13 +16,23 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-gate-utils-debian
-        - openstack-helm-images-gate-utils-suse_15
-    periodic:
-      jobs:
-        - openstack-helm-images-gate-utils-debian
-        - openstack-helm-images-gate-utils-suse_15
+        - openstack-helm-images-gate-utils-debian:
+            files: &gate-debian-files
+              - ^gate-utils/build.sh
+              - ^gate-utils/Dockerfile.debian$
+              - ^zuul.d/gate-utils.yaml
+        - openstack-helm-images-gate-utils-suse_15:
+            files: &gate-suse15-files
+              - ^gate-utils/build.sh
+              - ^gate-utils/Dockerfile.suse_15$
+              - ^zuul.d/gate-utils.yaml
     gate:
+      jobs:
+        - openstack-helm-images-gate-utils-debian:
+            files: *gate-debian-files
+        - openstack-helm-images-gate-utils-suse_15:
+            files: *gate-suse15-files
+    periodic:
       jobs:
         - openstack-helm-images-gate-utils-debian
         - openstack-helm-images-gate-utils-suse_15
@@ -34,27 +44,17 @@
     name: openstack-helm-images-gate-utils
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^gate-utils/.*
     vars:
       image_path: gate-utils
 
 - job:
     name: openstack-helm-images-gate-utils-debian
     parent: openstack-helm-images-gate-utils
-    files:
-      - ^gate-utils/build.sh
-      - ^gate-utils/Dockerfile.debian$
-      - ^zuul.d/gate-utils.yaml
     vars:
       distro: "debian"
 
 - job:
     name: openstack-helm-images-gate-utils-suse_15
     parent: openstack-helm-images-gate-utils
-    files:
-      - ^gate-utils/build.sh
-      - ^gate-utils/Dockerfile.suse_15$
-      - ^zuul.d/gate-utils.yaml
     vars:
       distro: "suse_15"

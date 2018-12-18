@@ -16,16 +16,27 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-libvirt-ubuntu_xenial
-        - openstack-helm-images-libvirt-suse_15
+        - openstack-helm-images-libvirt-suse_15:
+            files: &libvirt-suse15-files
+              - ^libvirt/build.sh
+              - ^libvirt/Dockerfile.suse_15$
+              - ^libvirt/suse_.*$
+              - ^zuul.d/libvirt.yaml
+        - openstack-helm-images-libvirt-ubuntu_xenial:
+            files: &libvirt-ubuntuxenial-files
+              - ^libvirt/build.sh
+              - ^libvirt/Dockerfile.ubuntu_xenial$
+              - ^zuul.d/libvirt.yaml
     gate:
       jobs:
-        - openstack-helm-images-libvirt-ubuntu_xenial
-        - openstack-helm-images-libvirt-suse_15
+        - openstack-helm-images-libvirt-suse_15:
+            files: *libvirt-suse15-files
+        - openstack-helm-images-libvirt-ubuntu_xenial:
+            files: *libvirt-ubuntuxenial-files
     periodic:
       jobs:
-        - openstack-helm-images-libvirt-ubuntu_xenial
         - openstack-helm-images-libvirt-suse_15
+        - openstack-helm-images-libvirt-ubuntu_xenial
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -34,29 +45,17 @@
     name: openstack-helm-images-libvirt
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^libvirt/.*
     vars:
       image_path: libvirt
 
 - job:
-    name: openstack-helm-images-libvirt-ubuntu_xenial
-    parent: openstack-helm-images-libvirt
-    files:
-      - ^libvirt/build.sh
-      - ^libvirt/Dockerfile.ubuntu_xenial$
-      - ^zuul.d/libvirt.yaml
-    vars:
-      distro: "ubuntu_xenial"
-
-- job:
     name: openstack-helm-images-libvirt-suse_15
     parent: openstack-helm-images-libvirt
-    files:
-      - ^libvirt/build.sh
-      - ^libvirt/Dockerfile.suse_15$
-      - ^libvirt/suse_leap15_virtualization_repo.key$
-      - ^libvirt/suse_sle15_ceph_repo.key$
-      - ^zuul.d/libvirt.yaml
     vars:
       distro: "suse_15"
+
+- job:
+    name: openstack-helm-images-libvirt-ubuntu_xenial
+    parent: openstack-helm-images-libvirt
+    vars:
+      distro: "ubuntu_xenial"

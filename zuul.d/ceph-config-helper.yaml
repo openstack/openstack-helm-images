@@ -16,16 +16,26 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-ceph-config-helper-ubuntu_xenial
-        - openstack-helm-images-ceph-config-helper-suse_15
+        - openstack-helm-images-ceph-config-helper-suse_15:
+            files: &ceph-suse15-files
+              - ^ceph-config-helper/build.sh
+              - ^ceph-config-helper/Dockerfile.suse_15$
+              - ^zuul.d/ceph-config-helper.yaml
+        - openstack-helm-images-ceph-config-helper-ubuntu_xenial:
+            files: &ceph-ubuntuxenial-files
+              - ^ceph-config-helper/build.sh
+              - ^ceph-config-helper/Dockerfile.ubuntu_xenial$
+              - ^zuul.d/ceph-config-helper.yaml
     gate:
       jobs:
-        - openstack-helm-images-ceph-config-helper-ubuntu_xenial
-        - openstack-helm-images-ceph-config-helper-suse_15
+        - openstack-helm-images-ceph-config-helper-suse_15:
+            files: *ceph-suse15-files
+        - openstack-helm-images-ceph-config-helper-ubuntu_xenial:
+            files: *ceph-ubuntuxenial-files
     periodic:
       jobs:
-        - openstack-helm-images-ceph-config-helper-ubuntu_xenial
         - openstack-helm-images-ceph-config-helper-suse_15
+        - openstack-helm-images-ceph-config-helper-ubuntu_xenial
     #experimental:
     #  jobs:
     #    - openstack-helm-infra-five-ubuntu
@@ -34,27 +44,17 @@
     name: openstack-helm-images-ceph-config-helper
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^ceph-config-helper/.*
     vars:
       image_path: ceph-config-helper
 
 - job:
-    name: openstack-helm-images-ceph-config-helper-ubuntu_xenial
-    parent: openstack-helm-images-ceph-config-helper
-    files:
-      - ^ceph-config-helper/build.sh
-      - ^ceph-config-helper/Dockerfile.ubuntu_xenial$
-      - ^zuul.d/ceph-config-helper.yaml
-    vars:
-      distro: "ubuntu_xenial"
-
-- job:
     name: openstack-helm-images-ceph-config-helper-suse_15
     parent: openstack-helm-images-ceph-config-helper
-    files:
-      - ^ceph-config-helper/build.sh
-      - ^ceph-config-helper/Dockerfile.suse_15$
-      - ^zuul.d/ceph-config-helper.yaml
     vars:
       distro: "suse_15"
+
+- job:
+    name: openstack-helm-images-ceph-config-helper-ubuntu_xenial
+    parent: openstack-helm-images-ceph-config-helper
+    vars:
+      distro: "ubuntu_xenial"

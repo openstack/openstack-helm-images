@@ -16,10 +16,15 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-mariadb-ubuntu_xenial
+        - openstack-helm-images-mariadb-ubuntu_xenial:
+            files: &mariadb-ubuntuxenial-files
+              - ^mariadb/build.sh
+              - ^mariadb/Dockerfile.ubuntu_xenial$
+              - ^zuul.d/mariadb.yaml
     gate:
       jobs:
-        - openstack-helm-images-mariadb-ubuntu_xenial
+        - openstack-helm-images-mariadb-ubuntu_xenial:
+            files: *mariadb-ubuntuxenial-files
     periodic:
       jobs:
         - openstack-helm-images-mariadb-ubuntu_xenial
@@ -31,17 +36,11 @@
     name: openstack-helm-images-mariadb
     parent: openstack-helm-images-base
     abstract: true
-    files:
-      - ^mariadb/.*
     vars:
       image_path: mariadb
 
 - job:
     name: openstack-helm-images-mariadb-ubuntu_xenial
     parent: openstack-helm-images-mariadb
-    files:
-      - ^mariadb/build.sh
-      - ^mariadb/Dockerfile.ubuntu_xenial$
-      - ^zuul.d/mariadb.yaml
     vars:
       distro: "ubuntu_xenial"
