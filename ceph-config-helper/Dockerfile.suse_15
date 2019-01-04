@@ -24,6 +24,7 @@ ARG CEPH_RELEASE=luminous
       crush \
       rgwadmin \
       six \
+      s3cmd \
       python-openstackclient \
       python-swiftclient ;\
     curl -sSL https://dl.k8s.io/${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz | tar -zxv --strip-components=1 ;\
