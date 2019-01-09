@@ -262,6 +262,8 @@ pushd ${LOCI_SRC_DIR}
     eval "${docker_build_cmd}"
     docker push ${tag}
     unset projects[0]
+    # clear action from previous install (can be in dev local builds)
+    truncate -s 0 ${LOG_PREFIX}actions
     # Run the rest of the projects with parallel
     for project in ${projects[@]}; do
         get_project_image_build_arguments $project
