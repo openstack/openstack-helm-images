@@ -16,41 +16,52 @@
 
 set -e
 
-for source in /opt/sources/*; do
-  read -r -a info < "${source}"/source.txt
-  repo=${info[0]}
-  key=${info[1]}
-  distro=${info[2]}
-  components=${info[*]:3}
-
-  # Import source key
-  wget --no-check-certificate -O - "${key}" | gpg --no-default-keyring \
-    --keyring trustedkeys.gpg --import
-
-  snapshots=()
-  while read -r package; do
-    snapshots+=("$package")
-
-    # NOTE(drewwalters96): Separate snapshots by package until aptly supports
-    #                      multiple package queries for mirrors/snapshots.
-    aptly mirror create -filter="${package}" -filter-with-deps "${package}" \
-      "${repo}" "${distro}" "${components}"
-    aptly mirror update "${package}"
-    aptly snapshot create "${package}" from mirror "${package}"
-  done < "${source}"/packages.txt
-
-  # Combine package snapshots into single source snapshot
-  aptly snapshot merge "${source}" "${snapshots[@]}"
-done
-
-# Combine source snapshots
-read -r -a snapshots <<< "$(ls -d /opt/sources/*)"
-aptly snapshot merge minimirror "${snapshots[@]}"
-
-# Publish snapshot
 if [ ! -z "$1" ]; then
   gpg --import /opt/release.gpg
-  aptly publish snapshot -batch=true -passphrase="${1}" minimirror
-else
-  aptly publish snapshot minimirror
 fi
+
+for source_prefix in /opt/sources/*; do
+  for source in $source_prefix/*; do
+    read -r -a info < "${source}"/source.txt
+    repo=${info[0]}
+    key=${info[1]}
+    dist=${info[2]}
+    components=${info[*]:3}
+
+    # Create package query from well-defined package list.
+    #
+    #    package1
+    #    package2      ==>      package1 | package2 | package3
+    #    package3
+    #
+    packages=$(awk -v ORS=" | " '{ print $1 }' "${source}"/packages.txt)
+    packages="${packages::-3}"
+
+    # Import source key
+    wget --no-check-certificate -O - "${key}" | gpg --no-default-keyring \
+      --keyring trustedkeys.gpg --import
+
+    # Create a mirror of each component from a source's repository, update it,
+    # and publish a snapshot of it.
+    mirrors=()
+    for component in $components; do
+      name="${source}-${component}"
+      mirrors+=("$name")
+
+      aptly mirror create -filter="${packages}" -filter-with-deps \
+        "${name}" "${repo}" "${dist}" "${component}"
+      aptly mirror update "${name}"
+      aptly snapshot create "${name}" from mirror "${name}"
+    done
+
+    # Publish snapshot and sign if a key passphrase is provided
+    com_list=$(echo "${components[@]}" | tr ' ' ',')
+    if [ ! -z "$1" ]; then
+      aptly publish snapshot -component="${com_list}" -distribution="${dist}" \
+        -batch=true -passphrase="${1}" "${mirrors[@]}" "${source_prefix:13}"
+    else
+      aptly publish snapshot -component="${com_list}" -distribution="${dist}" \
+        "${mirrors[@]}" "${source_prefix:13}"
+    fi
+  done
+done
