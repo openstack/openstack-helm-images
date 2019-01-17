@@ -2,7 +2,7 @@ FROM docker.io/ubuntu:xenial
 LABEL maintainer="pete.birley@att.com"
 
 ARG LIBVIRT_VERSION="1.3.1-1ubuntu10.24"
-ARG CEPH_RELEASE=luminous
+ARG CEPH_RELEASE=mimic
 ARG PROJECT=nova
 ARG UID=42424
 ARG GID=42424

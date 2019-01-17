@@ -1,4 +1,5 @@
-FROM docker.io/ubuntu:xenial
+ARG FROM=docker.io/ubuntu:xenial
+FROM ${FROM}
 MAINTAINER matthew.heler@hotmail.com
 
 ARG KUBE_VERSION=1.12.2
