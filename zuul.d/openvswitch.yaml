@@ -32,6 +32,12 @@
             files: *ovs-debian-files
         - openstack-helm-images-openvswitch-suse_15:
             files: *ovs-suse15-files
+    post:
+      jobs:
+        - publish-openstack-helm-images-openvswitch-debian:
+            files: *ovs-debian-files
+        - publish-openstack-helm-images-openvswitch-suse_15:
+            files: *ovs-suse15-files
     periodic:
       jobs:
         - openstack-helm-images-openvswitch-debian
@@ -58,3 +64,19 @@
     parent: openstack-helm-images-openvswitch
     vars:
       distro: "suse_15"
+
+- job:
+    name: publish-openstack-helm-images-openvswitch-debian
+    parent: openstack-helm-images-openvswitch-debian
+    post-run: zuul.d/playbooks/publish.yml
+    post-review: true
+    secrets:
+      - openstack_helm_images_publish_credentials
+
+- job:
+    name: publish-openstack-helm-images-openvswitch-suse_15
+    parent: openstack-helm-images-openvswitch-suse_15
+    post-run: zuul.d/playbooks/publish.yml
+    post-review: true
+    secrets:
+      - openstack_helm_images_publish_credentials

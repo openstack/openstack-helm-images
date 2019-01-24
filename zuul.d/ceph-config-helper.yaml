@@ -32,6 +32,12 @@
             files: *ceph-suse15-files
         - openstack-helm-images-ceph-config-helper-ubuntu_xenial:
             files: *ceph-ubuntuxenial-files
+    post:
+      jobs:
+        - publish-openstack-helm-images-ceph-config-helper-suse_15:
+            files: *ceph-suse15-files
+        - publish-openstack-helm-images-ceph-config-helper-ubuntu_xenial:
+            files: *ceph-ubuntuxenial-files
     periodic:
       jobs:
         - openstack-helm-images-ceph-config-helper-suse_15
@@ -58,3 +64,19 @@
     parent: openstack-helm-images-ceph-config-helper
     vars:
       distro: "ubuntu_xenial"
+
+- job:
+    name: publish-openstack-helm-images-ceph-config-helper-suse_15
+    parent: openstack-helm-images-ceph-config-helper-suse_15
+    post-run: zuul.d/playbooks/publish.yml
+    post-review: true
+    secrets:
+      - openstack_helm_images_publish_credentials
+
+- job:
+    name: publish-openstack-helm-images-ceph-config-helper-ubuntu_xenial
+    parent: openstack-helm-images-ceph-config-helper-ubuntu_xenial
+    post-run: zuul.d/playbooks/publish.yml
+    post-review: true
+    secrets:
+      - openstack_helm_images_publish_credentials
