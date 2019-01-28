@@ -39,24 +39,28 @@ build_$(IMAGE_NAME):
 ifeq ($(OS_RELEASE), ubuntu_xenial)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
+	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
 else ifeq ($(OS_RELEASE), suse_15)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
+	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
 else ifeq ($(OS_RELEASE), debian)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
         --network host \
+	$(EXTRA_BUILD_ARGS) \
         -t $(IMAGE) \
         .
 else ifeq ($(OS_RELEASE), centos_7)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
+	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
 else
-	docker build -t $(IMAGE) --network=host -f $(IMAGE_NAME)/Dockerfile.simple \
+	docker build -t $(IMAGE) --network=host $(EXTRA_BUILD_ARGS) -f $(IMAGE_NAME)/Dockerfile.simple \
 	.
 endif
