@@ -46,7 +46,8 @@ RUN set -ex ;\
         python \
         python-dev \
         uuid-runtime \
-        jq ;\
+        jq \
+        alien ;\
     curl -sSL https://bootstrap.pypa.io/get-pip.py | python ;\
     pip --no-cache-dir install --upgrade \
       six \
@@ -62,6 +63,8 @@ RUN set -ex ;\
     chmod +xr /usr/local/bin/etcdctl ;\
     curl -sSL https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 -o /usr/local/bin/confd ;\
     chmod +xr /usr/local/bin/confd ;\
+    curl -sSL https://downloads.dell.com/FOLDER05235308M/1/perccli_linux_NF8G9_A07_7.529.00.tar.gz | tar xfz - ;\
+    alien -i ${TMP_DIR}/perccli_7.5-007.0529_linux/Linux/perccli-007.0529.0000.0000-1.noarch.rpm ;\
     mkdir -p /etc/confd/conf.d ;\
     mkdir -p /etc/confd/templates ;\
     rm -rf ${TMP_DIR} ;\
