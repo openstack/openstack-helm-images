@@ -104,6 +104,12 @@ function get_project_image_build_arguments {
           build_args="${build_args} --build-arg GID=${!this_gid}"
         fi
 
+        # If requirements was not part of BUILD_PROJECTS, assume it was
+        # built before and set the project ref based on current project
+        if [[ -z ${REQUIREMENTS_TAGGED_PROJECT_REF} ]]; then
+            REQUIREMENTS_TAGGED_PROJECT_REF=${TAGGED_PROJECT_REF}
+        fi
+
         #Point to requirement wheels, or use <project>_wheels
         # if defined.
         local this_wheels="${project}_wheels"
@@ -258,10 +264,12 @@ projects=( ${BUILD_PROJECTS} )
 pushd ${LOCI_SRC_DIR}
     # The first project should be requirements, if requirements is built.
     # This one should not be run in parallel.
-    get_project_image_build_arguments ${projects[0]}
-    eval "${docker_build_cmd}"
-    docker push ${tag}
-    unset projects[0]
+    if [[ "${projects[0]}" == "requirements" ]]; then
+        get_project_image_build_arguments ${projects[0]}
+        eval "${docker_build_cmd}"
+        docker push ${tag}
+        unset projects[0]
+    fi
     # clear action from previous install (can be in dev local builds)
     truncate -s 0 ${LOG_PREFIX}actions
     # Run the rest of the projects with parallel
