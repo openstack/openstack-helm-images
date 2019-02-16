@@ -21,8 +21,8 @@ endif
 
 SHELL := /bin/bash
 
-DOCKER_REGISTRY            ?= quay.io
-IMAGE_PREFIX               ?= att-comdev
+DOCKER_REGISTRY            ?= docker.io
+IMAGE_PREFIX               ?= openstackhelm
 IMAGE_TAG                  ?= latest
 
 # Set the image
