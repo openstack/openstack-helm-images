@@ -18,48 +18,39 @@
       jobs:
         - openstack-helm-images-openstack-loci-newton-ubuntu_xenial:
             voting: false
-            files: &loci-files
-              - ^openstack/loci/.*
-              - zuul.d/openstack-loci.yaml
-        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial:
-            files: *loci-files
-        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial:
-            files: *loci-files
-        - openstack-helm-images-openstack-loci-queens-suse_15:
-            files: *loci-files
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial:
-            files: *loci-files
+        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-queens-suse_15
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
     gate:
       jobs:
-        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial:
-            files: *loci-files
-        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial:
-            files: *loci-files
-        - openstack-helm-images-openstack-loci-queens-suse_15:
-            files: *loci-files
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial:
-            files: *loci-files
+        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-openstack-loci-queens-suse_15
+        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
     periodic:
       jobs:
         - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-openstack-loci-queens-suse_15
         - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
-    #experimental:
-    #  jobs:
-    #    - openstack-helm-infra-five-ubuntu
 
 - job:
     name: openstack-helm-images-openstack-loci
-    parent: openstack-helm-images-base
+    parent: base
     abstract: true
     vars:
       use_tmpfs: False
     required-projects:
       - name: openstack/loci
     pre-run:
+      - zuul.d/playbooks/pre-run.yml
       - zuul.d/playbooks/pre-loci-build.yml
     run: zuul.d/playbooks/loci-build.yml
+    timeout: 3600
+    files: &loci-files
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
 
 - job:
     name: openstack-helm-images-openstack-loci-newton

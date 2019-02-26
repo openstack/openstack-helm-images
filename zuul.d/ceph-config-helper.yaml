@@ -1,5 +1,5 @@
 ---
-# Copyright 2018, SUSE LINUX GmbH.
+# Copyright 2019, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,67 +16,47 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-ceph-config-helper-suse_15:
-            files: &ceph-suse15-files
-              - ^ceph-config-helper/build.sh
-              - ^ceph-config-helper/Dockerfile.suse_15$
-              - ^zuul.d/ceph-config-helper.yaml
-        - openstack-helm-images-ceph-config-helper-ubuntu_xenial:
-            files: &ceph-ubuntuxenial-files
-              - ^ceph-config-helper/build.sh
-              - ^ceph-config-helper/Dockerfile.ubuntu_xenial$
-              - ^zuul.d/ceph-config-helper.yaml
+        - openstack-helm-images-build-ceph-config-helper
     gate:
       jobs:
-        - openstack-helm-images-ceph-config-helper-suse_15:
-            files: *ceph-suse15-files
-        - openstack-helm-images-ceph-config-helper-ubuntu_xenial:
-            files: *ceph-ubuntuxenial-files
-    post:
+        - openstack-helm-images-upload-ceph-config-helper
+    promote:
       jobs:
-        - publish-openstack-helm-images-ceph-config-helper-suse_15:
-            files: *ceph-suse15-files
-        - publish-openstack-helm-images-ceph-config-helper-ubuntu_xenial:
-            files: *ceph-ubuntuxenial-files
+        - openstack-helm-images-promote-ceph-config-helper
     periodic:
       jobs:
-        - openstack-helm-images-ceph-config-helper-suse_15
-        - openstack-helm-images-ceph-config-helper-ubuntu_xenial
-    #experimental:
-    #  jobs:
-    #    - openstack-helm-infra-five-ubuntu
+        - openstack-helm-images-build-ceph-config-helper
 
 - job:
-    name: openstack-helm-images-ceph-config-helper
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: ceph-config-helper
+    name: openstack-helm-images-build-ceph-config-helper
+    parent: openstack-helm-images-build
+    description: Build ceph-config-helper images
+    vars: &ceph-config-helper_vars
+      docker_images:
+        - context: ceph-config-helper
+          repository: openstackhelm/ceph-config-helper
+          tags:
+            - opensuse_15-latest
+          dockerfile: Dockerfile.suse_15
+        - context: ceph-config-helper
+          repository: openstackhelm/ceph-config-helper
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &ceph-config-helper_files
+      - ceph-config-helper/.*
+      - zuul.d/ceph-config-helper.yaml
 
 - job:
-    name: openstack-helm-images-ceph-config-helper-suse_15
-    parent: openstack-helm-images-ceph-config-helper
-    vars:
-      distro: "suse_15"
+    name: openstack-helm-images-upload-ceph-config-helper
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-config-helper images
+    vars: *ceph-config-helper_vars
+    files: *ceph-config-helper_files
 
 - job:
-    name: openstack-helm-images-ceph-config-helper-ubuntu_xenial
-    parent: openstack-helm-images-ceph-config-helper
-    vars:
-      distro: "ubuntu_xenial"
-
-- job:
-    name: publish-openstack-helm-images-ceph-config-helper-suse_15
-    parent: openstack-helm-images-ceph-config-helper-suse_15
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
-
-- job:
-    name: publish-openstack-helm-images-ceph-config-helper-ubuntu_xenial
-    parent: openstack-helm-images-ceph-config-helper-ubuntu_xenial
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
+    name: openstack-helm-images-promote-ceph-config-helper
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-config-helper image to latest.
+    vars: *ceph-config-helper_vars
+    files: *ceph-config-helper_files

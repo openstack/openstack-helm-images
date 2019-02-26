@@ -1,5 +1,5 @@
 ---
-# Copyright 2018, SUSE LINUX GmbH.
+# Copyright 2019, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,43 +16,42 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-mariadb-ubuntu_xenial:
-            files: &mariadb-ubuntuxenial-files
-              - ^mariadb/build.sh
-              - ^mariadb/Dockerfile.ubuntu_xenial$
-              - ^zuul.d/mariadb.yaml
+        - openstack-helm-images-build-mariadb
     gate:
       jobs:
-        - openstack-helm-images-mariadb-ubuntu_xenial:
-            files: *mariadb-ubuntuxenial-files
-    post:
+        - openstack-helm-images-upload-mariadb
+    promote:
       jobs:
-        - publish-openstack-helm-images-mariadb-ubuntu_xenial:
-            files: *mariadb-ubuntuxenial-files
+        - openstack-helm-images-promote-mariadb
     periodic:
       jobs:
-        - openstack-helm-images-mariadb-ubuntu_xenial
-    #experimental:
-    #  jobs:
-    #    - openstack-helm-infra-five-ubuntu
+        - openstack-helm-images-build-mariadb
 
 - job:
-    name: openstack-helm-images-mariadb
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: mariadb
+    name: openstack-helm-images-build-mariadb
+    parent: openstack-helm-images-build
+    description: Build mariadb images
+    vars: &mariadb_vars
+      docker_images:
+        - context: mariadb
+          repository: openstackhelm/mariadb
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &mariadb_files
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
 
 - job:
-    name: openstack-helm-images-mariadb-ubuntu_xenial
-    parent: openstack-helm-images-mariadb
-    vars:
-      distro: "ubuntu_xenial"
+    name: openstack-helm-images-upload-mariadb
+    parent: openstack-helm-images-upload
+    description: Build and upload mariadb images
+    vars: *mariadb_vars
+    files: *mariadb_files
 
 - job:
-    name: publish-openstack-helm-images-mariadb-ubuntu_xenial
-    parent: openstack-helm-images-mariadb-ubuntu_xenial
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
+    name: openstack-helm-images-promote-mariadb
+    parent: openstack-helm-images-promote
+    description: Promote a previously published mariadb image to latest.
+    vars: *mariadb_vars
+    files: *mariadb_files

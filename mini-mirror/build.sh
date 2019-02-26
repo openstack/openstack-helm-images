@@ -22,7 +22,7 @@ cd "${SCRIPT_DIR}"/.. || exit
 
 IMAGE="mini-mirror"
 VERSION=${VERSION:-latest}
-DISTRO=${DISTRO:-ubuntu}
+DISTRO=${DISTRO:-ubuntu_xenial}
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
 EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
 

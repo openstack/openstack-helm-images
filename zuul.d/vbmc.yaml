@@ -1,5 +1,5 @@
 ---
-# Copyright 2018, SUSE LINUX GmbH.
+# Copyright 2019, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,64 +16,47 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-vbmc-centos_7:
-            files: &vbmc-centos7-files
-              - ^vbmc/build.sh
-              - ^vbmc/Dockerfile.centos_7$
-              - ^zuul.d/vbmc.yaml
-        - openstack-helm-images-vbmc-suse_15:
-            files: &vbmc-suse15-files
-              - ^vbmc/Dockerfile.suse_15
-              - ^vbmc/build.sh
-              - ^zuul.d/vbmc.yaml
+        - openstack-helm-images-build-vbmc
     gate:
       jobs:
-        - openstack-helm-images-vbmc-centos_7:
-            files: *vbmc-centos7-files
-        - openstack-helm-images-vbmc-suse_15:
-            files: *vbmc-suse15-files
-    post:
+        - openstack-helm-images-upload-vbmc
+    promote:
       jobs:
-        - publish-openstack-helm-images-vbmc-centos_7:
-            files: *vbmc-centos7-files
-        - publish-openstack-helm-images-vbmc-suse_15:
-            files: *vbmc-suse15-files
+        - openstack-helm-images-promote-vbmc
     periodic:
       jobs:
-        - openstack-helm-images-vbmc-centos_7
-        - openstack-helm-images-vbmc-suse_15
+        - openstack-helm-images-build-vbmc
 
 - job:
-    name: openstack-helm-images-vbmc
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: vbmc
+    name: openstack-helm-images-build-vbmc
+    parent: openstack-helm-images-build
+    description: Build vbmc images
+    vars: &vbmc_vars
+      docker_images:
+        - context: vbmc
+          repository: openstackhelm/vbmc
+          tags:
+            - opensuse_15-latest
+          dockerfile: Dockerfile.suse_15
+        - context: vbmc
+          repository: openstackhelm/vbmc
+          dockerfile: Dockerfile.centos_7
+          tags:
+            - centos_7-latest
+    files: &vbmc_files
+      - vbmc/.*
+      - zuul.d/vbmc.yaml
 
 - job:
-    name: openstack-helm-images-vbmc-centos_7
-    parent: openstack-helm-images-vbmc
-    vars:
-      distro: "centos_7"
+    name: openstack-helm-images-upload-vbmc
+    parent: openstack-helm-images-upload
+    description: Build and upload vbmc images
+    vars: *vbmc_vars
+    files: *vbmc_files
 
 - job:
-    name: openstack-helm-images-vbmc-suse_15
-    parent: openstack-helm-images-vbmc
-    vars:
-      distro: "suse_15"
-
-- job:
-    name: publish-openstack-helm-images-vbmc-centos_7
-    parent: openstack-helm-images-vbmc-centos_7
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
-
-- job:
-    name: publish-openstack-helm-images-vbmc-suse_15
-    parent: openstack-helm-images-vbmc-suse_15
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
+    name: openstack-helm-images-promote-vbmc
+    parent: openstack-helm-images-promote
+    description: Promote a previously published vbmc image to latest.
+    vars: *vbmc_vars
+    files: *vbmc_files

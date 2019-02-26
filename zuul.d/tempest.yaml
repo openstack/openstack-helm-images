@@ -1,5 +1,5 @@
 ---
-# Copyright 2018, SUSE LINUX GmbH.
+# Copyright 2019, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,43 +16,42 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-tempest-ubuntu_xenial:
-            files: &tempest-ubuntuxenial-files
-              - ^tempest/build.sh
-              - ^tempest/Dockerfile.ubuntu_xenial$
-              - ^zuul.d/tempest.yaml
+        - openstack-helm-images-build-tempest
     gate:
       jobs:
-        - openstack-helm-images-tempest-ubuntu_xenial:
-            files: *tempest-ubuntuxenial-files
-    post:
+        - openstack-helm-images-upload-tempest
+    promote:
       jobs:
-        - publish-openstack-helm-images-tempest-ubuntu_xenial:
-            files: *tempest-ubuntuxenial-files
+        - openstack-helm-images-promote-tempest
     periodic:
       jobs:
-        - openstack-helm-images-tempest-ubuntu_xenial
-    #experimental:
-    #  jobs:
-    #    - openstack-helm-infra-five-ubuntu
+        - openstack-helm-images-build-tempest
 
 - job:
-    name: openstack-helm-images-tempest
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: tempest
+    name: openstack-helm-images-build-tempest
+    parent: openstack-helm-images-build
+    description: Build tempest images
+    vars: &tempest_vars
+      docker_images:
+        - context: tempest
+          repository: openstackhelm/tempest
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &tempest_files
+      - tempest/.*
+      - zuul.d/tempest.yaml
 
 - job:
-    name: openstack-helm-images-tempest-ubuntu_xenial
-    parent: openstack-helm-images-tempest
-    vars:
-      distro: "ubuntu_xenial"
+    name: openstack-helm-images-upload-tempest
+    parent: openstack-helm-images-upload
+    description: Build and upload tempest images
+    vars: *tempest_vars
+    files: *tempest_files
 
 - job:
-    name: publish-openstack-helm-images-tempest-ubuntu_xenial
-    parent: openstack-helm-images-tempest-ubuntu_xenial
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
+    name: openstack-helm-images-promote-tempest
+    parent: openstack-helm-images-promote
+    description: Promote a previously published tempest image to latest.
+    vars: *tempest_vars
+    files: *tempest_files

@@ -1,5 +1,5 @@
 ---
-# Copyright 2018, SUSE LINUX GmbH.
+# Copyright 2019, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,68 +16,47 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-libvirt-suse_15:
-            files: &libvirt-suse15-files
-              - ^libvirt/build.sh
-              - ^libvirt/Dockerfile.suse_15$
-              - ^libvirt/suse_.*$
-              - ^zuul.d/libvirt.yaml
-        - openstack-helm-images-libvirt-ubuntu_xenial:
-            files: &libvirt-ubuntuxenial-files
-              - ^libvirt/build.sh
-              - ^libvirt/Dockerfile.ubuntu_xenial$
-              - ^zuul.d/libvirt.yaml
+        - openstack-helm-images-build-libvirt
     gate:
       jobs:
-        - openstack-helm-images-libvirt-suse_15:
-            files: *libvirt-suse15-files
-        - openstack-helm-images-libvirt-ubuntu_xenial:
-            files: *libvirt-ubuntuxenial-files
-    post:
+        - openstack-helm-images-upload-libvirt
+    promote:
       jobs:
-        - publish-openstack-helm-images-libvirt-suse_15:
-            files: *libvirt-suse15-files
-        - publish-openstack-helm-images-libvirt-ubuntu_xenial:
-            files: *libvirt-ubuntuxenial-files
+        - openstack-helm-images-promote-libvirt
     periodic:
       jobs:
-        - openstack-helm-images-libvirt-suse_15
-        - openstack-helm-images-libvirt-ubuntu_xenial
-    #experimental:
-    #  jobs:
-    #    - openstack-helm-infra-five-ubuntu
+        - openstack-helm-images-build-libvirt
 
 - job:
-    name: openstack-helm-images-libvirt
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: libvirt
+    name: openstack-helm-images-build-libvirt
+    parent: openstack-helm-images-build
+    description: Build libvirt images
+    vars: &libvirt_vars
+      docker_images:
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          tags:
+            - opensuse_15-latest
+          dockerfile: Dockerfile.suse_15
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &libvirt_files
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
 
 - job:
-    name: openstack-helm-images-libvirt-suse_15
-    parent: openstack-helm-images-libvirt
-    vars:
-      distro: "suse_15"
+    name: openstack-helm-images-upload-libvirt
+    parent: openstack-helm-images-upload
+    description: Build and upload libvirt images
+    vars: *libvirt_vars
+    files: *libvirt_files
 
 - job:
-    name: openstack-helm-images-libvirt-ubuntu_xenial
-    parent: openstack-helm-images-libvirt
-    vars:
-      distro: "ubuntu_xenial"
-
-- job:
-    name: publish-openstack-helm-images-libvirt-ubuntu_xenial
-    parent: openstack-helm-images-libvirt-ubuntu_xenial
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
-
-- job:
-    name: publish-openstack-helm-images-libvirt-suse_15
-    parent: openstack-helm-images-libvirt-suse_15
-    post-run: zuul.d/playbooks/publish.yml
-    post-review: true
-    secrets:
-      - openstack_helm_images_publish_credentials
+    name: openstack-helm-images-promote-libvirt
+    parent: openstack-helm-images-promote
+    description: Promote a previously published libvirt image to latest.
+    vars: *libvirt_vars
+    files: *libvirt_files

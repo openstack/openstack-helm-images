@@ -1,6 +1,6 @@
 ---
-# Copyright 2018, SUSE LINUX GmbH.
 # Copyright 2019, AT&T Intellectual Property
+# Copyright 2019, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,22 +17,42 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-mini-mirror-ubuntu_xenial
+        - openstack-helm-images-build-mini-mirror
     gate:
       jobs:
-        - openstack-helm-images-mini-mirror-ubuntu_xenial
+        - openstack-helm-images-upload-mini-mirror
+    promote:
+      jobs:
+        - openstack-helm-images-promote-mini-mirror
     periodic:
       jobs:
-        - openstack-helm-images-mini-mirror-ubuntu_xenial
-- job:
-    name: openstack-helm-images-mini-mirror
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: mini-mirror
+        - openstack-helm-images-build-mini-mirror
 
 - job:
-    name: openstack-helm-images-mini-mirror-ubuntu_xenial
-    parent: openstack-helm-images-mini-mirror
-    vars:
-      distro: "ubuntu"
+    name: openstack-helm-images-build-mini-mirror
+    parent: openstack-helm-images-build
+    description: Build mini-mirror images
+    vars: &mini-mirror_vars
+      docker_images:
+        - context: mini-mirror
+          repository: openstackhelm/mini-mirror
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &mini-mirror_files
+      - mini-mirror/.*
+      - zuul.d/mini-mirror.yaml
+
+- job:
+    name: openstack-helm-images-upload-mini-mirror
+    parent: openstack-helm-images-upload
+    description: Build and upload mini-mirror images
+    vars: *mini-mirror_vars
+    files: *mini-mirror_files
+
+- job:
+    name: openstack-helm-images-promote-mini-mirror
+    parent: openstack-helm-images-promote
+    description: Promote a previously published mini-mirror image to latest.
+    vars: *mini-mirror_vars
+    files: *mini-mirror_files

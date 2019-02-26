@@ -1,4 +1,6 @@
 ---
+# Copyright 2019, SUSE LINUX GmbH.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,28 +16,42 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-ceph-utility-ubuntu_xenial:
-            files: &ceph-ubuntuxenial-files
-              - ^ceph-utility/build.sh
-              - ^ceph-utility/Dockerfile.ubuntu_xenial$
-              - ^zuul.d/ceph-utility.yaml
+        - openstack-helm-images-build-ceph-utility
     gate:
       jobs:
-        - openstack-helm-images-ceph-utility-ubuntu_xenial:
-            files: *ceph-ubuntuxenial-files
+        - openstack-helm-images-upload-ceph-utility
+    promote:
+      jobs:
+        - openstack-helm-images-promote-ceph-utility
     periodic:
       jobs:
-        - openstack-helm-images-ceph-utility-ubuntu_xenial
+        - openstack-helm-images-build-ceph-utility
 
 - job:
-    name: openstack-helm-images-ceph-utility
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: ceph-utility
+    name: openstack-helm-images-build-ceph-utility
+    parent: openstack-helm-images-build
+    description: Build ceph-utility images
+    vars: &ceph-utility_vars
+      docker_images:
+        - context: ceph-utility
+          repository: openstackhelm/ceph-utility
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &ceph-utility_files
+      - ceph-utility/.*
+      - zuul.d/ceph-utility.yaml
 
 - job:
-    name: openstack-helm-images-ceph-utility-ubuntu_xenial
-    parent: openstack-helm-images-ceph-utility
-    vars:
-      distro: "ubuntu_xenial"
+    name: openstack-helm-images-upload-ceph-utility
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-utility images
+    vars: *ceph-utility_vars
+    files: *ceph-utility_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-utility
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-utility image to latest.
+    vars: *ceph-utility_vars
+    files: *ceph-utility_files

@@ -1,0 +1,93 @@
+---
+# Copyright 2019, SUSE LINUX GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    templates:
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+
+# This takes the same structure as other infra jobs.
+# This dict keyname matter. See also job definition for more explanations.
+- secret:
+    name: openstack-helm-dockerhub
+    data:
+      username: !encrypted/pkcs1-oaep
+        - ElBadZeuRFwbxgDHz+TOCdpaqHMAAA0E2WYnplrREC3ndO25CB0zmoBUaYMHObnykM1Yv
+          K/bcfWtlcj8Ucz/U8KIDPBVED7T4OqhhUeIIc+8cw5QuQ9now0ltk8S0/fdJ0qHmNypz9
+          lnbhE0Ir7NPWCSHRIE61BasVcem5QPMre9rNy91rCby8r0+onHlyArRAIoxF3V5Y6DazC
+          DeUDw8fIYZsIfMa5/uuGLf1PW4xCyLhiOiZ0Sr0e454l68tjGGniPpYGIxnjAMKy+hwSb
+          dTX+wc+GP7/7XJnQJ3JcGKt5fYrGgkdzljUeMndfMuKq5WBXkH1EaT6YWJ6V7qAzQk3WN
+          0QHNO80Wa4Uu8Yyyeh9HFXut5VCKLQGOObG8t7Rw75Yf4TXKdFCQKRZ/ecV7KSGFNWh5i
+          4zvgxCwIcv06TX14PcqUJAC8WAWbtUXWhmVgVSPA1B8DU9o8sBVH5CqwgMg32gzQwrDdN
+          8hf3ErWSPVIqtpLZ3SgsnvgUl3W43wwafxp5pMcFEvZS2iG6Ty89BukzEu/xYNEwaS/ys
+          nvpe+El8VBXuB2ZlgwOXyEzgSdzInibTQsLdCyHGWJ1jy+m0R48GjllCCggjAUzqL9o7e
+          jPPb8mfq+jHs9LJVJLYI5tRVYEd4GxoK/1c1LO5v9ixeyKj3PWWBHv54gJ6F74=
+      password: !encrypted/pkcs1-oaep
+        - OWlZwPHSDB5+E0dDwR9cfRpeoODFtOm6L1VztzvQYShQNce6i0iLHpJ6dUyk1HXSFG53t
+          hOQ++q5DHpqV8SCZIYgmcDGrw+EhIlYBINxNL94MlkPNz6YYaemAATdP1kzFmCjlQBRB5
+          z2CyrTs0gTdOjAKdP1GEBQPKdllt0iw0px3il2ux5fNM2WZuc5Vs0mOXa4+OFioUMCUn7
+          KBlSzuVkhYCynvZb/cKDUqsNAuu6RINv/J/OmYbSw0aUxmDHtJ//U8lFHA8YBNUVInQZV
+          HidTyJxBEVLrqqwQPESV1ZB1K0ydeq2rYq5ebrfnl4TyYAOH/Tegg36Tlc8dPebddPaOk
+          38+9KJ25xWpVvFs/83MYxxEdLiUztv3FyxE51yd6gDZ4146l8Vc89VLdi35ce4TVsys0A
+          80yfr/mi6U0xIEzhoxqaDPpAE65lQ1zFdz7/10JiZiwlgEKrzjiAKy7gYbdfnWhBz0YaA
+          U+qKRpWX2r+mOrsyBC6TR3fkCofai11VuL3wwJm37wNteUN9WXTWB61CoDKmuMISKwCxf
+          zP68/8zIekxwRuqKM9aQrqmPg7TEX/GEj7hpUTW/OO6wPktkHX+I6e+FtNTtL33TNRAbh
+          /MlQspgCDU2QL/2JvfkXxOwxEe143a8vEn6NMyRuQM7gpIB6yeK29bCgXcH3x8=
+
+# In docker_images:
+# `context` is the folder in osh-images
+# `repository` is the repo on dockerhub
+# `tags` is a list of the tags when promoted
+#   (images are published with change id)
+# `dockerfile`. Explicit.
+- job:
+    name: openstack-helm-images-build
+    parent: build-docker-image
+    abstract: true
+    description: |
+      This job is building a docker image for
+      OpenStack-Helm usage.
+      Image specific tests can be added by
+      running a post script on the relevant
+      jobs.
+    irrelevant-files:
+      - ^\.git.*
+      - ^.*\.(example|md|rst)$
+      - ^doc/.*
+      - ^releasenotes/.*
+    timeout: 3600
+
+# The secret openstack-helm-dockerhub is exposed as docker_credentials dict,
+# which is used by upload-docker-image job to pass those vars to the
+# upload role.
+- job:
+    name: openstack-helm-images-upload
+    parent: upload-docker-image
+    abstract: true
+    secrets:
+      name: docker_credentials
+      secret: openstack-helm-dockerhub
+      pass-to-parent: true
+    timeout: 3600
+
+- job:
+    name: openstack-helm-images-promote
+    parent: promote-docker-image
+    abstract: true
+    secrets:
+      name: docker_credentials
+      secret: openstack-helm-dockerhub
+      pass-to-parent: true
+    timeout: 3600

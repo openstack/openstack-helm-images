@@ -1,4 +1,6 @@
 ---
+# Copyright 2019, SUSE LINUX GmbH.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,28 +16,42 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-ceph-daemon-ubuntu_xenial:
-            files: &ceph-ubuntuxenial-files
-              - ^ceph-daemon/build.sh
-              - ^ceph-daemon/Dockerfile.ubuntu_xenial$
-              - ^zuul.d/ceph-daemon.yaml
+        - openstack-helm-images-build-ceph-daemon
     gate:
       jobs:
-        - openstack-helm-images-ceph-daemon-ubuntu_xenial:
-            files: *ceph-ubuntuxenial-files
+        - openstack-helm-images-upload-ceph-daemon
+    promote:
+      jobs:
+        - openstack-helm-images-promote-ceph-daemon
     periodic:
       jobs:
-        - openstack-helm-images-ceph-daemon-ubuntu_xenial
+        - openstack-helm-images-build-ceph-daemon
 
 - job:
-    name: openstack-helm-images-ceph-daemon
-    parent: openstack-helm-images-base
-    abstract: true
-    vars:
-      image_path: ceph-daemon
+    name: openstack-helm-images-build-ceph-daemon
+    parent: openstack-helm-images-build
+    description: Build ceph-daemon images
+    vars: &ceph-daemon_vars
+      docker_images:
+        - context: ceph-daemon
+          repository: openstackhelm/ceph-daemon
+          dockerfile: Dockerfile.ubuntu_xenial
+          tags:
+            - ubuntu_xenial-latest
+    files: &ceph-daemon_files
+      - ceph-daemon/.*
+      - zuul.d/ceph-daemon.yaml
 
 - job:
-    name: openstack-helm-images-ceph-daemon-ubuntu_xenial
-    parent: openstack-helm-images-ceph-daemon
-    vars:
-      distro: "ubuntu_xenial"
+    name: openstack-helm-images-upload-ceph-daemon
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-daemon images
+    vars: *ceph-daemon_vars
+    files: *ceph-daemon_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-daemon
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-daemon image to latest.
+    vars: *ceph-daemon_vars
+    files: *ceph-daemon_files
