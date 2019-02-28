@@ -17,15 +17,20 @@ and packages that will be mirrored.
 .. code::
 
     sources/
-    | -- source1/
-         |-- source.txt
-         |-- packages.txt
-    | -- source2/
-         |-- source.txt
-         |-- packages.txt
+    | -- source1-prefix/
+         |-- source-name/
+             |-- source.txt
+             |-- packages.txt
+    | -- source2-prefix/
+         |-- source-name/
+             |-- source.txt
+             |-- packages.txt
 
 Sources are defined as directories containing the files:
 
+* source-prefix - a prefix to separate sources that have conflicting
+  distribution names (i.e. the directory a source serves from).
+* source-name - the name of a source; used for record-keeping.
 * source.txt - contains location and metadata information for a source.
 * packages.txt - contains a list of packages, formatted as `package queries <https://www.aptly.info/doc/feature/query/>`_
   for a source.
@@ -100,4 +105,3 @@ To build the mini-mirror image, execute the following:
 
     export DISTRO=ubuntu
     ./build.sh
-
