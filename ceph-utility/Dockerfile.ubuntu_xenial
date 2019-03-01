@@ -4,14 +4,17 @@ FROM ${FROM}
 ARG CEPH_RELEASE=mimic
 ARG KUBE_VERSION=1.12.2
 
+ARG CEPH_REPO=http://download.ceph.com/debian-${CEPH_RELEASE}/
+ARG CEPH_KEY=http://download.ceph.com/keys/release.asc
+
 RUN set -xe \
     && export DEBIAN_FRONTEND=noninteractive \
     && sed -i '/nobody/d' /etc/passwd \
     && echo "nobody:x:65534:65534:nobody:/nonexistent:/bin/bash" >> /etc/passwd \
     && apt-get update && apt-get dist-upgrade -y \
     && apt-get install -y wget curl apt-transport-https ca-certificates gnupg\
-    && wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - \
-    && echo deb https://download.ceph.com/debian-${CEPH_RELEASE}/ xenial main | tee /etc/apt/sources.list.d/ceph.list \
+    && wget -q -O- ${CEPH_KEY} | apt-key add - \
+    && echo "deb ${CEPH_REPO} xenial main" | tee /etc/apt/sources.list.d/ceph.list \
     && apt-get update && apt-get install -y bash python-oslo.rootwrap moreutils vim sudo screen ceph ceph-common python-rbd radosgw hexedit jq s3cmd rsyslog rsync xz-utils iperf \
     && apt-get remove --purge -y wget apt-transport-https && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && TMP_DIR=$(mktemp --directory) \
