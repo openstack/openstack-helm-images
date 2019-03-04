@@ -24,27 +24,27 @@
     name: openstack-helm-dockerhub
     data:
       username: !encrypted/pkcs1-oaep
-        - ElBadZeuRFwbxgDHz+TOCdpaqHMAAA0E2WYnplrREC3ndO25CB0zmoBUaYMHObnykM1Yv
-          K/bcfWtlcj8Ucz/U8KIDPBVED7T4OqhhUeIIc+8cw5QuQ9now0ltk8S0/fdJ0qHmNypz9
-          lnbhE0Ir7NPWCSHRIE61BasVcem5QPMre9rNy91rCby8r0+onHlyArRAIoxF3V5Y6DazC
-          DeUDw8fIYZsIfMa5/uuGLf1PW4xCyLhiOiZ0Sr0e454l68tjGGniPpYGIxnjAMKy+hwSb
-          dTX+wc+GP7/7XJnQJ3JcGKt5fYrGgkdzljUeMndfMuKq5WBXkH1EaT6YWJ6V7qAzQk3WN
-          0QHNO80Wa4Uu8Yyyeh9HFXut5VCKLQGOObG8t7Rw75Yf4TXKdFCQKRZ/ecV7KSGFNWh5i
-          4zvgxCwIcv06TX14PcqUJAC8WAWbtUXWhmVgVSPA1B8DU9o8sBVH5CqwgMg32gzQwrDdN
-          8hf3ErWSPVIqtpLZ3SgsnvgUl3W43wwafxp5pMcFEvZS2iG6Ty89BukzEu/xYNEwaS/ys
-          nvpe+El8VBXuB2ZlgwOXyEzgSdzInibTQsLdCyHGWJ1jy+m0R48GjllCCggjAUzqL9o7e
-          jPPb8mfq+jHs9LJVJLYI5tRVYEd4GxoK/1c1LO5v9ixeyKj3PWWBHv54gJ6F74=
+        - RToLVrVSLl4ih5OcfL/AnemDTVLsg+TLijXniZ+MPK8h332v813CRMH2vVFf7zZxVw+fA
+          rjVjonkSaNkseXlGd9+psv8gRvxV5qg63emxFtpARSJiS7HgyOdBUy4ZhsrweF7F1KfH1
+          LNKXoaYdDCn7UcP/YaqYBkr2UQ/F0t7Yu6ACjdQYUr3FKh8XfAhrUtcc+uAv7broiIxKq
+          LRi7UTXa1NEpA0rH0dLep5eNKQBpiXo/7cF3fCIMJ8oCGTZToaUkJfoqax96g/oncpf+a
+          wQvlML5WN7YrB5Fi9RkylOVkCOUJcO5HUeFWpfcnPsvwELulpIKnxLlLxR94ZM0ZmCNcI
+          of8yyEAoxCOHOLYZcKNSKjWl6rMmKElTEeedqiJniBSWRwxz7/pj27fQKHDJPfPSXgfqU
+          GNkOLBHdK03idEL39G3rvPKt+lR5xV29iX5EH03VoJoKUBoeggxkC9/3/DcjZ2M8hUD7Q
+          IM5UjMV1Lgo5apodGZu5tUfaoCMPN4xHCzI2vZZ08ZP5952opp9A4c/OLKOUDHV63qei5
+          e2SA8BBtvz/eiUWhLhwMHZK18XqsB8vLZNeO8BUDS5oOfw8YYaEfm3t3hqXNn7khWNlT6
+          MAn3KrFsslsP7ENNFHIxIy4eVXDoDtG90CZWReM2cLdGnbQa2YLdwjjPWN6tlc=
       password: !encrypted/pkcs1-oaep
-        - OWlZwPHSDB5+E0dDwR9cfRpeoODFtOm6L1VztzvQYShQNce6i0iLHpJ6dUyk1HXSFG53t
-          hOQ++q5DHpqV8SCZIYgmcDGrw+EhIlYBINxNL94MlkPNz6YYaemAATdP1kzFmCjlQBRB5
-          z2CyrTs0gTdOjAKdP1GEBQPKdllt0iw0px3il2ux5fNM2WZuc5Vs0mOXa4+OFioUMCUn7
-          KBlSzuVkhYCynvZb/cKDUqsNAuu6RINv/J/OmYbSw0aUxmDHtJ//U8lFHA8YBNUVInQZV
-          HidTyJxBEVLrqqwQPESV1ZB1K0ydeq2rYq5ebrfnl4TyYAOH/Tegg36Tlc8dPebddPaOk
-          38+9KJ25xWpVvFs/83MYxxEdLiUztv3FyxE51yd6gDZ4146l8Vc89VLdi35ce4TVsys0A
-          80yfr/mi6U0xIEzhoxqaDPpAE65lQ1zFdz7/10JiZiwlgEKrzjiAKy7gYbdfnWhBz0YaA
-          U+qKRpWX2r+mOrsyBC6TR3fkCofai11VuL3wwJm37wNteUN9WXTWB61CoDKmuMISKwCxf
-          zP68/8zIekxwRuqKM9aQrqmPg7TEX/GEj7hpUTW/OO6wPktkHX+I6e+FtNTtL33TNRAbh
-          /MlQspgCDU2QL/2JvfkXxOwxEe143a8vEn6NMyRuQM7gpIB6yeK29bCgXcH3x8=
+        - GPDRxEQwaaFK7427kQByOYoEzcAXvNkGJKcBhoiwXPZ2V2taDH3vZWMDByfWLPDp7HTNp
+          MHIJqeGE446EtO+eGmDNFuXHDCbwEwBIGd27QNNKGdmYAXlrU5dxKaoChra+8gcxsXYxJ
+          FlNlfdMqz3Dt+ZTA7f68db9T/hBm2PDAuJml2dHsHCQg5yFljZADcNvbRV4PPf/9SylMa
+          wJPI6XAbzo/bTBnMmsn5u6ovlrIBkO+OMdYQ2Bd22GZkOoUo04M7mz10kPTeSCaGI10b2
+          LR1eN7thS+1ViB+VqoecZ3yOf3KgU9KmVsLkmEGfJUjBXV7dfWZsCvzSM/72WE6yjybQ3
+          iwhpiKVr8EmZAePgiEvjfI/eFcDp+BCfn7fjA5vpJ1qhYXx6WX+IebC8bQ/SfDBXz2kgI
+          kgeCOCqszqR6z/lF//j6ttIIKMGM/OV8AVN8mSwqbx9x6W9y0wFX+Qr4awDcHV0eVJelA
+          aYZxpgceCShEZp54yIVNjDoe01m8UpDDSSj7qtaehX+5U8vKd6lWOf13YEVIfaYUCoNaK
+          Zp1xo0hJ2T2/8FGY/+sgZtjXJ4SETyTTw0kzQy/Ias8h63YIsDi7cQ2Yx48rGtugxArTD
+          Kkrob2q6wFLBIutk8NgfXUy0oLClufRmHidne4XB0VLHeykuxKjiujGm+O9AcQ=
 
 # In docker_images:
 # `context` is the folder in osh-images
