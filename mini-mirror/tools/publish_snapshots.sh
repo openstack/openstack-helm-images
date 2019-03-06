@@ -28,6 +28,13 @@ for source_prefix in /opt/sources/*; do
     dist=${info[2]}
     components=${info[*]:3}
 
+    # Use source specific aptly config when provided
+    if [ -f "${source}"/aptly.conf ]; then
+      conf="${source}"/aptly.conf
+    else
+      conf=/etc/aptly.conf
+    fi
+
     # Create package query from well-defined package list.
     #
     #    package1
@@ -48,20 +55,21 @@ for source_prefix in /opt/sources/*; do
       name="${source}-${component}"
       mirrors+=("$name")
 
-      aptly mirror create -filter="${packages}" -filter-with-deps \
-        "${name}" "${repo}" "${dist}" "${component}"
-      aptly mirror update "${name}"
-      aptly snapshot create "${name}" from mirror "${name}"
+      aptly -config="${conf}" mirror create -filter="${packages}" \
+        -filter-with-deps "${name}" "${repo}" "${dist}" "${component}"
+      aptly -config="${conf}" mirror update "${name}"
+      aptly -config="${conf}" snapshot create "${name}" from mirror "${name}"
     done
 
     # Publish snapshot and sign if a key passphrase is provided
     com_list=$(echo "${components[@]}" | tr ' ' ',')
     if [ ! -z "$1" ]; then
-      aptly publish snapshot -component="${com_list}" -distribution="${dist}" \
-        -batch=true -passphrase="${1}" "${mirrors[@]}" "${source_prefix:13}"
-    else
-      aptly publish snapshot -component="${com_list}" -distribution="${dist}" \
+      aptly -config="${conf}" publish snapshot -component="${com_list}" \
+        -distribution="${dist}" -batch=true -passphrase="${1}" \
         "${mirrors[@]}" "${source_prefix:13}"
+    else
+      aptly -config="${conf}" publish snapshot -component="${com_list}" \
+        -distribution="${dist}" "${mirrors[@]}" "${source_prefix:13}"
     fi
   done
 done

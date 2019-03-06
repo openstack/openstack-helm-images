@@ -89,6 +89,12 @@ environment variable:
 
     export APTLY_CONFIG_PATH=aptly.conf
 
+.. NOTE::
+
+    Mini-mirror can be configured on a per-repo basis by adding an Aptly config
+    file to the root directory of a source. This overrides the Aptly config
+    file taken from ``APTLY_CONFIG_PATH``.
+
 Proxy
 ~~~~~
 
