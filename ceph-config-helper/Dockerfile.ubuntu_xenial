@@ -4,12 +4,15 @@ FROM ${FROM}
 ARG KUBE_VERSION=v1.10.3
 ARG CEPH_RELEASE=mimic
 
-ADD https://download.ceph.com/keys/release.asc /etc/apt/ceph-release.asc
+ARG CEPH_REPO=http://download.ceph.com/debian-${CEPH_RELEASE}/
+ARG CEPH_KEY=http://download.ceph.com/keys/release.asc
+
+ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
     export DEBIAN_FRONTEND=noninteractive ;\
-    apt-key add /etc/apt/ceph-release.asc ;\
-    rm -f /etc/apt/ceph-release.asc ;\
-    echo deb http://download.ceph.com/debian-${CEPH_RELEASE}/ xenial main | tee /etc/apt/sources.list.d/ceph.list ;\
+    apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    rm -f /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    echo deb ${CEPH_REPO} xenial main | tee /etc/apt/sources.list.d/ceph.list ;\
     TMP_DIR=$(mktemp --directory) ;\
     cd ${TMP_DIR} ;\
     apt-get update ;\
