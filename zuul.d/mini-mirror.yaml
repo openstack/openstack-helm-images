@@ -38,7 +38,7 @@
           repository: openstackhelm/mini-mirror
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
-            - ubuntu_xenial-latest
+            - latest-ubuntu_xenial
     files: &mini-mirror_files
       - mini-mirror/.*
       - zuul.d/mini-mirror.yaml

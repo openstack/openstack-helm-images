@@ -36,13 +36,13 @@
         - context: openvswitch
           repository: openstackhelm/openvswitch
           tags:
-            - opensuse_15-latest
+            - latest-opensuse_15
           dockerfile: Dockerfile.suse_15
         - context: openvswitch
           repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.debian
           tags:
-            - debian-latest
+            - latest-debian
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml

@@ -36,13 +36,13 @@
         - context: vbmc
           repository: openstackhelm/vbmc
           tags:
-            - opensuse_15-latest
+            - latest-opensuse_15
           dockerfile: Dockerfile.suse_15
         - context: vbmc
           repository: openstackhelm/vbmc
           dockerfile: Dockerfile.centos_7
           tags:
-            - centos_7-latest
+            - latest-centos_7
     files: &vbmc_files
       - vbmc/.*
       - zuul.d/vbmc.yaml

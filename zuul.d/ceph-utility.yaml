@@ -37,7 +37,7 @@
           repository: openstackhelm/ceph-utility
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
-            - ubuntu_xenial-latest
+            - latest-ubuntu_xenial
     files: &ceph-utility_files
       - ceph-utility/.*
       - zuul.d/ceph-utility.yaml

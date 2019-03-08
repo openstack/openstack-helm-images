@@ -37,7 +37,7 @@
           repository: openstackhelm/tempest
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
-            - ubuntu_xenial-latest
+            - latest-ubuntu_xenial
     files: &tempest_files
       - tempest/.*
       - zuul.d/tempest.yaml

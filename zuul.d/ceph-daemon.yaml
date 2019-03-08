@@ -37,7 +37,7 @@
           repository: openstackhelm/ceph-daemon
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
-            - ubuntu_xenial-latest
+            - latest-ubuntu_xenial
     files: &ceph-daemon_files
       - ceph-daemon/.*
       - zuul.d/ceph-daemon.yaml

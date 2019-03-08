@@ -1,0 +1,4 @@
+---
+other:
+  - |
+    Images are now built with tagging like version-distro.

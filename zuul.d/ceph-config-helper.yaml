@@ -36,13 +36,13 @@
         - context: ceph-config-helper
           repository: openstackhelm/ceph-config-helper
           tags:
-            - opensuse_15-latest
+            - latest-opensuse_15
           dockerfile: Dockerfile.suse_15
         - context: ceph-config-helper
           repository: openstackhelm/ceph-config-helper
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
-            - ubuntu_xenial-latest
+            - latest-ubuntu_xenial
     files: &ceph-config-helper_files
       - ceph-config-helper/.*
       - zuul.d/ceph-config-helper.yaml
