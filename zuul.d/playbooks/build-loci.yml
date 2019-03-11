@@ -1,0 +1,49 @@
+---
+# Copyright 2018, SUSE LINUX GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- hosts: all[0]
+  gather_facts: true
+  tasks:
+    - name: Build base and requirements images
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "src/git.openstack.org/openstack/loci"
+        docker_images: "{{ prep_docker_images }}"
+
+    - name: Build webserver serving wheels
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "{{ zuul.project.src_dir }}"
+        docker_images:
+          - context: zuul.d/playbooks/
+            repository: openstackhelm/loci_wheels
+    - name: Allow access to wheels server
+      iptables:
+        action: insert
+        chain: INPUT
+        in_interface: docker0
+        jump: ACCEPT
+      become: yes
+
+    - name: Run http server containing wheels
+      command: docker run -d -p 0.0.0.0:8080:80 openstackhelm/loci_wheels:latest
+
+    - name: Build project images
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "src/git.openstack.org/openstack/loci"
