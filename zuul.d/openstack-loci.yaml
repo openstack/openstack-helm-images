@@ -21,6 +21,8 @@
         - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-rocky-opensuse_15:
+            voting: false
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
     gate:
       jobs:
@@ -61,8 +63,9 @@
       python3: "no"
       #172.17.0.1 is default docker0 ip.
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
-      prep_docker_images: &prep_images
-        - context: "."
+      prep_docker_images:
+        - &requirements_project
+          context: "."
           repository: openstackhelm/requirements
           build_args:
             - "FROM='{{ from }}'"
@@ -70,7 +73,8 @@
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
       docker_images: &project_images
-        - context: "."
+        - &keystone_project
+          context: "."
           repository: openstackhelm/keystone
           build_args:
             - "FROM='{{ from }}'"
@@ -82,7 +86,8 @@
             - "WHEELS='{{ wheels_location }}'"
           tags: &imagetag
             - "{{ shortbranchname }}-{{ distroname }}"
-        - context: "."
+        - &heat_project
+          context: "."
           repository: openstackhelm/heat
           build_args:
             - "FROM='{{ from }}'"
@@ -92,7 +97,8 @@
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &barbican_project
+          context: "."
           repository: openstackhelm/barbican
           build_args:
             - "FROM='{{ from }}'"
@@ -102,7 +108,8 @@
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &glance_project
+          context: "."
           repository: openstackhelm/glance
           build_args:
             - "FROM='{{ from }}'"
@@ -113,7 +120,8 @@
             - "PIP_PACKAGES='python-swiftclient'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &cinder_project
+          context: "."
           repository: openstackhelm/cinder
           build_args:
             - "FROM='{{ from }}'"
@@ -124,7 +132,8 @@
             - "PIP_PACKAGES='python-swiftclient'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &neutron_project
+          context: "."
           repository: openstackhelm/neutron
           build_args:
             - "FROM='{{ from }}'"
@@ -134,7 +143,8 @@
             - "PROFILES='fluent linuxbridge openvswitch'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &neutron_sriov_project
+          context: "."
           repository: openstackhelm/neutron
           build_args:
             - "FROM=docker.io/ubuntu:18.04"
@@ -146,7 +156,8 @@
             - "WHEELS='{{ wheels_location }}'"
           tags:
             - "{{ shortbranchname }}-18.04-sriov"
-        - context: "."
+        - &nova_project
+          context: "."
           repository: openstackhelm/nova
           build_args:
             - "FROM='{{ from }}'"
@@ -156,7 +167,8 @@
             - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &horizon_project
+          context: "."
           repository: openstackhelm/horizon
           build_args:
             - "FROM='{{ from }}'"
@@ -166,7 +178,8 @@
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &senlin_project
+          context: "."
           repository: openstackhelm/senlin
           build_args:
             - "FROM='{{ from }}'"
@@ -176,7 +189,8 @@
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &congress_project
+          context: "."
           repository: openstackhelm/congress
           build_args:
             - "FROM='{{ from }}'"
@@ -187,7 +201,8 @@
             - "PIP_PACKAGES='python-congressclient'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &magnum_project
+          context: "."
           repository: openstackhelm/magnum
           build_args:
             - "FROM='{{ from }}'"
@@ -197,7 +212,8 @@
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - context: "."
+        - &ironic_project
+          context: "."
           repository: openstackhelm/ironic
           build_args:
             - "FROM='{{ from }}'"
@@ -248,16 +264,52 @@
       shortbranchname: "rocky"
 
 - job:
+    name: openstack-helm-images-build-openstack-loci-rocky-opensuse_15
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    description: "Build rocky LOCI images for leap 15"
+    vars: &build_rocky_leap15_images
+      branchname: "stable/rocky"
+      shortbranchname: "rocky"
+      distroname: "opensuse_15"
+      from: "openstackhelm/base:{{ distroname }}"
+      python3: "yes"
+      prep_docker_images:
+        - context: "dockerfiles/leap15"
+          repository: openstackhelm/base
+          tags:
+            - "{{ distroname }}"
+        - <<: *requirements_project
+      docker_images:
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+- job:
     name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
     parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
     description: Build and upload rocky LOCI images for xenial
     vars: *build_rocky_xenial_images
 
 - job:
+    name: openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: "Build and upload rocky LOCI images for leap 15"
+    vars: *build_rocky_leap15_images
+
+- job:
     name: openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
     parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
     description: Promote previously published loci xenial rocky images
     vars: *build_rocky_xenial_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-rocky-opensuse_15
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    description: "Promote previously published loci leap 15 rocky images"
+    vars: *build_rocky_leap15_images
 
 # Queens
 - job:
