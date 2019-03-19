@@ -16,6 +16,22 @@
 - hosts: all[0]
   gather_facts: true
   tasks:
+    - name: Export the right vars
+      shell: |
+        source /etc/ci/mirror_info.sh
+        echo ${NODEPOOL_OPENSUSE_MIRROR}/
+        echo ${NODEPOOL_PYPI_MIRROR}
+        echo ${NODEPOOL_MIRROR_HOST}
+      args:
+        executable: /bin/bash
+      changed_when: False
+      register: _zuul_mirrors
+    - name: Set fact with the exported variables
+      set_fact:
+        opensuse_package_mirror: "{{ _zuul_mirrors.stdout_lines[0] }}"
+        pip_index_url: "{{ _zuul_mirrors.stdout_lines[1] | default('https://pypi.python.org/simple/') }}"
+        pip_trusted_host: "{{ _zuul_mirrors.stdout_lines[2] | default('pypi.python.org') }}"
+
     - name: Build base and requirements images
       include_role:
         name: build-docker-image
