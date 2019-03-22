@@ -16,89 +16,477 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-openstack-loci-newton-ubuntu_xenial:
-            voting: false
-        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-queens-suse_15
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-newton-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
     gate:
       jobs:
-        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-queens-suse_15
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
-    periodic:
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-newton-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
+    promote:
       jobs:
-        - openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-        - openstack-helm-images-openstack-loci-queens-suse_15
-        - openstack-helm-images-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-newton-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
 
 - job:
-    name: openstack-helm-images-openstack-loci
-    parent: base
-    abstract: true
-    vars:
-      use_tmpfs: False
+    name: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    # Inherits secrets and vars
+    parent: openstack-helm-images-build
+    description: Build master LOCI images for xenial
+    # Increase timeout due to many images to build
+    timeout: 5400
+    # This enables depends-on to work by using local repos
     required-projects:
-      - name: openstack/loci
-    pre-run:
-      - zuul.d/playbooks/pre-run.yml
-      - zuul.d/playbooks/pre-loci-build.yml
-    run: zuul.d/playbooks/loci-build.yml
-    timeout: 3600
+      - openstack/loci
+    # Fork of standard playbook to build prep images first (reusing
+    # role) with a different zuul_role_dir, publish wheels on http server.
+    #  zuul_work_dir: "src/git.openstack.org/openstack/loci"
+    run: zuul.d/playbooks/build-loci.yml
+    vars: &build_master_xenial_images
+      branchname: "master"
+      shortbranchname: "master"
+      distroname: "ubuntu_xenial"
+      from: "gcr.io/google_containers/ubuntu-slim:0.14"
+      python3: "no"
+      #172.17.0.1 is default docker0 ip.
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      prep_docker_images: &prep_images
+        - context: "."
+          repository: openstackhelm/requirements
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='requirements'"
+            - "PROJECT_REF={{ branchname }}"
+      docker_images: &project_images
+        - context: "."
+          repository: openstackhelm/keystone
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='keystone'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
+            - "PIP_PACKAGES='python-openstackclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: &imagetag
+            - "{{ shortbranchname }}-{{ distroname }}"
+        - context: "."
+          repository: openstackhelm/heat
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='heat'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/barbican
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='barbican'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/glance
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='glance'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent ceph'"
+            - "PIP_PACKAGES='python-swiftclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/cinder
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='cinder'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent lvm ceph qemu'"
+            - "PIP_PACKAGES='python-swiftclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/neutron
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='neutron'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent linuxbridge openvswitch'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/neutron
+          build_args:
+            - "FROM=docker.io/ubuntu:18.04"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='neutron'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent neutron linuxbridge openvswitch'"
+            - "DIST_PACKAGES='ethtool lshw'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags:
+            - "{{ shortbranchname }}-18.04-sriov"
+        - context: "."
+          repository: openstackhelm/nova
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='nova'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/horizon
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='horizon'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/senlin
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='senlin'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/congress
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='congress'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "PIP_PACKAGES='python-congressclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/magnum
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='magnum'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/ironic
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='ironic'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent ipxe ipmi qemu tftp'"
+            - "DIST_PACKAGES='ethtool lshw iproute2'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
 
+# The upload in openstack-helm-images-upload happens as post-run,
+# so we can inherit from this. The post run is not caring about context,
+# only repository, and tags.
 - job:
-    name: openstack-helm-images-openstack-loci-newton
-    parent: openstack-helm-images-openstack-loci
-    abstract: true
-    vars:
-      build_command: './build-newton.sh'
+    name: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: Build and upload master LOCI images for xenial
+    # Inherits secrets and vars
+    parent: openstack-helm-images-upload
+    # Increase timeout due to many images to build
+    timeout: 5400
+    # This enables depends-on to work by using local repos
+    required-projects:
+      - openstack/loci
+    run: zuul.d/playbooks/build-loci.yml
+    vars: *build_master_xenial_images
+    files: *loci-files
+
+# Promote is a run job. Let's not change it.
+- job:
+    name: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    parent: openstack-helm-images-promote
+    description: Promote previously published loci xenial master images
+    vars: *build_master_xenial_images
+    files: *loci-files
+
 
 - job:
-    name: openstack-helm-images-openstack-loci-ocata
-    parent: openstack-helm-images-openstack-loci
-    abstract: true
-    vars:
-      build_command: './build-ocata.sh'
+    name: openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    description: Build rocky LOCI images for xenial
+    vars: &build_rocky_xenial_images
+      <<: *build_master_xenial_images
+      branchname: "stable/rocky"
+      shortbranchname: "rocky"
 
 - job:
-    name: openstack-helm-images-openstack-loci-pike
-    parent: openstack-helm-images-openstack-loci
-    abstract: true
-    vars:
-      build_command: './build-pike.sh'
+    name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: Build and upload rocky LOCI images for xenial
+    vars: *build_rocky_xenial_images
 
 - job:
-    name: openstack-helm-images-openstack-loci-queens
-    parent: openstack-helm-images-openstack-loci
-    abstract: true
-    vars:
-      build_command: './build-queens.sh'
+    name: openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    description: Promote previously published loci xenial rocky images
+    vars: *build_rocky_xenial_images
+
+# Queens
+- job:
+    name: openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    description: Build queens LOCI images for xenial
+    vars: &build_queens_xenial_images
+      <<: *build_master_xenial_images
+      branchname: "stable/queens"
+      shortbranchname: "queens"
 
 - job:
-    name: openstack-helm-images-openstack-loci-newton-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-newton
+    name: openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: Build and upload queens LOCI images for xenial
+    vars: *build_queens_xenial_images
 
 - job:
-    name: openstack-helm-images-openstack-loci-ocata-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-ocata
+    name: openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    description: Promote a previously published loci xenial queens images
+    vars: *build_queens_xenial_images
+
+# Pike
+- job:
+    name: openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    description: Build pike LOCI images for xenial
+    vars: &build_pike_xenial_images
+      <<: *build_master_xenial_images
+      branchname: "stable/pike"
+      shortbranchname: "pike"
 
 - job:
-    name: openstack-helm-images-openstack-loci-pike-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-pike
+    name: openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: Build and upload pike LOCI images for xenial
+    vars: *build_pike_xenial_images
 
 - job:
-    name: openstack-helm-images-openstack-loci-queens-suse_15
-    parent: openstack-helm-images-openstack-loci-queens
-    vars:
-      build_environment:
-        BASE_IMAGE: leap15
+    name: openstack-helm-images-promote-openstack-loci-pike-ubuntu_xenial
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    description: Promote a previously published loci xenial pike images
+    vars: *build_pike_xenial_images
+
+# Ocata
+- job:
+    name: openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    description: Build ocata LOCI images for xenial
+    vars: &build_ocata_xenial_images
+      <<: *build_master_xenial_images
+      branchname: "stable/ocata"
+      shortbranchname: "ocata"
 
 - job:
-    name: openstack-helm-images-openstack-loci-queens-ubuntu_xenial
-    parent: openstack-helm-images-openstack-loci-queens
+    name: openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: Build and upload ocata LOCI images for xenial
+    vars: *build_ocata_xenial_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-ocata-ubuntu_xenial
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    description: Promote a previously published loci xenial ocata images
+    vars: *build_ocata_xenial_images
+
+# Newton
+- job:
+    name: openstack-helm-images-build-openstack-loci-newton-ubuntu_xenial
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+    description: Build newton LOCI images for xenial
+    vars: &build_newton_xenial_images
+      branchname: "newton-eol"
+      shortbranchname: "newton"
+      distroname: "ubuntu_xenial"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      from: "gcr.io/google_containers/ubuntu-slim:0.14"
+      prep_docker_images:
+        - context: "."
+          repository: openstackhelm/requirements
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='requirements'"
+            - "PROJECT_REF='stable/newton'"
+      docker_images:
+        - context: "."
+          repository: openstackhelm/keystone
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='keystone'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='apache ldap'"
+            - "PIP_PACKAGES='pycrypto python-openstackclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/heat
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='heat'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='apache'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "DIST_PACKAGES='curl'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/barbican
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='barbican'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/glance
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='glance'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='glance ceph'"
+            - "PIP_PACKAGES='pycrypto python-swiftclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/cinder
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='cinder'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='cinder lvm ceph qemu'"
+            - "PIP_PACKAGES='pycrypto python-swiftclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/neutron
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='neutron'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='neutron linuxbridge openvswitch'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/neutron
+          build_args:
+            - "FROM=docker.io/ubuntu:18.04"
+            - "PROJECT='neutron'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='neutron linuxbridge openvswitch'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "DIST_PACKAGES='ethtool lshw'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags:
+            - "{{ shortbranchname }}-18.04-sriov"
+        - context: "."
+          repository: openstackhelm/nova
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='nova'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='nova ceph linuxbridge openvswitch configdrive qemu apache'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/horizon
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='horizon'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='horizon apache'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/senlin
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='senlin'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='senlin'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/congress
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='congress'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='congress'"
+            - "PIP_PACKAGES='pycrypto python-congressclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/magnum
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='magnum'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='magnum'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/ironic
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PROJECT='ironic'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='ironic ipxe ipmi qemu tftp'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "DIST_PACKAGES='iproute2'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+    files: *loci-files
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-newton-ubuntu_xenial
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+    description: Build and upload newton LOCI images for xenial
+    vars: *build_newton_xenial_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-newton-ubuntu_xenial
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+    description: Promote a previously published loci xenial newton images
+    vars: *build_newton_xenial_images
