@@ -21,8 +21,7 @@
         - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-rocky-opensuse_15:
-            voting: false
+        - openstack-helm-images-build-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
     gate:
       jobs:
@@ -31,6 +30,7 @@
         - openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
     promote:
       jobs:
@@ -39,6 +39,7 @@
         - openstack-helm-images-promote-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
 
 - job:
@@ -267,6 +268,7 @@
     name: openstack-helm-images-build-openstack-loci-rocky-opensuse_15
     parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
     description: "Build rocky LOCI images for leap 15"
+    timeout: 7200 # need to build base image too
     vars: &build_rocky_leap15_images
       branchname: "stable/rocky"
       shortbranchname: "rocky"
@@ -297,6 +299,7 @@
     name: openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
     parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
     description: "Build and upload rocky LOCI images for leap 15"
+    timeout: 7200 # need to build base image too
     vars: *build_rocky_leap15_images
 
 - job:
