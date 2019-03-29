@@ -36,13 +36,13 @@
         - context: libvirt
           repository: openstackhelm/libvirt
           tags:
-            - opensuse_15-latest
+            - latest-opensuse_15
           dockerfile: Dockerfile.suse_15
         - context: libvirt
           repository: openstackhelm/libvirt
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
-            - ubuntu_xenial-latest
+            - latest-ubuntu_xenial
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
