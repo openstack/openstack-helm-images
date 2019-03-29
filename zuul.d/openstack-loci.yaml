@@ -278,6 +278,10 @@
       prep_docker_images:
         - context: "dockerfiles/leap15"
           repository: openstackhelm/base
+          build_args:
+            - "PACKAGE_MIRROR={{ opensuse_package_mirror | default('http://download.opensuse.org/') }}"
+            - "PIP_INDEX_URL={{ pip_index_url | default('https://pypi.python.org/simple/') }}"
+            - "PIP_TRUSTED_HOST={{ pip_trusted_host | default('pypi.python.org') }}"
           tags:
             - "{{ distroname }}"
         - <<: *requirements_project
