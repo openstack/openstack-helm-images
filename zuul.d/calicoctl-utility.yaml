@@ -1,0 +1,57 @@
+---
+# Copyright 2019, AT&T Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-build-calicoctl-utility
+    gate:
+      jobs:
+        - openstack-helm-images-upload-calicoctl-utility
+    promote:
+      jobs:
+        - openstack-helm-images-promote-calicoctl-utility
+    periodic:
+      jobs:
+        - openstack-helm-images-build-calicoctl-utility
+
+- job:
+    name: openstack-helm-images-build-calicoctl-utility
+    parent: openstack-helm-images-build
+    description: Build calicoctl-utility images
+    vars: &calicoctl-utility_vars
+      docker_images:
+        - context: calicoctl-utility
+          repository: openstackhelm/calicoctl-utility
+          dockerfile: Dockerfile.alpine
+          tags:
+            - latest-alpine
+    files: &calicoctl-utility_files
+      - calicoctl-utility/.*
+      - zuul.d/calicoctl-utility.yaml
+
+- job:
+    name: openstack-helm-images-upload-calicoctl-utility
+    parent: openstack-helm-images-upload
+    description: Build and upload calicoctl-utility images
+    vars: *calicoctl-utility_vars
+    files: *calicoctl-utility_files
+
+- job:
+    name: openstack-helm-images-promote-calicoctl-utility
+    parent: openstack-helm-images-promote
+    description: Promote a previously published calicoctl-utility image to latest.
+    vars: *calicoctl-utility_vars
+    files: *calicoctl-utility_files
