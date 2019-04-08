@@ -7,8 +7,8 @@ ARG CEPH_RELEASE=mimic
 ARG ETCDCTL_VERSION=3.2.18
 ARG CONFD_VERSION=0.16.0
 
-ARG CEPH_REPO=http://download.ceph.com/debian-${CEPH_RELEASE}/
-ARG CEPH_KEY=http://download.ceph.com/keys/release.asc
+ARG CEPH_REPO=http://mirror.mirantis.com/testing/ceph-mimic/xenial/
+ARG CEPH_KEY=http://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
