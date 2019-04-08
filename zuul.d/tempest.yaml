@@ -38,6 +38,11 @@
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+        - context: tempest
+          repository: openstackhelm/tempest
+          dockerfile: Dockerfile.opensuse_15
+          tags:
+            - latest-opensuse_15
     files: &tempest_files
       - tempest/.*
       - zuul.d/tempest.yaml
