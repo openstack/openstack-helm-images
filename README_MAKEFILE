@@ -1,5 +1,5 @@
-Makefile For Ceph images
-------------------------
+Makefile For Ceph and Calicoctl images
+--------------------------------------
 
 This is a  make and dockerfile for containers. This can be used to create docker images using different releases and os releases
 
@@ -12,3 +12,6 @@ eg:
 
   make IMAGE_NAME=openvswitch OS_RELEASE=debian
 
+  make IMAGE_NAME=calicoctl-utility OS_RELEASE=alpine
+
+Note: calicoctl-utlity image only supports alpine OS.

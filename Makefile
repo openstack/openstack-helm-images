@@ -24,10 +24,15 @@ SHELL := /bin/bash
 DOCKER_REGISTRY            ?= docker.io
 IMAGE_PREFIX               ?= openstackhelm
 IMAGE_TAG                  ?= latest
+CALICOCTL_VERSION          ?= v3.4.4
 
 # Set the image
 # eg: quay.io/att-comdev/ceph-config-helper:latest
 IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}
+
+ifeq ($(IMAGE_NAME), calicoctl-utility)
+    IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${CALICOCTL_VERSION}-${IMAGE_TAG}
+endif
 
 # Build Docker image for this project
 .PHONY: images
@@ -50,13 +55,20 @@ else ifeq ($(OS_RELEASE), suse_15)
 	.
 else ifeq ($(OS_RELEASE), debian)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
-        --network host \
+	--network host \
 	$(EXTRA_BUILD_ARGS) \
-        -t $(IMAGE) \
-        .
+	-t $(IMAGE) \
+	.
 else ifeq ($(OS_RELEASE), centos_7)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
+	$(EXTRA_BUILD_ARGS) \
+	-t $(IMAGE) \
+	.
+else ifeq ($(OS_RELEASE), alpine)
+	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
+	--network host \
+	--build-arg CALICOCTL_VERSION=${CALICOCTL_VERSION} \
 	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.

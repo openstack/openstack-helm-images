@@ -1,0 +1,30 @@
+ARG CALICOCTL_VERSION=v3.4.4
+ARG FROM=quay.io/calico/ctl:${CALICOCTL_VERSION}
+FROM ${FROM}
+
+LABEL org.opencontainers.image.authors='Openstack-Helm Authors'
+LABEL org.opencontainers.image.url='https://git.openstack.com/openstack/openstack-helm-images'
+LABEL org.opencontainers.image.documentation='https://git.openstack.com/openstack/openstack-helm-images/blob/master/README_MAKEFILE'
+LABEL org.opencontainers.image.source='https://git.openstack.com/openstack/openstack-helm-images'
+LABEL org.opencontainers.image.vendor='Openstack-Helm Authors'
+LABEL org.opencontainers.image.licenses='BSD-3-Clause'
+LABEL calicoctl.version='${CALICOCTL_VERSION}'
+
+RUN set -xe \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apk add dpkg --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    && apk add --update dpkg \
+    && touch /var/lib/dpkg/status \
+    && apk update \
+    && apk add --update \
+       python python-dev py-pip build-base \
+       sudo vim screen rsyslog \
+       wget curl socat \
+    && pip install oslo.rootwrap
+
+RUN mv /calicoctl /usr/local/bin/calicoctl \
+    && chmod 0754 /usr/local/bin/calicoctl \
+    && chmod 0754 /usr/bin/socat
+
+WORKDIR /tmp
+ENTRYPOINT ["/bin/sh", "-c"]
