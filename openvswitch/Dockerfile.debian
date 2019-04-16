@@ -1,7 +1,8 @@
 FROM k8s.gcr.io/debian-iptables-amd64:v10
 LABEL maintainer="pete.birley@att.com"
 
-ARG OVS_VERSION=2.8.1
+ARG OVS_VERSION=2.10.1
+ARG DPDK_VERSION=17.11.5
 
 RUN set -ex ;\
     export DEBIAN_FRONTEND=noninteractive ;\
@@ -27,15 +28,26 @@ RUN set -ex ;\
         python-all \
         python-six \
         python-twisted-conch \
-        python-zopeinterface ;\
+        python-zopeinterface \
+        libnuma-dev \
+        linux-headers-amd64 ;\
+    TMP_DIR=$(mktemp -d) ;\
+    curl -sSL http://fast.dpdk.org/rel/dpdk-${DPDK_VERSION}.tar.xz | tar xJ -C ${TMP_DIR} --strip-components=1 ;\
+    export DPDK_DIR=${TMP_DIR} ;\
+    cd ${DPDK_DIR} ;\
+    export DPDK_TARGET=x86_64-native-linuxapp-gcc ;\
+    export DPDK_BUILD=${DPDK_DIR}/${DPDK_TARGET} ;\
+    export RTE_KERNELDIR=/usr/src/$(ls -1 /usr/src/ | grep amd64) ;\
+    make install T=${DPDK_TARGET} DESTDIR=install ;\
     TMP_DIR=$(mktemp -d) ;\
     curl -sSL http://openvswitch.org/releases/openvswitch-${OVS_VERSION}.tar.gz | tar xz -C ${TMP_DIR} --strip-components=1 ;\
     cd ${TMP_DIR} ;\
       ./boot.sh ;\
-      ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc ;\
+      ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --with-dpdk=$DPDK_BUILD ;\
       make ;\
       make install ;\
       cd / ;\
+    rm -rf ${DPDK_DIR} ;\
     rm -rf ${TMP_DIR} ;\
     apt-get purge --auto-remove -y \
         build-essential \
