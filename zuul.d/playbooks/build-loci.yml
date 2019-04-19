@@ -36,7 +36,7 @@
       include_role:
         name: build-docker-image
       vars:
-        zuul_work_dir: "src/git.openstack.org/openstack/loci"
+        zuul_work_dir: "src/opendev.org/openstack/loci"
         docker_images: "{{ prep_docker_images }}"
 
     - name: Build webserver serving wheels
@@ -62,4 +62,4 @@
       include_role:
         name: build-docker-image
       vars:
-        zuul_work_dir: "src/git.openstack.org/openstack/loci"
+        zuul_work_dir: "src/opendev.org/openstack/loci"

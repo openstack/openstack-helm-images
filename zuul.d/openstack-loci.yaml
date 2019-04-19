@@ -54,7 +54,7 @@
       - openstack/loci
     # Fork of standard playbook to build prep images first (reusing
     # role) with a different zuul_role_dir, publish wheels on http server.
-    #  zuul_work_dir: "src/git.openstack.org/openstack/loci"
+    #  zuul_work_dir: "src/opendev.org/openstack/loci"
     run: zuul.d/playbooks/build-loci.yml
     vars: &build_master_xenial_images
       branchname: "master"
