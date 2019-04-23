@@ -293,6 +293,7 @@
         - <<: *neutron_project
         - <<: *horizon_project
         - <<: *heat_project
+        - <<: *barbican_project
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
     parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
