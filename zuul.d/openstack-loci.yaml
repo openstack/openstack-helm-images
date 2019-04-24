@@ -38,6 +38,14 @@
         - openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
+    periodic:
+      jobs:
+        - openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-rocky-opensuse_15
+        - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
 
 - job:
     name: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
