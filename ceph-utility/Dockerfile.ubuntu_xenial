@@ -4,8 +4,8 @@ FROM ${FROM}
 ARG CEPH_RELEASE=mimic
 ARG KUBE_VERSION=1.12.2
 
-ARG CEPH_REPO=http://mirror.mirantis.com/testing/ceph-mimic/xenial/
-ARG CEPH_KEY=http://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key
+ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-mimic/xenial/
+ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key
 
 RUN set -xe \
     && export DEBIAN_FRONTEND=noninteractive \
