@@ -4,12 +4,15 @@ FROM ${FROM}
 ARG KUBE_VERSION=v1.10.3
 ARG CEPH_RELEASE=mimic
 
-ARG CEPH_REPO=http://mirror.mirantis.com/testing/ceph-mimic/xenial/
-ARG CEPH_KEY=http://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key
+ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-mimic/xenial/
+ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
     export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get dist-upgrade -y ;\
+    apt-get install -y apt-transport-https ca-certificates ;\
     apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
     rm -f /etc/apt/ceph-${CEPH_RELEASE}.key ;\
     echo deb ${CEPH_REPO} xenial main | tee /etc/apt/sources.list.d/ceph.list ;\
@@ -18,8 +21,6 @@ RUN set -ex ;\
     apt-get update ;\
     apt-get dist-upgrade -y ;\
     apt-get install --no-install-recommends -y \
-        apt-transport-https \
-        ca-certificates \
         ceph \
         curl \
         gcc \
