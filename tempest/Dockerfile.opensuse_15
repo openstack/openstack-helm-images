@@ -1,0 +1,20 @@
+FROM opensuse/leap:15.0
+LABEL maintainer="cloud-devel@suse.com"
+
+ARG VERSION=Master
+ARG KEYFILE=Cloud:OpenStack:Master-openSUSE_Leap_15.0.gpgkey
+
+COPY ${KEYFILE} /tmp/
+RUN rpm --import /tmp/${KEYFILE}
+RUN rm /tmp/${KEYFILE}
+
+RUN set -ex ;\
+    zypper --non-interactive addrepo http://download.opensuse.org/repositories/Cloud:/OpenStack:/${VERSION}/openSUSE_Leap_15.0/ openstack-${VERSION} ;\
+    zypper --non-interactive refresh ;\
+    zypper --non-interactive up -y ;\
+    zypper --non-interactive install -y openstack-tempest \
+                                        python-cinder-tempest-plugin \
+                                        python-heat-tempest-plugin \
+                                        python-keystone-tempest-plugin \
+                                        python-neutron-tempest-plugin ;\
+    zypper --non-interactive clean -a
