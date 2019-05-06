@@ -1,0 +1,57 @@
+---
+# Copyright 2019 The Openstack-Helm Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-build-elasticsearch-s3
+    gate:
+      jobs:
+        - openstack-helm-images-upload-elasticsearch-s3
+    promote:
+      jobs:
+        - openstack-helm-images-promote-elasticsearch-s3
+    periodic:
+      jobs:
+        - openstack-helm-images-build-elasticsearch-s3
+
+- job:
+    name: openstack-helm-images-build-elasticsearch-s3
+    parent: openstack-helm-images-build
+    description: Build s3 compatible elasticsearch image
+    vars: &elasticsearch-s3_vars
+      docker_images:
+        - context: elasticsearch-s3
+          repository: openstackhelm/elasticsearch-s3
+          dockerfile: Dockerfile.5_6_4
+          tags:
+            - latest-5_6_4
+    files: &elasticsearch-s3_files
+      - elasticsearch-s3/.*
+      - zuul.d/elasticsearch-s3.yaml
+
+- job:
+    name: openstack-helm-images-upload-elasticsearch-s3
+    parent: openstack-helm-images-upload
+    description: Build and upload s3 compatible elasticsearch images
+    vars: *elasticsearch-s3_vars
+    files: *elasticsearch-s3_files
+
+- job:
+    name: openstack-helm-images-promote-elasticsearch-s3
+    parent: openstack-helm-images-promote
+    description: Promote a previously published s3 compatible elasticsearch image to latest.
+    vars: *elasticsearch-s3_vars
+    files: *elasticsearch-s3_files
