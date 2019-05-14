@@ -181,6 +181,9 @@ keystone_profiles=${keystone_profiles:-"'fluent apache ldap'"}
 keystone_pip_packages=${keystone_pip_packages:-"'pycrypto python-openstackclient'"}
 heat_profiles=${heat_profiles:-"'fluent apache'"}
 heat_pip_packages=${heat_pip_packages:-"pycrypto"}
+# Heat image is used as a helper, and needs curl for fetching images in glance
+# for example
+heat_dist_packages=${heat_dist_packages:-"curl"}
 barbican_profiles=${barbican_profiles:-"fluent"}
 barbican_pip_packages=${barbican_pip_packages:-"pycrypto"}
 glance_profiles=${glance_profiles:-"'fluent ceph'"}

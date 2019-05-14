@@ -97,6 +97,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
+            - "DIST_PACKAGES='curl'"
           tags: *imagetag
         - &barbican_project
           context: "."
