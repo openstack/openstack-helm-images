@@ -365,14 +365,175 @@
     vars: *build_pike_xenial_images
 
 # Ocata
+# Ocata requires pycrypto installed for keystonemiddleware memcache support,
+# so we can't reuse Master profile.
 - job:
     name: openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
     parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
     description: Build ocata LOCI images for xenial
     vars: &build_ocata_xenial_images
-      <<: *build_master_xenial_images
       branchname: "stable/ocata"
       shortbranchname: "ocata"
+      distroname: "ubuntu_xenial"
+      python3: "no"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      from: "gcr.io/google_containers/ubuntu-slim:0.14"
+      prep_docker_images:
+        - context: "."
+          repository: openstackhelm/requirements
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='requirements'"
+            - "PROJECT_REF={{ branchname }}"
+      docker_images:
+        - context: "."
+          repository: openstackhelm/keystone
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='keystone'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
+            - "PIP_PACKAGES='pycrypto python-openstackclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/heat
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='heat'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "DIST_PACKAGES='curl'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/barbican
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='barbican'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/glance
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='glance'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent ceph'"
+            - "PIP_PACKAGES='pycrypto python-swiftclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/cinder
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='cinder'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent lvm ceph qemu'"
+            - "PIP_PACKAGES='pycrypto python-swiftclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/neutron
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='neutron'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent linuxbridge openvswitch'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/neutron
+          build_args:
+            - "FROM=docker.io/ubuntu:18.04"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='neutron'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent neutron linuxbridge openvswitch'"
+            - "DIST_PACKAGES='ethtool lshw'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags:
+            - "{{ shortbranchname }}-18.04-sriov"
+        - context: "."
+          repository: openstackhelm/nova
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='nova'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/horizon
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='horizon'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/senlin
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='senlin'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/congress
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='congress'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "PIP_PACKAGES='pycrypto python-congressclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/magnum
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='magnum'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - context: "."
+          repository: openstackhelm/ironic
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='ironic'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent ipxe ipmi qemu tftp'"
+            - "PIP_PACKAGES='pycrypto'"
+            - "DIST_PACKAGES='ethtool lshw iproute2'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
