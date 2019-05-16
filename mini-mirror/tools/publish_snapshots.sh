@@ -55,21 +55,30 @@ for source_prefix in /opt/sources/*; do
       name="${source}-${component}"
       mirrors+=("$name")
 
-      aptly -config="${conf}" mirror create -filter="${packages}" \
-        -filter-with-deps "${name}" "${repo}" "${dist}" "${component}"
-      aptly -config="${conf}" mirror update "${name}"
-      aptly -config="${conf}" snapshot create "${name}" from mirror "${name}"
+      aptly mirror create \
+          -config="${conf}" \
+          -filter="${packages}" \
+          -filter-with-deps \
+          "${name}" "${repo}" "${dist}" "${component}"
+
+      aptly mirror update -config="${conf}" "${name}"
+      aptly snapshot create -config="${conf}" "${name}" from mirror "${name}"
     done
 
-    # Publish snapshot and sign if a key passphrase is provided
+    # Publish snapshot and sign if a key passphrase is provided.
     com_list=$(echo "${components[@]}" | tr ' ' ',')
     if [ ! -z "$1" ]; then
-      aptly -config="${conf}" publish snapshot -component="${com_list}" \
-        -distribution="${dist}" -batch=true -passphrase="${1}" \
-        "${mirrors[@]}" "${source_prefix:13}"
+      aptly publish snapshot \
+          -batch=true \
+          -component="${com_list}" \
+          -distribution="${dist}" \
+          -passphrase="${1}" \
+          "${mirrors[@]}" "${source_prefix:13}"
     else
-      aptly -config="${conf}" publish snapshot -component="${com_list}" \
-        -distribution="${dist}" "${mirrors[@]}" "${source_prefix:13}"
+      aptly publish snapshot \
+          -component="${com_list}" \
+          -distribution="${dist}" \
+          "${mirrors[@]}" "${source_prefix:13}"
     fi
   done
 done
