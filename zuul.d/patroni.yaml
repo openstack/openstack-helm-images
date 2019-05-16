@@ -32,12 +32,14 @@
     parent: openstack-helm-images-build
     description: Build patroni images
     vars: &patroni_vars
+      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       docker_images:
         - context: patroni
           repository: openstackhelm/patroni
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+            - "ubuntu_xenial-{{ currentdate }}"
     files: &patroni_files
       - patroni/.*
       - zuul.d/patroni.yaml

@@ -54,6 +54,7 @@
     #  zuul_work_dir: "src/opendev.org/openstack/loci"
     run: zuul.d/playbooks/build-loci.yml
     vars: &build_master_xenial_images
+      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       branchname: "master"
       shortbranchname: "master"
       distroname: "ubuntu_xenial"
@@ -83,7 +84,8 @@
             - "PIP_PACKAGES='python-openstackclient'"
             - "WHEELS='{{ wheels_location }}'"
           tags: &imagetag
-            - "{{ shortbranchname }}-{{ distroname }}"
+            - "{{ shortbranchname }}-{{ distroname }}" # Always updated tag
+            - "{{ shortbranchname }}-{{ distroname }}-{{ currentdate }}" # Frozen tag
         - &heat_project
           context: "."
           repository: openstackhelm/heat
@@ -155,6 +157,7 @@
             - "WHEELS='{{ wheels_location }}'"
           tags:
             - "{{ shortbranchname }}-18.04-sriov"
+            - "{{ shortbranchname }}-18.04-sriov-{{ currentdate }}"
         - &nova_project
           context: "."
           repository: openstackhelm/nova
@@ -376,6 +379,7 @@
     parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
     description: Build ocata LOCI images for xenial
     vars: &build_ocata_xenial_images
+      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       branchname: "stable/ocata"
       shortbranchname: "ocata"
       distroname: "ubuntu_xenial"
@@ -471,6 +475,7 @@
             - "WHEELS='{{ wheels_location }}'"
           tags:
             - "{{ shortbranchname }}-18.04-sriov"
+            - "{{ shortbranchname }}-18.04-sriov-{{ currentdate }}"
         - context: "."
           repository: openstackhelm/nova
           build_args:

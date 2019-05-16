@@ -32,17 +32,20 @@
     parent: openstack-helm-images-build
     description: Build libvirt images
     vars: &libvirt_vars
+      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       docker_images:
         - context: libvirt
           repository: openstackhelm/libvirt
           tags:
             - latest-opensuse_15
+            - "opensuse_15-{{ currentdate }}"
           dockerfile: Dockerfile.suse_15
         - context: libvirt
           repository: openstackhelm/libvirt
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+            - "ubuntu_xenial-{{ currentdate }}"
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
