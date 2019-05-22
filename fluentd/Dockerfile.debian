@@ -1,0 +1,3 @@
+FROM docker.io/fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.0
+
+RUN gem install fluent-plugin-systemd -v 1.0.1
