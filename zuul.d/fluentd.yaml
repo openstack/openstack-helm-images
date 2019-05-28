@@ -1,0 +1,57 @@
+---
+# Copyright 2019 The Openstack-Helm Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-build-fluentd
+    gate:
+      jobs:
+        - openstack-helm-images-upload-fluentd
+    promote:
+      jobs:
+        - openstack-helm-images-promote-fluentd
+    periodic:
+      jobs:
+        - openstack-helm-images-build-fluentd
+
+- job:
+    name: openstack-helm-images-build-fluentd
+    parent: openstack-helm-images-build
+    description: Build fluentd image with custom plugins
+    vars: &fluentd_vars
+      docker_images:
+        - context: fluentd
+          repository: openstackhelm/fluentd
+          dockerfile: Dockerfile.debian
+          tags:
+            - latest-debian
+    files: &fluentd_files
+      - fluentd/.*
+      - zuul.d/fluentd.yaml
+
+- job:
+    name: openstack-helm-images-upload-fluentd
+    parent: openstack-helm-images-upload
+    description: Build and upload fluentd image with additional plugins
+    vars: *fluentd_vars
+    files: *fluentd_files
+
+- job:
+    name: openstack-helm-images-promote-fluentd
+    parent: openstack-helm-images-promote
+    description: Promote a previously published fluentd image to latest.
+    vars: *fluentd_vars
+    files: *fluentd_files
