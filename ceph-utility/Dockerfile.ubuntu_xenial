@@ -2,7 +2,7 @@ ARG FROM=docker.io/ubuntu:xenial
 FROM ${FROM}
 
 ARG CEPH_RELEASE=mimic
-ARG KUBE_VERSION=1.12.2
+ARG KUBE_VERSION=1.13.4
 
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-mimic/xenial/
 ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key

@@ -2,7 +2,7 @@ ARG FROM=docker.io/opensuse/leap:15
 FROM ${FROM}
 LABEL maintainers=stephane@alum.mit.edu
 
-ARG KUBE_VERSION=v1.10.3
+ARG KUBE_VERSION=v1.13.4
 ARG CEPH_RELEASE=mimic
  RUN set -ex ;\
     TMP_DIR=$(mktemp --directory) ;\
