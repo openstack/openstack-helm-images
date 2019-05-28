@@ -43,6 +43,11 @@
           dockerfile: Dockerfile.debian
           tags:
             - latest-debian
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.debian-dpdk
+          tags:
+            - latest-debian-dpdk
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
