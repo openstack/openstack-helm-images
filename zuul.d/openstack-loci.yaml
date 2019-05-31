@@ -274,8 +274,14 @@
       branchname: "stable/rocky"
       shortbranchname: "rocky"
       distroname: "opensuse_15"
+      # This from will be used in all the docker_images section.
       from: "openstackhelm/base:{{ distroname }}"
       python3: "yes"
+      # We override the base image's FROM to 15.0 (instead of 15, which can
+      # shift over time). That is because of the fact that upper-constraints
+      # for Rocky contains a libvirt-python version too old for 15.1
+      # (libvirt-python 4.10.0 required for building under leap 15.1 due to
+      # the version of libvirt on the system).
       prep_docker_images:
         - context: "dockerfiles/leap15"
           repository: openstackhelm/base
@@ -283,6 +289,7 @@
             - "PACKAGE_MIRROR={{ opensuse_package_mirror | default('http://download.opensuse.org/') }}"
             - "PIP_INDEX_URL={{ pip_index_url | default('https://pypi.python.org/simple/') }}"
             - "PIP_TRUSTED_HOST={{ pip_trusted_host | default('pypi.python.org') }}"
+            - "FROM=opensuse/leap:15.0"
           tags:
             - "{{ distroname }}"
         - <<: *requirements_project
