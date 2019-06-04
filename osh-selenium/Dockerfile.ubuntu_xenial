@@ -1,0 +1,16 @@
+FROM docker.io/ubuntu:xenial
+
+RUN apt-get -y update \
+        && apt-get install -y python-pip unzip wget
+
+RUN /usr/bin/pip install selenium
+
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+        && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+        && wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip \
+        && unzip /tmp/chromedriver_linux64.zip -d /etc/selenium
+
+RUN apt-get -y update \
+        && apt-get install -y google-chrome-stable \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
