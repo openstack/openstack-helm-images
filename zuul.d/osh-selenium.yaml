@@ -38,6 +38,11 @@
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+        - context: osh-selenium
+          repository: openstackhelm/osh-selenium
+          dockerfile: Dockerfile.opensuse_15
+          tags:
+            - latest-opensuse_15
     files: &osh-selenium_files
       - osh-selenium/.*
       - zuul.d/osh-selenium.yaml
