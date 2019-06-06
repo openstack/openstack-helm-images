@@ -32,20 +32,17 @@
     parent: openstack-helm-images-build
     description: Build vbmc images
     vars: &vbmc_vars
-      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       docker_images:
         - context: vbmc
           repository: openstackhelm/vbmc
           tags:
             - latest-opensuse_15
-            - "opensuse_15-{{ currentdate }}"
           dockerfile: Dockerfile.suse_15
         - context: vbmc
           repository: openstackhelm/vbmc
           dockerfile: Dockerfile.centos_7
           tags:
             - latest-centos_7
-            - "centos_7-{{ currentdate }}"
     files: &vbmc_files
       - vbmc/.*
       - zuul.d/vbmc.yaml
