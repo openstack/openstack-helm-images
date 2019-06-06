@@ -32,17 +32,20 @@
     parent: openstack-helm-images-build
     description: Build tempest images
     vars: &tempest_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: tempest
           repository: openstackhelm/tempest
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+            - "ubuntu_xenial-{{ currentdate }}"
         - context: tempest
           repository: openstackhelm/tempest
           dockerfile: Dockerfile.opensuse_15
           tags:
             - latest-opensuse_15
+            - "opensuse_15-{{ currentdate }}"
     files: &tempest_files
       - tempest/.*
       - zuul.d/tempest.yaml

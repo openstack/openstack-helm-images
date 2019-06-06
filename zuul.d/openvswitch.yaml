@@ -32,27 +32,32 @@
     parent: openstack-helm-images-build
     description: Build openvswitch images
     vars: &openvswitch_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: openvswitch
           repository: openstackhelm/openvswitch
           tags:
             - latest-opensuse_15
+            - "opensuse_15-{{ currentdate }}"
           dockerfile: Dockerfile.suse_15
         - context: openvswitch
           repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.debian
           tags:
             - latest-debian
+            - "debian-{{ currentdate }}"
         - context: openvswitch
           repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.ubuntu_bionic
           tags:
             - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
         - context: openvswitch
           repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.ubuntu_bionic-dpdk
           tags:
             - latest-ubuntu_bionic-dpdk
+            - "ubuntu_bionic-dpdk-{{ currentdate }}"
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml

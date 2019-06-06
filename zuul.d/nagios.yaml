@@ -32,12 +32,14 @@
     parent: openstack-helm-images-build
     description: Build Prometheus aware Nagios core 4 image
     vars: &nagios_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: nagios
           repository: openstackhelm/nagios
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+            - "ubuntu_xenial-{{ currentdate }}"
     files: &nagios_files
       - nagios/.*
       - zuul.d/nagios.yaml

@@ -32,12 +32,14 @@
     parent: openstack-helm-images-build
     description: Build fluentd image with custom plugins
     vars: &fluentd_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: fluentd
           repository: openstackhelm/fluentd
           dockerfile: Dockerfile.debian
           tags:
             - latest-debian
+            - "debian-{{ currentdate }}"
     files: &fluentd_files
       - fluentd/.*
       - zuul.d/fluentd.yaml

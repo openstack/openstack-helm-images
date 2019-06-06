@@ -32,17 +32,20 @@
     parent: openstack-helm-images-build
     description: Build ceph-config-helper images
     vars: &ceph-config-helper_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: ceph-config-helper
           repository: openstackhelm/ceph-config-helper
           tags:
             - latest-opensuse_15
+            - "opensuse_15-{{ currentdate }}"
           dockerfile: Dockerfile.suse_15
         - context: ceph-config-helper
           repository: openstackhelm/ceph-config-helper
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
+            - "ubuntu_xenial-{{ currentdate }}"
     files: &ceph-config-helper_files
       - ceph-config-helper/.*
       - zuul.d/ceph-config-helper.yaml

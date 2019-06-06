@@ -32,12 +32,14 @@
     parent: openstack-helm-images-build
     description: Build s3 compatible elasticsearch image
     vars: &elasticsearch-s3_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: elasticsearch-s3
           repository: openstackhelm/elasticsearch-s3
           dockerfile: Dockerfile.5_6_4
           tags:
             - latest-5_6_4
+            - "5_6_4-{{ currentdate }}"
     files: &elasticsearch-s3_files
       - elasticsearch-s3/.*
       - zuul.d/elasticsearch-s3.yaml

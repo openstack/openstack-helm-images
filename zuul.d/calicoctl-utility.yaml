@@ -32,12 +32,14 @@
     parent: openstack-helm-images-build
     description: Build calicoctl-utility images
     vars: &calicoctl-utility_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - context: calicoctl-utility
           repository: openstackhelm/calicoctl-utility
           dockerfile: Dockerfile.alpine
           tags:
             - latest-alpine
+            - "alpine-{{ currentdate }}"
     files: &calicoctl-utility_files
       - calicoctl-utility/.*
       - zuul.d/calicoctl-utility.yaml
