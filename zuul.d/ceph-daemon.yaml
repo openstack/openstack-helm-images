@@ -32,14 +32,12 @@
     parent: openstack-helm-images-build
     description: Build ceph-daemon images
     vars: &ceph-daemon_vars
-      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       docker_images:
         - context: ceph-daemon
           repository: openstackhelm/ceph-daemon
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
     files: &ceph-daemon_files
       - ceph-daemon/.*
       - zuul.d/ceph-daemon.yaml

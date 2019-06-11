@@ -32,14 +32,12 @@
     parent: openstack-helm-images-build
     description: Build ceph-cephfs-provisioner images
     vars: &ceph-cephfs-provisioner_vars
-      currentdate: "{{ ansible_date_time['date'].replace('-','') }}"
       docker_images:
         - context: ceph-cephfs-provisioner
           repository: openstackhelm/ceph-cephfs-provisioner
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
     files: &ceph-cephfs-provisioner_files
       - ceph-cephfs-provisioner/.*
       - zuul.d/ceph-cephfs-provisioner.yaml
