@@ -45,9 +45,14 @@
             - latest-debian
         - context: openvswitch
           repository: openstackhelm/openvswitch
-          dockerfile: Dockerfile.debian-dpdk
+          dockerfile: Dockerfile.ubuntu_bionic
           tags:
-            - latest-debian-dpdk
+            - latest-ubuntu_bionic
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu_bionic-dpdk
+          tags:
+            - latest-ubuntu_bionic-dpdk
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
