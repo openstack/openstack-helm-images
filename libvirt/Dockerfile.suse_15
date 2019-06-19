@@ -18,6 +18,7 @@ RUN set -ex ;\
       libvirt \
       python2-libvirt-python \
       qemu \
+      qemu-block-rbd \
       qemu-kvm \
       openvswitch ;\
     zypper ar "http://download.opensuse.org/repositories/Virtualization/openSUSE_Leap_15.0" Virtualization;\
