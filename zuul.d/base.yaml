@@ -56,6 +56,11 @@
     name: openstack-helm-images-build
     parent: build-docker-image
     abstract: true
+    # Minimum version required is 2.8.
+    # When default in zuul moves to 2.8, remove
+    # this line.
+    # See also: https://zuul-ci.org/docs/zuul/user/config.html#attr-job.ansible-version
+    ansible-version: 2.8
     description: |
       This job is building a docker image for
       OpenStack-Helm usage.
@@ -76,6 +81,7 @@
     name: openstack-helm-images-upload
     parent: upload-docker-image
     abstract: true
+    ansible-version: 2.8
     secrets:
       name: docker_credentials
       secret: openstack-helm-dockerhub
@@ -86,6 +92,7 @@
     name: openstack-helm-images-promote
     parent: promote-docker-image
     abstract: true
+    ansible-version: 2.8
     secrets:
       name: docker_credentials
       secret: openstack-helm-dockerhub
