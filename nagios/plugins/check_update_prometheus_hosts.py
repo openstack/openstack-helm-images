@@ -6,6 +6,9 @@ import os
 import signal
 import time
 
+import kubernetes.client
+import kubernetes.config
+
 NAGIOS_HOST_FORMAT = """
 define host {{
   use linux-server
@@ -29,13 +32,7 @@ NAGIOS_CRITICAL = 2
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Queries Prometheus and Keeps Nagios config Updated.')
-    parser.add_argument(
-        '--prometheus_api',
-        metavar='prometheus_api',
-        type=str,
-        required=True,
-        help='Prometheus query API with scheme, host and port')
+        description='Keeps Nagios config Updated.')
     parser.add_argument(
         '--update_seconds',
         metavar='update_seconds',
@@ -70,15 +67,16 @@ def main():
     args, unknown = parser.parse_known_args()
 
     if args.hosts:
-        print(get_nagios_hosts(args.prometheus_api))
+        node_list = get_kubernetes_node_list()
+        print(get_nagios_hosts(node_list))
     elif args.hostgroups:
-        print(get_nagios_hostgroups(args.prometheus_api))
+        node_list = get_kubernetes_node_list()
+        print(get_nagios_hostgroups_dictionary(node_list))
     elif args.object_file_loc:
         if args.d:
             while True:
                 try:
-                    update_config_file(
-                        args.prometheus_api, args.object_file_loc)
+                    update_config_file(args.object_file_loc)
                     time.sleep(args.update_seconds)
                 except Exception as e:
                     print("Error updating nagios config")
@@ -88,20 +86,29 @@ def main():
                 print("OK- Nagios host configuration already updated.")
                 sys.exit(NAGIOS_OK)
             try:
-                update_config_file(args.prometheus_api, args.object_file_loc)
+                update_config_file(args.object_file_loc)
             except Exception as e:
                 print("Error updating nagios config")
                 sys.exit(NAGIOS_CRITICAL)
             print("Nagios hosts have been successfully updated")
             sys.exit(NAGIOS_OK)
 
+def get_kubernetes_node_list():
+    kubernetes.config.load_incluster_config()
+    kube_api = kubernetes.client.CoreV1Api()
+    try:
+        node_list = kube_api.list_node(pretty='false', limit=100, timeout_seconds=60)
+    except ApiException as e:
+        print("Exception when calling CoreV1Api->list_node: %s\n" % e)
+    return node_list.items
 
-def update_config_file(prometheus_api, object_file_loc):
-    nagios_hosts = get_nagios_hosts(prometheus_api)
-    nagios_hostgroups = get_nagios_hostgroups(prometheus_api)
+def update_config_file(object_file_loc):
+    node_list = get_kubernetes_node_list()
+    nagios_hosts = get_nagios_hosts(node_list)
+    nagios_hostgroups = get_nagios_hostgroups(node_list)
 
     if not nagios_hosts:
-        print("no hosts discovered. Either prometheus is unreachable or is not collecting node metrics.")
+        print("No hosts discovered - Kubernetes CoreV1API->list_node resulted in empty list.")
         sys.exit(NAGIOS_CRITICAL)
 
     with open(object_file_loc, 'w+') as object_file:
@@ -122,10 +129,10 @@ def reload_nagios():
         sys.exit(NAGIOS_CRITICAL)
 
 
-def get_nagios_hostgroups(prometheus_api):
+def get_nagios_hostgroups(node_list):
     hostgroup_labels = set()
     for host, labels in get_nagios_hostgroups_dictionary(
-            prometheus_api).iteritems():
+            node_list).iteritems():
         hostgroup_labels.update(labels)
 
     nagios_hostgroups = []
@@ -137,66 +144,43 @@ def get_nagios_hostgroups(prometheus_api):
     return "\n".join(nagios_hostgroups)
 
 
-def get_nagios_hostgroups_dictionary(prometheus_api):
+def get_nagios_hostgroups_dictionary(node_list):
     nagios_hostgroups = {}
     try:
-        labels_json = query_prometheus(prometheus_api, 'kube_node_labels')
-        for label_dictionary in labels_json['data']['result']:
-            host_name = label_dictionary['metric']['node']
-            labels = set()
-            for key in label_dictionary['metric']:
-                if key.startswith('label_'):
-                    labels.add(key[6:])
-            nagios_hostgroups[host_name] = labels
+        for node in node_list:
+            node_name = node.metadata.name
+            node_labels = node.metadata.labels
+            host_group_labels = set()
+            for node_label in node_labels:
+                host_group_labels.add(node_label)
+            nagios_hostgroups[node_name] = host_group_labels
     except Exception as e:
-        print("Unable to query prometheus at {} to retrieve hosts".format(prometheus_api))
+        print("Unable to access Kubernetes node list")
         sys.exit(NAGIOS_CRITICAL)
 
     return nagios_hostgroups
 
 
-def get_nagios_hosts(prometheus_api):
+def get_nagios_hosts(node_list):
     nagios_hosts = []
     try:
-        unames_json = query_prometheus(prometheus_api, 'node_uname_info')
-        hostgroup_dictionary = get_nagios_hostgroups_dictionary(prometheus_api)
-        for uname in unames_json['data']['result']:
-            host_name = uname['metric']['nodename']
-            host_ip = uname['metric']['instance'].split(':')[0]
+        hostgroup_dictionary = get_nagios_hostgroups_dictionary(node_list)
+        for node in node_list:
+            host_name = node.metadata.name
+            for addr in node.status.addresses:
+                if addr.type == "InternalIP":
+                    host_ip = addr.address
             hostgroups = 'all,base-os'
             if hostgroup_dictionary[host_name]:
                 hostgroups = hostgroups + "," + \
                     ",".join(hostgroup_dictionary[host_name])
-                if hostgroups.find("promenade_genesis") != -1:
-                   hostgroups = hostgroups + ",prometheus-hosts"
             nagios_host_defn = NAGIOS_HOST_FORMAT.format(
                 host_name=host_name, host_ip=host_ip, hostgroups=hostgroups)
             nagios_hosts.append(nagios_host_defn)
-    except Exception as e:
-        print("Unable to query prometheus at {} to retrieve hosts".format(prometheus_api))
-        sys.exit(NAGIOS_CRITICAL)
+    except ApiException as e:
+        print("Exception when calling CoreV1Api->list_node: %s\n" % e)
 
     return "\n".join(nagios_hosts)
-
-
-def query_prometheus(prometheus_api, query):
-    url = "{}/api/v1/query".format(include_schema(prometheus_api))
-    params = {"query": query}
-    response = requests.get(
-        url,
-        headers={
-            "Accept": "application/json"},
-        params=params)
-    return response.json()
-
-
-def include_schema(prometheus_api):
-    if prometheus_api.startswith(
-            "http://") or prometheus_api.startswith("https://"):
-        return prometheus_api
-    else:
-        return "http://{}".format(prometheus_api)
-
 
 if __name__ == '__main__':
     sys.exit(main())
