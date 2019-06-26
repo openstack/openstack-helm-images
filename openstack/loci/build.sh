@@ -169,6 +169,8 @@ REGISTRY_URI=${REGISTRY_URI:-"172.17.0.1:5000/openstackhelm/"}
 VERSION=${VERSION:-"latest"}
 # The openstack branch to build, if no per project branch is given.
 OPENSTACK_VERSION=${OPENSTACK_VERSION:-"master"}
+# Sepcify OS distribution
+DISTRO=${DISTRO:-"ubuntu_xenial"}
 # extra build arguments for the base image. See loci's dockerfiles for
 # arguments that could be used for example.
 base_extra_build_args=${base_extra_build_args:-"--force-rm --pull --no-cache"}
@@ -177,7 +179,7 @@ default_project_extra_build_args=${default_project_extra_build_args:-"--force-rm
 #Log location
 LOG_PREFIX="/tmp/loci-log-"
 #Defaults for projects
-keystone_profiles=${keystone_profiles:-"'fluent apache ldap'"}
+keystone_profiles=${keystone_profiles:-"'fluent apache python-ldap'"}
 keystone_pip_packages=${keystone_pip_packages:-"'pycrypto python-openstackclient'"}
 heat_profiles=${heat_profiles:-"'fluent apache'"}
 heat_pip_packages=${heat_pip_packages:-"pycrypto"}
@@ -232,7 +234,7 @@ case ${BASE_IMAGE} in
         #Mark the need to build image from LOCI Dockerfiles
         BUILD_IMAGE="yes"
         #Makes sure the name of the distro is consistent with other OSH-images.
-        DISTRO="ubuntu_xenial"
+        DISTRO="ubuntu_bionic"
         ;;
     leap15)
         BUILD_IMAGE="yes"
@@ -248,7 +250,7 @@ case ${BASE_IMAGE} in
         ;;
     *)
         BUILD_IMAGE="no"
-        DISTRO="ubuntu_xenial"
+        DISTRO="${DISTRO}"
         ;;
 esac
 

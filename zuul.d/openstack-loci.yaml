@@ -17,35 +17,47 @@
     check:
       jobs:
         - openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
+        - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
     gate:
       jobs:
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic
     periodic:
       jobs:
         - openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
+        - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
+        - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
@@ -260,7 +272,125 @@
     vars: *build_master_xenial_images
     files: *loci-files
 
+# Bionic
+- job:
+    name: openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
+    # Inherits secrets and vars
+    parent: openstack-helm-images-build
+    description: Build master LOCI images for bionic
+    # Increase timeout due to many images to build
+    timeout: 5400
+    # This enables depends-on to work by using local repos
+    required-projects:
+      - openstack/loci
+    # Fork of standard playbook to build prep images first (reusing
+    # role) with a different zuul_role_dir, publish wheels on http server.
+    #  zuul_work_dir: "src/opendev.org/openstack/loci"
+    run: zuul.d/playbooks/build-loci.yml
+    vars: &build_master_bionic_images
+      branchname: "master"
+      shortbranchname: "master"
+      distroname: "ubuntu_bionic"
+      from: "docker.io/ubuntu:18.04"
+      python3: "yes"
+      #172.17.0.1 is default docker0 ip.
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      prep_docker_images:
+        - context: "."
+          repository: openstackhelm/requirements
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='requirements'"
+            - "PROJECT_REF={{ branchname }}"
+        - <<: *requirements_project
+      # For keystone replace ldap by python-ldap
+      docker_images:
+        - context: "."
+          repository: openstackhelm/keystone
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='keystone'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache python-ldap {{ shortbranchname }}'"
+            - "PIP_PACKAGES='python-openstackclient'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
 
+- job:
+    name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
+    description: Build and upload master LOCI images for bionic
+    # Inherits secrets and vars
+    parent: openstack-helm-images-upload
+    # Increase timeout due to many images to build
+    timeout: 5400
+    # This enables depends-on to work by using local repos
+    required-projects:
+      - openstack/loci
+    run: zuul.d/playbooks/build-loci.yml
+    vars: *build_master_bionic_images
+    files: *loci-files
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
+    parent: openstack-helm-images-promote
+    description: Promote previously published loci bionic master images
+    vars: *build_master_bionic_images
+    files: *loci-files
+
+# Rocky-bionic
+- job:
+    name: openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
+    description: Build rocky LOCI images for bionic
+    vars: &build_rocky_bionic_images
+      <<: *build_master_bionic_images
+      branchname: "stable/rocky"
+      shortbranchname: "rocky"
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
+    description: Build and upload rocky LOCI images for bionic
+    vars: *build_rocky_bionic_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-rocky-ubuntu_bionic
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
+    description: Promote previously published loci bionic rocky images
+    vars: *build_rocky_bionic_images
+
+# Stein-bionic
+- job:
+    name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
+    parent: openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
+    description: Build stein LOCI images for bionic
+    vars: &build_stein_bionic_images
+      <<: *build_master_bionic_images
+      branchname: "stable/stein"
+      shortbranchname: "stein"
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+    parent: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
+    description: Build and upload stein LOCI images for bionic
+    vars: *build_stein_bionic_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic
+    parent: openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
+    description: Promote previously published loci bionic stein images
+    vars: *build_stein_bionic_images
+
+# Rocky-xenial
 - job:
     name: openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
     parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
@@ -332,7 +462,7 @@
     description: "Promote previously published loci leap 15 rocky images"
     vars: *build_rocky_leap15_images
 
-# Queens
+# Queens-xenial
 - job:
     name: openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
     parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
@@ -354,7 +484,7 @@
     description: Promote a previously published loci xenial queens images
     vars: *build_queens_xenial_images
 
-# Pike
+# Pike-xenial
 - job:
     name: openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
     parent: openstack-helm-images-build-openstack-loci-master-ubuntu_xenial
@@ -376,7 +506,7 @@
     description: Promote a previously published loci xenial pike images
     vars: *build_pike_xenial_images
 
-# Ocata
+# Ocata-xenial
 # Ocata requires pycrypto installed for keystonemiddleware memcache support,
 # so we can't reuse Master profile.
 - job:
