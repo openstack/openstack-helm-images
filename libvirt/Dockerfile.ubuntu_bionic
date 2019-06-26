@@ -1,8 +1,8 @@
-ARG FROM=docker.io/ubuntu:xenial
+ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 LABEL maintainer="pete.birley@att.com"
 
-ARG UBUNTU_RELEASE=xenial
+ARG UBUNTU_RELEASE=bionic
 ARG CEPH_RELEASE=mimic
 ARG PROJECT=nova
 ARG UID=42424
@@ -14,5 +14,10 @@ ARG CEPH_KEY=http://download.ceph.com/keys/release.asc
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 COPY ./ubuntu-install-libvirt.sh /tmp/ubuntu-install-libvirt.sh
 RUN set -ex ;\
+    export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get upgrade -y ;\
+    apt-get install --no-install-recommends -y \
+      gnupg ;\
     /tmp/ubuntu-install-libvirt.sh ;\
     rm -rf /tmp/*
