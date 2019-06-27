@@ -1,0 +1,9 @@
+FROM docker.io/ubuntu:bionic
+LABEL maintainer="cheng1.li@intel.com"
+
+RUN set -ex;\
+    apt-get update; \
+    apt-get install -y openvswitch-switch-dpdk; \
+    update-alternatives --set ovs-vswitchd /usr/lib/openvswitch-switch-dpdk/ovs-vswitchd-dpdk; \
+    rm -rf /var/lib/apt/lists/*
+
