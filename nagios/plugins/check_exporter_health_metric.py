@@ -43,7 +43,7 @@ def main():
                         required=True,
                         help='Value to alert critical')
     parser.add_argument('--warning', metavar='--warning', type=int,
-                        required=False,
+                        required=True,
                         help='Value to alert warning')
 
     args = parser.parse_args()
@@ -54,18 +54,20 @@ def main():
             "Unknown: unable to query metrics. {}".format(
                 ",".join(error_messages)))
         sys.exit(STATE_UNKNOWN)
-
-    criticalMessages = []
-    warningMessages = []
-    for key, value in metrics.iteritems():
-        if value == args.critical:
-            criticalMessages.append(
-                "Critical: {metric_name} metric is a critical value of {metric_value}({detail})".format(
-                    metric_name=args.health_metric, metric_value=value, detail=key))
-        elif args.warning and value == args.warning:
-            warningMessages.append(
-                "Warning: {metric_name} metric is a warning value of {metric_value}({detail})".format(
-                    metric_name=args.health_metric, metric_value=value, detail=key))
+    if metrics:
+        criticalMessages = []
+        warningMessages = []
+        for key, value in metrics.iteritems():
+            if value == args.critical:
+                criticalMessages.append("Critical: {metric_name} metric is a critical value of {metric_value}({detail})".format(
+                                         metric_name=args.health_metric, metric_value=value, detail=key))
+            elif value == args.warning:
+                warningMessages.append("Warning: {metric_name} metric is a warning value of {metric_value}({detail})".format(
+                                         metric_name=args.health_metric, metric_value=value, detail=key))
+    else:
+        print("Unknown: Query response for {metric_name} has Null value({detail})".format(
+                     metric_name=args.health_metric, detail=str(metrics)))
+        sys.exit(STATE_UNKNOWN)
 
     if criticalMessages:
         print(",".join(criticalMessages))
