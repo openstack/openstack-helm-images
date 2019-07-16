@@ -1,7 +1,7 @@
 ARG FROM=docker.io/ubuntu:xenial
 FROM ${FROM}
 
-ENV VERSION=4.4.1
+ENV VERSION=4.4.3
 ENV NAGIOSADMIN_EMAIL nagios@localhost
 ENV NAGIOS_HOME /opt/nagios
 ENV NAGIOS_PLUGIN_DIR /usr/lib/nagios/plugins
