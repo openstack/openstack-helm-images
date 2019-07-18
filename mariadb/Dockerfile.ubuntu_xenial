@@ -19,4 +19,5 @@ RUN set -ex ;\
        /var/lib/apt/lists/* \
        /var/log/* \
        /tmp/* \
-       /var/tmp/*
+       /var/tmp/* ;\
+    usermod -s /bin/false mysql
