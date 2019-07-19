@@ -160,6 +160,7 @@
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent linuxbridge openvswitch'"
+            - "DIST_PACKAGES='jq'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
         - &neutron_sriov_project
@@ -593,6 +594,7 @@
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent linuxbridge openvswitch'"
+            - "DIST_PACKAGES='jq'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
