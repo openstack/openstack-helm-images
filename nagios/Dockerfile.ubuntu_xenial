@@ -7,6 +7,8 @@ ENV NAGIOS_HOME /opt/nagios
 ENV NAGIOS_PLUGIN_DIR /usr/lib/nagios/plugins
 ENV APACHE_FRONTEND_PORT 8000
 ENV APACHE_FRONTEND_SECURE_PORT 8443
+ENV ES_VERSION=5.5.3
+ENV ES_DSL_VERSION=5.4.0
 
 RUN apt-get -o Acquire::ForceIPv4=true -y update \
         && apt-get -y install curl apache2 checkinstall unzip libapache2-mod-php snmp snmpd snmp-mibs-downloader jq python-requests \
@@ -18,6 +20,8 @@ RUN pip --no-cache-dir install --upgrade pip \
         && hash -r \
         && pip --no-cache-dir install --upgrade setuptools \
         && pip --no-cache-dir install --upgrade kubernetes \
+        && pip --no-cache-dir install --upgrade elasticsearch==${ES_VERSION} \
+        && pip --no-cache-dir install --upgrade elasticsearch-dsl==${ES_DSL_VERSION} \
         && pip uninstall -y urllib3 \
         && pip --no-cache-dir install urllib3==1.23
 
