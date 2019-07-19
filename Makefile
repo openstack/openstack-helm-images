@@ -47,6 +47,20 @@ ifeq ($(OS_RELEASE), ubuntu_xenial)
 	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
+else ifeq ($(OS_RELEASE), ubuntu_bionic)
+	IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}-${OS_RELEASE}
+	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
+	--network host \
+	$(EXTRA_BUILD_ARGS) \
+	-t $(IMAGE) \
+	.
+else ifeq ($(OS_RELEASE), ubuntu_bionic-dpdk)
+	IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}-${OS_RELEASE}
+	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
+	--network host \
+	$(EXTRA_BUILD_ARGS) \
+	-t $(IMAGE) \
+	.
 else ifeq ($(OS_RELEASE), suse_15)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
