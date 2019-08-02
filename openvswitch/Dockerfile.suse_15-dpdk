@@ -1,0 +1,10 @@
+ARG FROM=docker.io/opensuse/leap:15.0
+FROM ${FROM}
+LABEL maintainers=mbuil@suse.com
+
+RUN set -ex ;\
+    zypper refresh ;\
+    zypper up -y ;\
+    zypper install -y bash \
+    openvswitch dpdk;\
+    zypper clean --all
