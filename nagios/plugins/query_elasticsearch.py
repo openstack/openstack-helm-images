@@ -34,7 +34,10 @@ from nagiosutil import NagiosUtil
 
 def check_range(value):
     """validate range"""
-    minutes = int(value)
+    try:
+        minutes = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError('%s is an invalid data type, Integer value expected.' % value)
     if minutes < 1 or minutes > 1440:
         raise argparse.ArgumentTypeError('%s is an invalid search time range.'
                                          ' Valid values are between 1 and 1440'
@@ -44,7 +47,10 @@ def check_range(value):
 
 def check_threshold(value):
     """validate threshold"""
-    threshold = int(value)
+    try:
+        threshold = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError('%s is an invalid data type, Integer value expected.' % value)
     if threshold < 1:
         raise argparse.ArgumentTypeError('%s is an invalid threshold'
                                          ' Valid threshold is > 0' % value)
@@ -109,7 +115,6 @@ def get_index_name(args, lt_time, gte_time):
         es_index = log_lt + ',' + log_gte
     return es_index
 
-
 def evaluate_results(response, args):
     """evaluate the results of the query against the threshold to
       determine the nagios service status"""
@@ -125,16 +130,18 @@ def evaluate_results(response, args):
         pprint(response.json())
 
     results = response.json()
-    hits = results['hits']['total']
-
-    message = ('Found %s >= %s(threshold) occurrences'
-               ' within the last %s minute(s). %s')
-
-    if hits >= args.critical_threshold:
-        NagiosUtil.service_critical(message % (str(hits), args.critical_threshold,
-                                               args.range, args.critical_msg))
+    hits = len(results['hits']['hits'])
+    crit_message = ('Found %s >= %s(threshold) occurrences within the last %s minute(s). %s')
+    message = ('Found %s >= %s(threshold) occurrences within the last %s minute(s).')
+    ok_message = ('Found %s [threshold: %s] occurrences within the last %s minute(s).')
+    if hits > args.critical_threshold:
+        if args.simple_query_fields:
+            allmsgs = ', '.join([m["_source"][args.simple_query_fields] for m in results['hits']['hits']])
+            NagiosUtil.service_critical(crit_message % (str(hits), args.critical_threshold, args.range, allmsgs))
+        else:
+            NagiosUtil.service_critical(message % (str(hits), args.critical_threshold, args.range))
     else:
-        NagiosUtil.service_ok(args.ok_msg)
+        NagiosUtil.service_ok(ok_message % (str(hits), args.critical_threshold, args.range))
 
 
 def main():
