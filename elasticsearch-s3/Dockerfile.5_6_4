@@ -1,3 +1,8 @@
 FROM docker.io/elasticsearch:5.6.4
 
+RUN apt-get -o Acquire::ForceIPv4=true -y update \
+        && apt-get -y install jq \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
+
 RUN bin/elasticsearch-plugin install --batch repository-s3
