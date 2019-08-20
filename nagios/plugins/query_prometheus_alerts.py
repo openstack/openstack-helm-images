@@ -82,16 +82,24 @@ def main():
                 str(prometheus_response)))
         sys.exit(STATE_UNKNOWN)
 
-    firingScalarMessages = []
+    firingScalarMessages_critical = []
+    firingScalarMessages_warning = []
     for metric in prometheus_response['data']['result']:
         alertstate = metric['metric']['alertstate']
+        severity = metric['metric']['severity']
         message = args.msg_format.format(**metric['metric'])
         if alertstate == 'firing':
-            firingScalarMessages.append(message)
+           if severity == 'page':
+              firingScalarMessages_critical.append(message)
+           if severity == 'warning':
+              firingScalarMessages_warning.append(message)
 
-    if firingScalarMessages:
-        print(",".join(firingScalarMessages))
+    if firingScalarMessages_critical:
+        print(",".join(firingScalarMessages_critical))
         sys.exit(STATE_CRITICAL)
+    elif firingScalarMessages_warning:
+        print(",".join(firingScalarMessages_warning))
+        sys.exit(STATE_WARNING)
     else:
         if args.metrics_csv:
             metrics_available, error_messages = check_prom_metrics_available(
