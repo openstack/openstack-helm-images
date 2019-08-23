@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 set -ex
 export DEBIAN_FRONTEND=noninteractive ;\
 apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
