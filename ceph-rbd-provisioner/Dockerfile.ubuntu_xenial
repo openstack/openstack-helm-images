@@ -1,5 +1,5 @@
-ARG baseimg=docker.io/ubuntu:xenial
-FROM ${baseimg}
+ARG FROM=docker.io/ubuntu:xenial
+FROM ${FROM}
 
 ARG CEPH_RELEASE=mimic
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-mimic/xenial/

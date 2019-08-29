@@ -1,4 +1,5 @@
-FROM opensuse/leap:15.0
+ARG FROM=opensuse/leap:15.0
+FROM ${FROM}
 LABEL maintainer="cloud-devel@suse.com"
 
 ARG VERSION=Master

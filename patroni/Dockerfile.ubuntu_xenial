@@ -1,4 +1,5 @@
-FROM postgres:9.5
+ARG FROM=postgres:9.5
+FROM ${FROM}
 MAINTAINER Alexander Kukushkin <alexander.kukushkin@zalando.de>
 
 ARG PATRONI_VERSION

@@ -1,4 +1,5 @@
-FROM k8s.gcr.io/debian-iptables-amd64:v10
+ARG FROM=k8s.gcr.io/debian-iptables-amd64:v10
+FROM ${FROM}
 LABEL maintainer="pete.birley@att.com"
 
 ARG OVS_VERSION=2.8.1

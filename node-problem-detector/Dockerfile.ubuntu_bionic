@@ -1,4 +1,5 @@
-FROM docker.io/ubuntu:bionic
+ARG FROM=docker.io/ubuntu:bionic
+FROM ${FROM}
 
 ARG NPD_VERSION="v0.8.2"
 ARG NPD_SRC_URL="https://github.com/kubernetes/node-problem-detector/releases/download/${NPD_VERSION}"

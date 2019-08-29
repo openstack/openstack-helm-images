@@ -10,7 +10,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM docker.io/ubuntu:bionic
+ARG FROM=docker.io/ubuntu:bionic
+FROM ${FROM}
 MAINTAINER andrii.ostapenko@att.com
 
 ARG UBUNTU_URL=http://archive.ubuntu.com/ubuntu/

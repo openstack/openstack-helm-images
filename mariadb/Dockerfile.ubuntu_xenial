@@ -1,5 +1,6 @@
-FROM docker.io/mariadb@sha256:b3116f425f51353e2ba71b04647977b035c2c578d276e2d4285bd2798e8199ae
-#FROM mariadb:10.4.12
+# mariadb:10.4.12
+ARG FROM=docker.io/mariadb@sha256:b3116f425f51353e2ba71b04647977b035c2c578d276e2d4285bd2798e8199ae
+FROM ${FROM}
 
 RUN set -ex ;\
     apt-get update ;\

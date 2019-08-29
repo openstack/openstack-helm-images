@@ -1,4 +1,6 @@
-FROM opensuse/leap:15.1
+ARG FROM=opensuse/leap:15.1
+FROM ${FROM}
+
 LABEL maintainer="containers@suse.com"
 
 ARG PROJECT=nova

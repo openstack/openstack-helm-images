@@ -1,4 +1,5 @@
-FROM centos:7
+ARG FROM=centos:7
+FROM ${FROM}
 LABEL maintainer="pete.birley@att.com"
 
 ARG PROJECT=nova
