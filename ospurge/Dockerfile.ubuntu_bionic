@@ -1,0 +1,20 @@
+ARG FROM=docker.io/ubuntu:bionic
+FROM ${FROM}
+
+LABEL org.opencontainers.image.authors='Openstack-Helm Authors'
+LABEL org.opencontainers.image.url='https://git.openstack.com/openstack/openstack-helm-images'
+LABEL org.opencontainers.image.documentation='https://git.openstack.com/openstack/openstack-helm-images/blob/master/README_MAKEFILE'
+LABEL org.opencontainers.image.source='https://git.openstack.com/openstack/openstack-helm-images'
+LABEL org.opencontainers.image.vendor='Openstack-Helm Authors'
+LABEL org.opencontainers.image.licenses='BSD-3-Clause'
+
+RUN set -xe \
+    && apt-get update && apt-get dist-upgrade -y \
+    && apt-get install python3 -y \
+    && apt-get install python3-pip -y
+
+RUN pip3 install ospurge \
+    && pip3 install python-openstackclient
+
+WORKDIR /tmp
+ENTRYPOINT ["/bin/sh", "-c"]

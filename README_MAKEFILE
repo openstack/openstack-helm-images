@@ -14,4 +14,6 @@ eg:
 
   make IMAGE_NAME=calicoctl-utility OS_RELEASE=alpine
 
+  make IMAGE_NAME=ospurge OS_RELEASE=ubuntu_bionic
+
 Note: calicoctl-utlity image only supports alpine OS.

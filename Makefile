@@ -34,6 +34,10 @@ ifeq ($(IMAGE_NAME), calicoctl-utility)
     IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${CALICOCTL_VERSION}-${IMAGE_TAG}
 endif
 
+ifeq ($(IMAGE_NAME), ospurge)
+    IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}
+endif
+
 # Build Docker image for this project
 .PHONY: images
 images: build_$(IMAGE_NAME)
@@ -72,6 +76,12 @@ else ifeq ($(OS_RELEASE), alpine)
 	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
+else ifeq ($(OS_RELEASE), ubuntu_bionic)
+        docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
+        --network host \
+        $(EXTRA_BUILD_ARGS) \
+        -t $(IMAGE) \
+        .
 else
 	docker build -t $(IMAGE) --network=host $(EXTRA_BUILD_ARGS) -f $(IMAGE_NAME)/Dockerfile.simple \
 	.
