@@ -255,6 +255,18 @@
             - "DIST_PACKAGES='ethtool lshw iproute2'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
+        - &placement_project
+          context: "."
+          repository: openstackhelm/placement
+          build_args:
+            - "FROM='{{ from }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='placement'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='apache'"
+            - "PIP_PACKAGES='httplib2 pycrypto'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -310,6 +322,7 @@
         - <<: *horizon_project
         - <<: *heat_project
         - <<: *barbican_project
+        - <<: *placement_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
