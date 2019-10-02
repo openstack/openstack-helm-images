@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2017 The Openstack-Helm Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,7 +59,7 @@ class HypervisorStats(OSBase):
                     'metrics': {'free_vcpus': 0},
                 }
                 nova_aggregates[agg['name']]['metrics'].update(
-                    {v: 0 for v in self.VALUE_MAP.values()}
+                     {v: 0 for v in list(self.VALUE_MAP.values())}
                 )
 
         r = self.osclient.get('nova', 'os-hypervisors/detail')
@@ -68,12 +67,12 @@ class HypervisorStats(OSBase):
             logger.warning("Could not get hypervisor statistics")
             return
 
-        total_stats = {v: 0 for v in self.VALUE_MAP.values()}
+        total_stats = {v: 0 for v in list(self.VALUE_MAP.values())}
         total_stats['free_vcpus'] = 0
         hypervisor_stats = r.json().get('hypervisors', [])
         for stats in hypervisor_stats:
             host = stats['hypervisor_hostname']
-            for k, v in self.VALUE_MAP.iteritems():
+            for k, v in self.VALUE_MAP.items():
                 m_val = stats.get(k, 0)
                 cache_stats.append({
                     'stat_name': v,
@@ -81,7 +80,7 @@ class HypervisorStats(OSBase):
                     'host': host,
                 })
                 total_stats[v] += m_val
-                for agg in nova_aggregates.keys():
+                for agg in list(nova_aggregates.keys()):
                     agg_hosts = nova_aggregates[agg]['hosts']
                     if host in agg_hosts:
                         nova_aggregates[agg]['metrics'][v] += m_val
@@ -94,7 +93,7 @@ class HypervisorStats(OSBase):
                 'host': host,
             })
             total_stats['free_vcpus'] += free
-            for agg in nova_aggregates.keys():
+            for agg in list(nova_aggregates.keys()):
                 agg_hosts = nova_aggregates[agg]['hosts']
                 if host in agg_hosts:
                     free = ((int(self.extra_config['cpu_ratio'] *
@@ -103,7 +102,7 @@ class HypervisorStats(OSBase):
                     nova_aggregates[agg]['metrics']['free_vcpus'] += free
 
         # Dispatch the aggregate metrics
-        for agg in nova_aggregates.keys():
+        for agg in list(nova_aggregates.keys()):
             agg_id = nova_aggregates[agg]['id']
             agg_total_free_ram = (
                 nova_aggregates[agg]['metrics']['free_ram_MB'] +
@@ -114,7 +113,7 @@ class HypervisorStats(OSBase):
                     (100.0 * nova_aggregates[agg]['metrics']['free_ram_MB']) /
                     agg_total_free_ram,
                     2)
-            for k, v in nova_aggregates[agg]['metrics'].iteritems():
+            for k, v in nova_aggregates[agg]['metrics'].items():
                 cache_stats.append({
                     'stat_name': 'aggregate_{}'.format(k),
                     'stat_value': v,
@@ -122,7 +121,7 @@ class HypervisorStats(OSBase):
                     'aggregate_id': agg_id,
                 })
         # Dispatch the global metrics
-        for k, v in total_stats.iteritems():
+        for k, v in total_stats.items():
             cache_stats.append({
                 'stat_name': 'total_{}'.format(k),
                 'stat_value': v,
