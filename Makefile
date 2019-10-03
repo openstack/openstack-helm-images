@@ -90,12 +90,6 @@ else ifeq ($(OS_RELEASE), alpine)
 	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
-else ifeq ($(OS_RELEASE), ubuntu_bionic)
-        docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
-        --network host \
-        $(EXTRA_BUILD_ARGS) \
-        -t $(IMAGE) \
-        .
 else
 	docker build -t $(IMAGE) --network=host $(EXTRA_BUILD_ARGS) -f $(IMAGE_NAME)/Dockerfile.simple \
 	.
