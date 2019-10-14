@@ -36,10 +36,10 @@
       docker_images:
         - context: osh-selenium
           repository: openstackhelm/osh-selenium
-          dockerfile: Dockerfile.ubuntu_xenial
+          dockerfile: Dockerfile.ubuntu_bionic
           tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
         - context: osh-selenium
           repository: openstackhelm/osh-selenium
           dockerfile: Dockerfile.opensuse_15
