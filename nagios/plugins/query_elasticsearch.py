@@ -99,6 +99,8 @@ def setup_argparse(parser):
     parser.add_argument('--match', type=check_match, help=match_help)
     parser.add_argument('--range', type=check_range, default=5,
                         help=range_help)
+    parser.add_argument( '--timeout', metavar='timeout', type=int, default=30,
+                        required=False, help='Number of seconds to wait for response.')
     parser.add_argument('--usr')
     parser.add_argument('--pwd')
     parser.add_argument('--debug', action='store_true')
@@ -224,12 +226,14 @@ def main():
 
     try:
         if args.usr and args.pwd:
-            response = requests.post(url, data=json.dumps(data),
+            response = requests.post(url, data=json.dumps(data), timeout=args.timeout,
                                      headers={"Content-Type": "application/json"},
                                      auth=(args.usr, args.pwd))
         else:
-            response = requests.post(url, data=json.dumps(data),
+            response = requests.post(url, data=json.dumps(data), timeout=args.timeout,
                                      headers={"Content-Type": "application/json"})
+    except requests.exceptions.Timeout as con_ex:
+        NagiosUtil.service_unknown('Elasticsearch connection timed out ' + str(con_ex))
     except requests.exceptions.RequestException as req_ex:
         NagiosUtil.service_unknown('Unexpected Error Occurred. ' + str(req_ex))
 
