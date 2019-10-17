@@ -66,11 +66,18 @@ def main():
         type=str,
         required=False,
         help='Check if metrics are available, raise unknown if not available. example: metric1,metric2')
+    parser.add_argument(
+        '--timeout',
+        metavar='timeout',
+        type=int,
+        default=20,
+        required=False,
+        help='Number of seconds to wait for response.')
 
     args = parser.parse_args()
 
     prometheus_response, error_messages = query_prometheus(
-        args.prometheus_api, args.alertname, args.labels_csv)
+        args.prometheus_api, args.alertname, args.labels_csv, args.timeout)
     if error_messages:
         print(
             "Unknown: unable to query prometheus alerts. {}".format(
@@ -103,7 +110,7 @@ def main():
     else:
         if args.metrics_csv:
             metrics_available, error_messages = check_prom_metrics_available(
-                args.prometheus_api, args.metrics_csv.split(","), args.labels_csv)
+                args.prometheus_api, args.metrics_csv.split(","), args.labels_csv, args.timeout)
             if not metrics_available and not error_messages:
                 print(
                     "UNKNOWN: no metrics available to evaluate alert. Please ensure following metrics are flowing to the system: {}".format(
@@ -124,7 +131,7 @@ def main():
         sys.exit(STATE_OK)
 
 
-def query_prometheus(prometheus_api, alertname, labels_csv):
+def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
     error_messages = []
     response_json = dict()
     try:
@@ -136,17 +143,20 @@ def query_prometheus(prometheus_api, alertname, labels_csv):
         response = requests.get(
             include_schema(prometheus_api) +
             "/api/v1/query",
-            params=query)
+            params=query, timeout=timeout)
         response_json = response.json()
+    except requests.exceptions.Timeout:
+        error_messages.append(
+            "ERROR while invoking prometheus api, Connection timed out, the maximum timeout value of {} seconds".format(timeout))
     except Exception as e:
         error_messages.append(
-            "ERROR invoking prometheus api {}".format(
+            "ERROR while invoking prometheus api {}".format(
                 str(e)))
 
     return response_json, error_messages
 
 
-def check_prom_metrics_available(prometheus_api, metrics, labels_csv):
+def check_prom_metrics_available(prometheus_api, metrics, labels_csv, timeout):
     error_messages = []
     metrics_available = False
     try:
@@ -164,16 +174,19 @@ def check_prom_metrics_available(prometheus_api, metrics, labels_csv):
         response = requests.get(
             include_schema(prometheus_api) +
             "/api/v1/query",
-            params=query)
+            params=query, timeout=timeout)
         response_json = response.json()
         if response_json['data']['result']:
             if response_json['data']['result'][0]['value'][1] == "1":
                 metrics_available = False
             else:
                 metrics_available = True
+    except requests.exceptions.Timeout:
+        error_messages.append(
+            "ERROR while invoking prometheus api, Connection timed out, the maximum timeout value of {} seconds".format(timeout))
     except Exception as e:
         error_messages.append(
-            "ERROR invoking prometheus api {}".format(
+            "ERROR while invoking prometheus api {}".format(
                 str(e)))
 
     return metrics_available, error_messages
