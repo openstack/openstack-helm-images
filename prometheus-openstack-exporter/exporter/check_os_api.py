@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2017 The Openstack-Helm Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +14,7 @@
 
 from base import OSBase
 
-from urlparse import urlparse
+from urllib.parse import urlparse
 from prometheus_client import CollectorRegistry, generate_latest, Gauge
 import logging
 logging.basicConfig(

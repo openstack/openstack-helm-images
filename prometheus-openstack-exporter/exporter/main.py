@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright 2017 The Openstack-Helm Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,11 @@
 import argparse
 import yaml
 import os
-import urlparse
-from BaseHTTPServer import BaseHTTPRequestHandler
-from BaseHTTPServer import HTTPServer
-from SocketServer import ForkingMixIn
+import urllib.parse
+
+from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer
+from socketserver import ForkingMixIn
 from prometheus_client import CONTENT_TYPE_LATEST
 
 from osclient import OSClient
@@ -48,9 +49,9 @@ class OpenstackExporterHandler(BaseHTTPRequestHandler):
         BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
 
     def do_GET(self):
-        url = urlparse.urlparse(self.path)
+        url = urllib.parse.urlparse(self.path)
         if url.path == '/metrics':
-            output = ''
+            output = b''
             for collector in collectors:
                 try:
                     stats = collector.get_stats()
