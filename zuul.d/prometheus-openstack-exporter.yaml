@@ -38,8 +38,8 @@
           repository: openstackhelm/prometheus-openstack-exporter
           dockerfile: Dockerfile.ubuntu_bionic
           tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
     files: &prometheus-openstack-exporter_files
       - prometheus-openstack-exporter/.*
       - zuul.d/prometheus-openstack-exporter.yaml
