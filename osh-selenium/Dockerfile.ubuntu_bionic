@@ -1,9 +1,9 @@
-FROM docker.io/ubuntu:xenial
+FROM docker.io/ubuntu:bionic
 
 RUN apt-get -y update \
-        && apt-get install -y python-pip unzip wget
-
-RUN /usr/bin/pip install selenium
+        && apt-get install --no-install-recommends -y python3 python3-pip unzip wget gnupg \
+        && python3 -m pip install --upgrade pip \
+        && python3 -m pip install selenium
 
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
         && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
@@ -11,6 +11,6 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
         && unzip /tmp/chromedriver_linux64.zip -d /etc/selenium
 
 RUN apt-get -y update \
-        && apt-get install -y google-chrome-stable \
+        && apt-get install --no-install-recommends -y google-chrome-stable \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
