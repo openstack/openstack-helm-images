@@ -3,7 +3,7 @@ FROM ${FROM}
 
 ARG DISTRO_CODENAME='xenial'
 
-ARG KUBE_VERSION=v1.13.4
+ARG KUBE_VERSION=v1.16.2
 ARG CEPH_RELEASE=mimic
 
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-mimic/${DISTRO_CODENAME}/
