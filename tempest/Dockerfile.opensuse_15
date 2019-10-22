@@ -13,8 +13,8 @@ RUN set -ex ;\
     zypper --non-interactive refresh ;\
     zypper --non-interactive up -y ;\
     zypper --non-interactive install -y openstack-tempest \
-                                        python-cinder-tempest-plugin \
-                                        python-heat-tempest-plugin \
-                                        python-keystone-tempest-plugin \
-                                        python-neutron-tempest-plugin ;\
+                                        python3-cinder-tempest-plugin \
+                                        python3-heat-tempest-plugin \
+                                        python3-keystone-tempest-plugin \
+                                        python3-neutron-tempest-plugin ;\
     zypper --non-interactive clean -a

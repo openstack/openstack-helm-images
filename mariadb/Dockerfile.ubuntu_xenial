@@ -5,11 +5,11 @@ RUN set -ex ;\
     apt-get update ;\
     apt-get upgrade -y ;\
     apt-get install -y --no-install-recommends \
-        python-pip ;\
-    pip --no-cache-dir install --upgrade pip ;\
+        python3-pip ;\
+    pip3 --no-cache-dir install --upgrade pip ;\
     hash -r ;\
-    pip --no-cache-dir install --upgrade setuptools ;\
-    pip --no-cache-dir install --upgrade \
+    pip3 --no-cache-dir install --upgrade setuptools ;\
+    pip3 --no-cache-dir install --upgrade \
       configparser \
       iso8601 \
       kubernetes ;\
