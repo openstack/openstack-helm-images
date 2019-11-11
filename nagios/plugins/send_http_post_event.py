@@ -95,6 +95,12 @@ parser.add_argument(
     type=str,
     required=False,
     help='secondary REST API with scheme, host, port, api path to POST event to')
+parser.add_argument(
+    '--timeout',
+    type=int,
+    default=20,
+    required=False,
+    help='timeout in seconds, default 20s')
 
 args = parser.parse_args()
 
@@ -123,7 +129,7 @@ try:
     requests.post(
         args.primary_url,
         data=json.dumps(payload),
-        timeout=0.0000001,
+        timeout=args.timeout,
         verify=False)
 except Exception as e:
     pass
@@ -133,7 +139,7 @@ if args.secondary_url:
         requests.post(
             args.secondary_url,
             data=json.dumps(payload),
-            timeout=0.0000001,
+            timeout=args.timeout,
             verify=False)
     except Exception as e:
         pass
