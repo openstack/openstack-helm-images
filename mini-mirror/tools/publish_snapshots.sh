@@ -61,7 +61,7 @@ for source_prefix in /opt/sources/*; do
           -filter-with-deps \
           "${name}" "${repo}" "${dist}" "${component}"
 
-      aptly mirror update -config="${conf}" "${name}"
+      aptly mirror update -config="${conf}" -max-tries=3 "${name}"
       aptly snapshot create -config="${conf}" "${name}" from mirror "${name}"
     done
 
