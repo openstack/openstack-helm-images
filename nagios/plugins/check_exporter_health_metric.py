@@ -13,13 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # Examples:
-# /usr/lib/nagios/plugins/check_exporter_health_metric.py --exporter_api 172.17.0.1:9100/metrics --health_metric go_info --critical 2 --warning 1
+# /usr/lib/nagios/plugins/check_exporter_health_metric.py \
+#   --exporter_namespace "ceph"  \
+#   --label_selector "component=manager" \
+#   --health_metric "ceph_health_status" \
+#   --critical 2 \
+#   --warning 1
 # Output:
-# Warning: go_info metric is a warning value of 1(go_info{version="go1.9.1"})
+# OK: ceph_health_status metric has a OK value({u'ceph_health_status': 0.0})
+
 import argparse
 import sys
 import requests
 import re
+
+import kubernetes.client
+from kubernetes.client.rest import ApiException
+import kubernetes.config
 
 STATE_OK = 0
 STATE_WARNING = 1
@@ -31,11 +41,17 @@ def main():
     parser = argparse.ArgumentParser(
         description='Nagios plugin to query prometheus exporter and monitor metrics')
     parser.add_argument(
-        '--exporter_api',
-        metavar='--exporter_api',
+        '--exporter_namespace',
+        metavar='--exporter_namespace',
         type=str,
         required=True,
-        help='exporter location with scheme and port')
+        help='exporter endpoint namespace')
+    parser.add_argument(
+        '--label_selector',
+        metavar='--label_selector',
+        type=str,
+        required=True,
+        help='exporter endpoint label selector(s)')
     parser.add_argument('--health_metric', metavar='--health_metric', type=str,
                         required=False, default="health_status",
                         help='Name of health metric')
@@ -48,7 +64,7 @@ def main():
 
     args = parser.parse_args()
     metrics, error_messages = query_exporter_metric(
-        args.exporter_api, args.health_metric)
+        args.exporter_namespace, args.label_selector, args.health_metric)
     if error_messages:
         print(
             "Unknown: unable to query metrics. {}".format(
@@ -81,11 +97,12 @@ def main():
         sys.exit(STATE_OK)
 
 
-def query_exporter_metric(exporter_api, metric_name):
+def query_exporter_metric(exporter_namespace, label_selector, metric_name):
+    exporter_endpoint = find_active_endpoint(exporter_namespace, label_selector)
     error_messages = []
     metrics = dict()
     try:
-        response = requests.get(include_schema(exporter_api), verify=False)  # nosec
+        response = requests.get(include_schema(exporter_endpoint), verify=False)  # nosec
         line_item_metrics = re.findall(
             "^{}.*".format(metric_name),
             response.text,
@@ -95,17 +112,56 @@ def query_exporter_metric(exporter_api, metric_name):
             metrics[metric_with_labels] = float(value)
     except Exception as e:
         error_messages.append(
-            "ERROR retrieving ceph exporter api {}".format(
+            "ERROR retrieving exporter endpoint {}".format(
                 str(e)))
-
     return metrics, error_messages
 
+def get_kubernetes_api():
+    kubernetes.config.load_incluster_config()
+    api = kubernetes.client.CoreV1Api()
+    return api
 
-def include_schema(api):
-    if api.startswith("http://") or api.startswith("https://"):
-        return api
+def get_kubernetes_endpoints(namespace, label_selector):
+    kube_api = get_kubernetes_api()
+    try:
+        endpoint_list = kube_api.list_namespaced_endpoints(namespace=namespace, label_selector=label_selector)
+    except ApiException as e:
+        print("Exception when calling CoreV1Api->list_namespaced_endpoints: %s\n" % e)
+    return endpoint_list.items
+
+def get_endpoint_metric_port(endpoint):
+    ports = endpoint.ports
+    for port in ports:
+        if port.name == 'metrics':
+            return port.port
+    print("No metrics ports exposed on {} endpoint".format(endpoint))
+    sys.exit(STATE_CRITICAL)
+
+def get_kubernetes_endpoint_addresses(endpoints):
+    addresses = []
+    for endpoint in endpoints:
+        for subset in endpoint.subsets:
+            port = get_endpoint_metric_port(subset)
+            for address in subset.addresses:
+                addresses.append("{}:{}/metrics".format(address.ip, port))
+    return addresses
+
+def find_active_endpoint(namespace, label_selector):
+    kube_api = get_kubernetes_api()
+    exporter_endpoints = get_kubernetes_endpoints(namespace, label_selector)
+    exporter_addresses = get_kubernetes_endpoint_addresses(exporter_endpoints)
+    for address in exporter_addresses:
+        response = requests.get(include_schema(address), verify=False)  # nosec
+        if response.text:
+            return address
+    print("No active exporters in {} namespace with selectors {} found!".format(namespace, label_selector))
+    sys.exit(STATE_CRITICAL)
+
+def include_schema(endpoint):
+    if endpoint.startswith("http://") or endpoint.startswith("https://"):
+        return endpoint
     else:
-        return "http://{}".format(api)
+        return "http://{}".format(endpoint)
 
 
 if __name__ == '__main__':
