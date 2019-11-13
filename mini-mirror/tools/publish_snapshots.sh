@@ -14,23 +14,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -ex
 
-if [ ! -z "$1" ]; then
+if [[ ! -z "$1" ]]; then
   gpg --import /opt/release.gpg
 fi
 
-for source_prefix in /opt/sources/*; do
-  for source in $source_prefix/*; do
-    read -r -a info < "${source}"/source.txt
-    repo=${info[0]}
-    key=${info[1]}
-    dist=${info[2]}
-    components=${info[*]:3}
+sources=$(yq "." /opt/mini-mirror-sources.yaml | jq -s '.')
+
+# Loop to iterate over each document in the YAML file.
+# By base64 encoding and then decoding the output from jq we are able to
+# cleanly iterate over the output even if it contains newlines, etc.
+for source in $(echo "${sources}" | jq -r '.[] | @base64' ); do
+  _source() {
+    echo "${source}" | base64 --decode | jq -r "${*}"
+  }
+
+  source_name=$(_source '.name')
+  repo=$(_source '.url')
+  key=$(_source '.key_url')
+  components=$(_source '.components')
+  label=$(_source '.label')
+  codename=$(_source '.code_name')
+
+  # Loop to iterate over the `subrepo` list in the document
+  for subrepo in $(_source '.subrepos[] | @base64'); do
+    _subrepo() {
+    echo "${subrepo}" | base64 --decode | jq -r "${*}"
+    }
+
+    dist=$(_subrepo '.distribution')
 
     # Use source specific aptly config when provided
-    if [ -f "${source}"/aptly.conf ]; then
-      conf="${source}"/aptly.conf
+    source_conf=$(_source '.aptly_config')
+    if [[ "$source_conf" != "null" ]]; then
+      echo "${source_conf}" > aptly.conf
+      conf=$(pwd)/aptly.conf
     else
       conf=/etc/aptly.conf
     fi
@@ -38,11 +57,21 @@ for source_prefix in /opt/sources/*; do
     # Create package query from well-defined package list.
     #
     #    package1
-    #    package2      ==>      package1 | package2 | package3
+    #    package2      ==>      package1 | package2 (=1.0) | package3
     #    package3
     #
-    packages=$(awk -v ORS=" | " '{ print $1 }' "${source}"/packages.txt)
-    packages="${packages::-3}"
+
+    # Grab packages from .subrepo
+    packages=$(_subrepo '.packages')
+    # Convert any found versions to strings
+    str_versions=$(echo "${packages}" | jq ' .[] | if .version != null then {name: .name, version: .version | tostring} else {name: .name} end')
+    # Format packages <pkg> and versions <ver> to "<pkg> (=@<ver>"
+    formatted_packages=$(echo "${str_versions}" | jq -r '. | join(" (=@")')
+    # Substitute "@<ver>" with "<ver>)" so the new format is "<pkg> (=<ver>)"
+    # and bring the packages on to one line separated by "@"
+    wrap_versions=$(echo "${formatted_packages}" | sed -r "s/@(.*)/\1\)/g" | tr "\n" "@")
+    # Substitute the "@" between packages with " | "
+    package_query=$(echo "${wrap_versions}" | sed -r "s/@/ \| /g" | sed -r "s/ \| $//g")
 
     # Import source key
     wget --no-check-certificate -O - "${key}" | gpg --no-default-keyring \
@@ -51,13 +80,14 @@ for source_prefix in /opt/sources/*; do
     # Create a mirror of each component from a source's repository, update it,
     # and publish a snapshot of it.
     mirrors=()
-    for component in $components; do
-      name="${source}-${component}"
+    # Loop to iterate over the `component` list in the document
+    for component in $(echo "${components}" | jq -r '.[]' ); do
+      name="${source_name}-${dist}-${component}"
       mirrors+=("$name")
 
       aptly mirror create \
           -config="${conf}" \
-          -filter="${packages}" \
+          -filter="${package_query}" \
           -filter-with-deps \
           "${name}" "${repo}" "${dist}" "${component}"
 
@@ -65,28 +95,35 @@ for source_prefix in /opt/sources/*; do
       aptly snapshot create -config="${conf}" "${name}" from mirror "${name}"
     done
 
-    # preserve the codename and label of the source repository
-    codename=$(aptly mirror show ${mirrors[0]} | sed -n 's/^Codename: //p')
-    label=$(aptly mirror show ${mirrors[0]} | sed -n 's/^Label: //p')
+    # If the codename or label have not been specified then acquire them from
+    # the mirror
+    if [[ "${codename}" == "null" ]]; then
+        codename=$(aptly mirror show "${mirrors[0]}" | sed -n 's/^Codename: //p')
+    fi
+    if [[ "${label}" == "null" ]]; then
+        label=$(aptly mirror show "${mirrors[0]}" | sed -n 's/^Label: //p')
+    fi
 
     # Publish snapshot and sign if a key passphrase is provided.
-    com_list=$(echo "${components[@]}" | tr ' ' ',')
-    if [ ! -z "$1" ]; then
+    com_list=$(echo "${components}" | jq -r '. | join(",")')
+    if [[ ! -z "$1" ]]; then
       aptly publish snapshot \
           -batch=true \
+          -config="${conf}" \
           -component="${com_list}" \
           -distribution="${dist}" \
           -passphrase="${1}" \
           -codename="${codename}" \
           -label="${label}" \
-          "${mirrors[@]}" "${source_prefix:13}"
+          "${mirrors[@]}" "${source_name}"
     else
       aptly publish snapshot \
+          -config="${conf}" \
           -component="${com_list}" \
           -distribution="${dist}" \
           -codename="${codename}" \
           -label="${label}" \
-          "${mirrors[@]}" "${source_prefix:13}"
+          "${mirrors[@]}" "${source_name}"
     fi
   done
 done

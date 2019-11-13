@@ -1,1 +1,0 @@
-http://repo.aptly.info/ https://www.aptly.info/pubkey.txt squeeze main

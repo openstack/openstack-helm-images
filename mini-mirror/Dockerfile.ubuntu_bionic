@@ -15,12 +15,13 @@
 FROM ubuntu:18.04 as aptly
 
 ARG APTLY_CONFIG_PATH=etc/aptly.conf
-ARG MIRROR_SOURCE_DIR=sources
+ARG MIRROR_SOURCE_FILE=mini-mirror-sources.yaml
 ARG RELEASE_SIGN_KEY_PATH=etc
 ARG RELEASE_SIGN_KEY_PASSPHRASE
 
 RUN apt-get update
-RUN apt-get install -y gnupg wget
+RUN apt-get install -y gnupg wget jq python-pip
+RUN pip install yq
 
 COPY "${APTLY_CONFIG_PATH}" /etc/aptly.conf
 COPY tools/install_aptly.sh /opt/install_aptly.sh
@@ -31,7 +32,7 @@ ARG APTLY_REFSPEC=allow-custom-codename
 
 RUN /opt/install_aptly.sh
 
-COPY "${MIRROR_SOURCE_DIR}" /opt/sources
+COPY "${MIRROR_SOURCE_FILE}" /opt/mini-mirror-sources.yaml
 COPY "${RELEASE_SIGN_KEY_PATH}" /opt/release.gpg
 COPY tools/publish_snapshots.sh /opt/publish_snapshots.sh
 
