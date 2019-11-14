@@ -57,3 +57,5 @@ if [ ! -z "$6" ]; then
        nSvcOutput s "$5"
   fi
 fi
+echo "Successful"
+exit 0
