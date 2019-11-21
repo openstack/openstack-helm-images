@@ -46,6 +46,12 @@
           tags:
             - latest-ubuntu_xenial
             - "ubuntu_xenial-{{ currentdate }}"
+        - context: ceph-config-helper
+          repository: openstackhelm/ceph-config-helper
+          dockerfile: Dockerfile.ubuntu_bionic
+          tags:
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
     files: &ceph-config-helper_files
       - ceph-config-helper/.*
       - zuul.d/ceph-config-helper.yaml

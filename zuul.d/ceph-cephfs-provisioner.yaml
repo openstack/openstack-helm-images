@@ -40,6 +40,12 @@
           tags:
             - latest-ubuntu_xenial
             - "ubuntu_xenial-{{ currentdate }}"
+        - context: ceph-cephfs-provisioner
+          repository: openstackhelm/ceph-cephfs-provisioner
+          dockerfile: Dockerfile.ubuntu_bionic
+          tags:
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
     files: &ceph-cephfs-provisioner_files
       - ceph-cephfs-provisioner/.*
       - zuul.d/ceph-cephfs-provisioner.yaml

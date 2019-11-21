@@ -40,6 +40,12 @@
           tags:
             - latest-ubuntu_xenial
             - "ubuntu_xenial-{{ currentdate }}"
+        - context: ceph-rbd-provisioner
+          repository: openstackhelm/ceph-rbd-provisioner
+          dockerfile: Dockerfile.ubuntu_bionic
+          tags:
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
     files: &ceph-rbd-provisioner_files
       - ceph-rbd-provisioner/.*
       - zuul.d/ceph-rbd-provisioner.yaml
