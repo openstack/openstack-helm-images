@@ -23,13 +23,13 @@ from http.server import HTTPServer
 from socketserver import ForkingMixIn
 from prometheus_client import CONTENT_TYPE_LATEST
 
-from osclient import OSClient
-from oscache import OSCache
-from check_os_api import CheckOSApi
-from neutron_agents import NeutronAgentStats
-from nova_services import NovaServiceStats
-from cinder_services import CinderServiceStats
-from hypervisor_stats import HypervisorStats
+from .osclient import OSClient
+from .oscache import OSCache
+from .check_os_api import CheckOSApi
+from .neutron_agents import NeutronAgentStats
+from .nova_services import NovaServiceStats
+from .cinder_services import CinderServiceStats
+from .hypervisor_stats import HypervisorStats
 
 import logging
 logging.basicConfig(
