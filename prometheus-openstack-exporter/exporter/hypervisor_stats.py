@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .base import OSBase
+from base import OSBase
 
 from prometheus_client import CollectorRegistry, generate_latest, Gauge
 import logging
