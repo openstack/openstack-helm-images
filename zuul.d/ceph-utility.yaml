@@ -40,6 +40,12 @@
           tags:
             - latest-ubuntu_xenial
             - "ubuntu_xenial-{{ currentdate }}"
+        - context: ceph-utility
+          repository: openstackhelm/ceph-utility
+          dockerfile: Dockerfile.ubuntu_bionic
+          tags:
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
     files: &ceph-utility_files
       - ceph-utility/.*
       - zuul.d/ceph-utility.yaml
