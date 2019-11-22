@@ -19,17 +19,18 @@ ARG MIRROR_SOURCE_DIR=sources
 ARG RELEASE_SIGN_KEY_PATH=etc
 ARG RELEASE_SIGN_KEY_PASSPHRASE
 
-COPY "${APTLY_CONFIG_PATH}" /etc/aptly.conf
-COPY "${MIRROR_SOURCE_DIR}" /opt/sources
-COPY "${RELEASE_SIGN_KEY_PATH}" /opt/release.gpg
-
-COPY tools/install_aptly.sh /opt/install_aptly.sh
-COPY tools/publish_snapshots.sh /opt/publish_snapshots.sh
-
 RUN apt-get update
 RUN apt-get install -y wget
 
+COPY "${APTLY_CONFIG_PATH}" /etc/aptly.conf
+COPY tools/install_aptly.sh /opt/install_aptly.sh
+
 RUN /opt/install_aptly.sh
+
+COPY "${MIRROR_SOURCE_DIR}" /opt/sources
+COPY "${RELEASE_SIGN_KEY_PATH}" /opt/release.gpg
+COPY tools/publish_snapshots.sh /opt/publish_snapshots.sh
+
 RUN /opt/publish_snapshots.sh "${RELEASE_SIGN_KEY_PASSPHRASE}"
 
 FROM nginx

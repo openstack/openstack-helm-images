@@ -20,8 +20,7 @@ tee /etc/apt/sources.list.d/aptly.list << EOF
 deb http://repo.aptly.info/ squeeze main
 EOF
 
-apt-key adv --keyserver pool.sks-keyservers.net \
-            --recv-keys ED75B5A4483DA07C
+wget -qO - https://www.aptly.info/pubkey.txt | apt-key add -
 
 apt-get update
 apt-get install -y --no-install-recommends aptly
