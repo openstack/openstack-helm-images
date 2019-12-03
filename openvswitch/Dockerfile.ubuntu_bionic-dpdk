@@ -5,8 +5,8 @@ LABEL maintainer="cheng1.li@intel.com"
 # Options to compile ovs-dpdk either from source (DPDK and OVS) or
 # install it from package. By default package install is enabled.
 # For src compile pass following build-args.
-ARG OVS_SRC_COMPILE_VERSION=""
-ARG DPDK_SRC_COMPILE_VERSION=""
+ARG OVS_SRC_COMPILE_VERSION="2.11.1"
+ARG DPDK_SRC_COMPILE_VERSION="18.11.3"
 
 # URL to fetch the code package from. The package name should follow
 # this naming convention: openvswitch-${OVS_SRC_COMPILE_VERSION}.tar.gz
