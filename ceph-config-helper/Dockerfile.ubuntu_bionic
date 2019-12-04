@@ -28,6 +28,8 @@ RUN set -ex ;\
         gcc \
         python3 \
         python3-dev \
+        gdisk \
+        udev \
         jq ;\
     curl -sSL https://bootstrap.pypa.io/get-pip.py | python3 ;\
     pip3 --no-cache-dir install --upgrade \

@@ -28,6 +28,8 @@ RUN set -ex ;\
         radosgw \
         ceph-mds \
         ceph-fuse \
+        gdisk \
+        udev \
         rbd-nbd \
         rbd-mirror \
         rbd-fuse \

@@ -34,8 +34,8 @@ ifeq ($(IMAGE_NAME), calicoctl-utility)
     IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${CALICOCTL_VERSION}-${IMAGE_TAG}
 endif
 
-ifeq ($(IMAGE_NAME), ospurge)
-    IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}
+ifeq ($(OS_RELEASE),$(filter $(OS_RELEASE), ubuntu_bionic ubuntu_bionic-dpdk))
+    IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}-${OS_RELEASE}
 endif
 
 # Build Docker image for this project
@@ -52,14 +52,12 @@ ifeq ($(OS_RELEASE), ubuntu_xenial)
 	-t $(IMAGE) \
 	.
 else ifeq ($(OS_RELEASE), ubuntu_bionic)
-	IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}-${OS_RELEASE}
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
 	$(EXTRA_BUILD_ARGS) \
 	-t $(IMAGE) \
 	.
 else ifeq ($(OS_RELEASE), ubuntu_bionic-dpdk)
-	IMAGE := ${DOCKER_REGISTRY}/${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_TAG}-${OS_RELEASE}
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \
 	$(EXTRA_BUILD_ARGS) \
