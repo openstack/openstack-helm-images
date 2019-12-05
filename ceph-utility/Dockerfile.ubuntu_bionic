@@ -7,13 +7,15 @@ ARG KUBE_VERSION=1.16.2
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/
 ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key
 
+ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -xe \
     && export DEBIAN_FRONTEND=noninteractive \
     && sed -i '/nobody/d' /etc/passwd \
     && echo "nobody:x:65534:65534:nobody:/nonexistent:/bin/bash" >> /etc/passwd \
     && apt-get update && apt-get dist-upgrade -y \
     && apt-get install -y wget curl apt-transport-https ca-certificates gnupg\
-    && wget -q -O- ${CEPH_KEY} | apt-key add - \
+    && apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key \
+    && rm -f /etc/apt/ceph-${CEPH_RELEASE}.key \
     && echo "deb ${CEPH_REPO} bionic main" | tee /etc/apt/sources.list.d/ceph.list \
     && apt-get update && apt-get install -y bash python-oslo.rootwrap moreutils vim sudo screen ceph ceph-common python-rbd radosgw hexedit jq s3cmd rsyslog rsync xz-utils iperf \
     && apt-get remove --purge -y wget apt-transport-https && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* \
