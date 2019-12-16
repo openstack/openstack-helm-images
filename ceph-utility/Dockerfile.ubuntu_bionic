@@ -1,6 +1,7 @@
 ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
+# Nautilus 14.2.5
 ARG CEPH_RELEASE=nautilus
 ARG KUBE_VERSION=1.16.2
 

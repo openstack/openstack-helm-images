@@ -4,6 +4,7 @@ FROM ${FROM}
 ARG DISTRO_CODENAME='bionic'
 
 ARG KUBE_VERSION=v1.16.2
+# Nautilus 14.2.5
 ARG CEPH_RELEASE=nautilus
 
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/${DISTRO_CODENAME}/
