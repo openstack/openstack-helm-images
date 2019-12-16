@@ -197,6 +197,7 @@ neutron_dist_packages=${neutron_dist_packages:-"jq"}
 neutron_pip_packages=${neutron_pip_packages:-"pycrypto"}
 nova_profiles=${nova_profiles:-"'fluent ceph linuxbridge openvswitch configdrive qemu apache'"}
 nova_pip_packages=${nova_pip_packages:-"pycrypto"}
+nova_dist_packages=${nova_dist_packages:-"net-tools"}
 horizon_profiles=${horizon_profiles:-"'fluent apache'"}
 horizon_pip_packages=${horizon_pip_packages:-"pycrypto"}
 senlin_profiles=${senlin_profiles:-"fluent"}
