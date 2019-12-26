@@ -25,6 +25,10 @@ RUN apt-get install -y gnupg wget
 COPY "${APTLY_CONFIG_PATH}" /etc/aptly.conf
 COPY tools/install_aptly.sh /opt/install_aptly.sh
 
+ARG APTLY_INSTALL_FROM=source
+ARG APTLY_REPO=https://github.com/aptly-dev/aptly.git
+ARG APTLY_REFSPEC=master
+
 RUN /opt/install_aptly.sh
 
 COPY "${MIRROR_SOURCE_DIR}" /opt/sources

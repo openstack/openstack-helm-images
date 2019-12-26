@@ -35,6 +35,11 @@ MIRROR_SOURCE_DIR=${MIRROR_SOURCE_DIR:-"sources"}
 RELEASE_SIGN_KEY_PATH=${RELEASE_SIGN_KEY_PATH:-"etc"}
 RELEASE_SIGN_KEY_PASSPHRASE=${RELEASE_SIGN_KEY_PASSPHRASE:-""}
 
+# APTLY_INSTALL_FROM is either 'apt' or 'source'
+APTLY_INSTALL_FROM=${APTLY_INSTALL_FROM:-"source"}
+APTLY_REPO=${APTLY_REPO:-"https://github.com/aptly-dev/aptly.git"}
+APTLY_REFSPEC=${APTLY_REFSPEC:-"v1.4.0"}
+
 docker build -f "${IMAGE}"/Dockerfile."${DISTRO}" --network=host \
   -t "${REGISTRY_URI}""${IMAGE}":"${VERSION}"-"${DISTRO}""${EXTRA_TAG_INFO}" \
   --build-arg http_proxy="${HTTP_PROXY}" \
@@ -47,6 +52,9 @@ docker build -f "${IMAGE}"/Dockerfile."${DISTRO}" --network=host \
   --build-arg MIRROR_SOURCE_DIR="${MIRROR_SOURCE_DIR}" \
   --build-arg RELEASE_SIGN_KEY_PATH="${RELEASE_SIGN_KEY_PATH}" \
   --build-arg RELEASE_SIGN_KEY_PASSPHRASE="${RELEASE_SIGN_KEY_PASSPHRASE}" \
+  --build-arg APTLY_INSTALL_FROM="${APTLY_INSTALL_FROM}" \
+  --build-arg APTLY_REPO="${APTLY_REPO}" \
+  --build-arg APTLY_REFSPEC="${APTLY_REFSPEC}" \
   ${extra_build_args} "${IMAGE}"
 
 cd - || exit
