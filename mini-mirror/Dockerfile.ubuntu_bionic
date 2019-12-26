@@ -26,8 +26,8 @@ COPY "${APTLY_CONFIG_PATH}" /etc/aptly.conf
 COPY tools/install_aptly.sh /opt/install_aptly.sh
 
 ARG APTLY_INSTALL_FROM=source
-ARG APTLY_REPO=https://github.com/aptly-dev/aptly.git
-ARG APTLY_REFSPEC=master
+ARG APTLY_REPO=https://github.com/smstone/aptly.git
+ARG APTLY_REFSPEC=allow-custom-codename
 
 RUN /opt/install_aptly.sh
 

@@ -59,6 +59,10 @@ for source_prefix in /opt/sources/*; do
     aptly mirror update -config="${conf}" -max-tries=3 "${source}"
     aptly snapshot create -config="${conf}" "${source}" from mirror "${source}"
 
+    # preserve the codename and label of the source repository
+    codename=$(aptly mirror show ${source} | sed -n 's/^Codename: //p')
+    label=$(aptly mirror show ${source} | sed -n 's/^Label: //p')
+
     # Publish snapshot and sign if a key passphrase is provided.
     com_list=$(echo "${components[@]}" | tr ' ' ',')
     if [ ! -z "$1" ]; then
@@ -67,11 +71,15 @@ for source_prefix in /opt/sources/*; do
           -component="${com_list}" \
           -distribution="${dist}" \
           -passphrase="${1}" \
+          -codename="${codename}" \
+          -label="${label}" \
           "${source}" "${source_prefix:13}"
     else
       aptly publish snapshot \
           -component="${com_list}" \
           -distribution="${dist}" \
+          -codename="${codename}" \
+          -label="${label}" \
           "${source}" "${source_prefix:13}"
     fi
   done

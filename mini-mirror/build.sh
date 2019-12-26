@@ -37,8 +37,10 @@ RELEASE_SIGN_KEY_PASSPHRASE=${RELEASE_SIGN_KEY_PASSPHRASE:-""}
 
 # APTLY_INSTALL_FROM is either 'apt' or 'source'
 APTLY_INSTALL_FROM=${APTLY_INSTALL_FROM:-"source"}
-APTLY_REPO=${APTLY_REPO:-"https://github.com/aptly-dev/aptly.git"}
-APTLY_REFSPEC=${APTLY_REFSPEC:-"v1.4.0"}
+# Explicitly setting the codename relies on an unmerged pull request
+# https://github.com/aptly-dev/aptly/pull/892
+APTLY_REPO=${APTLY_REPO:-"https://github.com/smstone/aptly.git"}
+APTLY_REFSPEC=${APTLY_REFSPEC:-"allow-custom-codename"}
 
 docker build -f "${IMAGE}"/Dockerfile."${DISTRO}" --network=host \
   -t "${REGISTRY_URI}""${IMAGE}":"${VERSION}"-"${DISTRO}""${EXTRA_TAG_INFO}" \
