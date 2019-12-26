@@ -48,22 +48,16 @@ for source_prefix in /opt/sources/*; do
     wget --no-check-certificate -O - "${key}" | gpg --no-default-keyring \
       --keyring trustedkeys.gpg --import
 
-    # Create a mirror of each component from a source's repository, update it,
+    # Create a mirror of the source repository, update it,
     # and publish a snapshot of it.
-    mirrors=()
-    for component in $components; do
-      name="${source}-${component}"
-      mirrors+=("$name")
+    aptly mirror create \
+        -config="${conf}" \
+        -filter="${packages}" \
+        -filter-with-deps \
+        "${source}" "${repo}" "${dist}" ${components[@]}
 
-      aptly mirror create \
-          -config="${conf}" \
-          -filter="${packages}" \
-          -filter-with-deps \
-          "${name}" "${repo}" "${dist}" "${component}"
-
-      aptly mirror update -config="${conf}" -max-tries=3 "${name}"
-      aptly snapshot create -config="${conf}" "${name}" from mirror "${name}"
-    done
+    aptly mirror update -config="${conf}" -max-tries=3 "${source}"
+    aptly snapshot create -config="${conf}" "${source}" from mirror "${source}"
 
     # Publish snapshot and sign if a key passphrase is provided.
     com_list=$(echo "${components[@]}" | tr ' ' ',')
@@ -73,12 +67,12 @@ for source_prefix in /opt/sources/*; do
           -component="${com_list}" \
           -distribution="${dist}" \
           -passphrase="${1}" \
-          "${mirrors[@]}" "${source_prefix:13}"
+          "${source}" "${source_prefix:13}"
     else
       aptly publish snapshot \
           -component="${com_list}" \
           -distribution="${dist}" \
-          "${mirrors[@]}" "${source_prefix:13}"
+          "${source}" "${source_prefix:13}"
     fi
   done
 done
