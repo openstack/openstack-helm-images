@@ -1,0 +1,43 @@
+---
+name: aptly-example
+url: http://repo.aptly.info/
+key_url: https://www.aptly.info/pubkey.txt
+components:
+  - main
+subrepos:
+  - distribution: squeeze
+    packages:
+      - name: aptly
+...
+# Example additional config for adding docker
+#---
+#name: docker
+#url: https://download.docker.com/linux/ubuntu
+#key_url: https://download.docker.com/linux/ubuntu/gpg
+#aptly_config: |
+#  {
+#    "rootDir": "/opt/.aptly",
+#    "downloadConcurrency": 20,
+#    "downloadSpeedLimit": 0,
+#    "architectures": ["amd64"],
+#    "dependencyFollowSuggests": false,
+#    "dependencyFollowRecommends": false,
+#    "dependencyFollowAllVariants": false,
+#    "dependencyFollowSource": false,
+#    "dependencyVerboseResolve": true,
+#    "gpgDisableSign": true,
+#    "gpgDisableVerify": true,
+#    "gpgProvider": "gpg",
+#    "downloadSourcePackages": false,
+#    "skipLegacyPool": true,
+#    "ppaDistributorID": "ubuntu",
+#    "ppaCodename": ""
+#  }
+#components:
+#  - stable
+#subrepos:
+#  - distribution: xenial
+#    packages:
+#      - name: docker-ce
+#        version: 17.03.3~ce-0~ubuntu-xenial_amd64
+#...

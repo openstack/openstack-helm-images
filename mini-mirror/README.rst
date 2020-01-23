@@ -11,50 +11,39 @@ Build Requirements
 Add mirror sources
 ~~~~~~~~~~~~~~~~~~
 
-Mini-mirror requires a directory at build-time that contains the repositories
-and packages that will be mirrored.
+Mini-mirror requires a YAML file at build-time that contains the repositories
+and packages that will be mirrored as different YAML documents.
 
-.. code::
+.. code:: yaml
+    ---
+    name: <Repository name (i.e. the directory a source serves from)>
+    url: <URL link to the source repository>
+    key_url: <URL link to the key for the source repository>
+    codename: *<Override codename for the release file>
+    label: *<Override label for the release file>
+    aptly_config: | # *Inline aptly config JSON file to replace default
+      { }
+    components: # List of Components
+      - <Component>
+    subrepos: # List of repositories within the source repository
+      - distribution: <Distribution name of the repository>
+        packages: # <List of all packages>
+          - name: <Package name>
+            version: *<Version of package to pin to>
+    ...
+    ---
+    # Additional repository document here
+    ...
 
-    sources/
-    | -- source1-prefix/
-         |-- source-name/
-             |-- source.txt
-             |-- packages.txt
-    | -- source2-prefix/
-         |-- source-name/
-             |-- source.txt
-             |-- packages.txt
+*Optional
 
-Sources are defined as directories containing the files:
 
-* source-prefix - a prefix to separate sources that have conflicting
-  distribution names (i.e. the directory a source serves from).
-* source-name - the name of a source; used for record-keeping.
-* source.txt - contains location and metadata information for a source.
-* packages.txt - contains a list of packages, formatted as `package queries <https://www.aptly.info/doc/feature/query/>`_
-  for a source.
-
-Example ``source.txt`` format:
-
- .. code::
-
-    source_url source_key_url dist components
-
-Example ``packages.txt`` format:
-
-.. code::
-
-    package1
-    package2
-    package3 (>=3.6)
-
-To specify the location of your sources directory, export the following
+To specify the location of your sources YAML file, export the following
 environment variable:
 
 .. code:: bash
 
-    export MIRROR_SOURCE_DIR=/path/to/sources
+    export MIRROR_SOURCE_FILE=/path/to/sources.yaml
 
 Generate a signing key
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -92,8 +81,8 @@ environment variable:
 .. NOTE::
 
     Mini-mirror can be configured on a per-repo basis by adding an Aptly config
-    file to the root directory of a source. This overrides the Aptly config
-    file taken from ``APTLY_CONFIG_PATH``.
+    file to the .aptly_config key in the YAML document. This overrides
+    the Aptly config file taken from ``APTLY_CONFIG_PATH``.
 
 Proxy
 ~~~~~

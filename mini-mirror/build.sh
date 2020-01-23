@@ -20,7 +20,8 @@ SCRIPT_DIR=$(dirname "${SCRIPT}")
 ## Only build from main folder
 cd "${SCRIPT_DIR}"/.. || exit
 
-IMAGE="mini-mirror"
+PROJECT_PATH="mini-mirror"
+IMAGE=${IMAGE:-mini-mirror}
 VERSION=${VERSION:-latest}
 DISTRO=${DISTRO:-ubuntu_xenial}
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
@@ -31,7 +32,7 @@ HTTPS_PROXY=${HTTPS_PROXY:-""}
 NO_PROXY=${NO_PROXY:-"127.0.0.1,localhost"}
 
 APTLY_CONFIG_PATH=${APTLY_CONFIG_PATH:-"etc/aptly.conf"}
-MIRROR_SOURCE_DIR=${MIRROR_SOURCE_DIR:-"sources"}
+MIRROR_SOURCE_FILE=${MIRROR_SOURCE_FILE:-"mini-mirror-sources.yaml"}
 RELEASE_SIGN_KEY_PATH=${RELEASE_SIGN_KEY_PATH:-"etc"}
 RELEASE_SIGN_KEY_PASSPHRASE=${RELEASE_SIGN_KEY_PASSPHRASE:-""}
 
@@ -42,7 +43,7 @@ APTLY_INSTALL_FROM=${APTLY_INSTALL_FROM:-"source"}
 APTLY_REPO=${APTLY_REPO:-"https://github.com/smstone/aptly.git"}
 APTLY_REFSPEC=${APTLY_REFSPEC:-"allow-custom-codename"}
 
-docker build -f "${IMAGE}"/Dockerfile."${DISTRO}" --network=host \
+docker build -f "${PROJECT_PATH}"/Dockerfile."${DISTRO}" --network=host \
   -t "${REGISTRY_URI}""${IMAGE}":"${VERSION}"-"${DISTRO}""${EXTRA_TAG_INFO}" \
   --build-arg http_proxy="${HTTP_PROXY}" \
   --build-arg https_proxy="${HTTPS_PROXY}" \
@@ -51,12 +52,12 @@ docker build -f "${IMAGE}"/Dockerfile."${DISTRO}" --network=host \
   --build-arg no_proxy="${NO_PROXY}" \
   --build-arg NO_PROXY="${NO_PROXY}" \
   --build-arg APTLY_CONFIG_PATH="${APTLY_CONFIG_PATH}" \
-  --build-arg MIRROR_SOURCE_DIR="${MIRROR_SOURCE_DIR}" \
+  --build-arg MIRROR_SOURCE_FILE="${MIRROR_SOURCE_FILE}" \
   --build-arg RELEASE_SIGN_KEY_PATH="${RELEASE_SIGN_KEY_PATH}" \
   --build-arg RELEASE_SIGN_KEY_PASSPHRASE="${RELEASE_SIGN_KEY_PASSPHRASE}" \
   --build-arg APTLY_INSTALL_FROM="${APTLY_INSTALL_FROM}" \
   --build-arg APTLY_REPO="${APTLY_REPO}" \
   --build-arg APTLY_REFSPEC="${APTLY_REFSPEC}" \
-  ${extra_build_args} "${IMAGE}"
+  ${extra_build_args} "${PROJECT_PATH}"
 
 cd - || exit
