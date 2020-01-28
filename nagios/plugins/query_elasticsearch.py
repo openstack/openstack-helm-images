@@ -125,7 +125,7 @@ def evaluate_results(response, args):
             or not response.json()):
         NagiosUtil.service_unknown('Unexpected results found. ' + response.text)
     elif (not response.json()['hits']
-          or int(response.json()['hits']['total']) < 0):
+          or int(response.json()['hits']['total']['value']) < 0):
         NagiosUtil.service_unknown('Unexpected results found. ' + str(response.json()))
 
     if args.debug:
