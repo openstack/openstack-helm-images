@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -e
 
 if [[ ! -z "$1" ]]; then
   gpg --import /opt/release.gpg
@@ -106,24 +106,25 @@ for source in $(echo "${sources}" | jq -r '.[] | @base64' ); do
 
     # Publish snapshot and sign if a key passphrase is provided.
     com_list=$(echo "${components}" | jq -r '. | join(",")')
-    if [[ ! -z "$1" ]]; then
-      aptly publish snapshot \
-          -batch=true \
-          -config="${conf}" \
-          -component="${com_list}" \
-          -distribution="${dist}" \
-          -passphrase="${1}" \
-          -codename="${codename}" \
-          -label="${label}" \
-          "${mirrors[@]}" "${source_name}"
-    else
-      aptly publish snapshot \
-          -config="${conf}" \
-          -component="${com_list}" \
-          -distribution="${dist}" \
-          -codename="${codename}" \
-          -label="${label}" \
-          "${mirrors[@]}" "${source_name}"
+
+    # Check if the aptly config specifies to download source packages. If it
+    # does, then we will need to create a flag to add "source" to the list of
+    # architectures to ensure it is published
+    download_source=$(cat "${conf}" | jq -r ".downloadSourcePackages")
+    if [[ "${download_source}" = "true" ]]; then
+        architectures=$(cat "${conf}" | jq -r ".architectures | join(\",\")")
     fi
+
+    aptly publish snapshot \
+        ${1:+"-batch=true"} \
+        ${1:+"-passphrase=${1}"} \
+        ${architectures:+"-architectures=${architectures},source"} \
+        -config="${conf}" \
+        -component="${com_list}" \
+        -distribution="${dist}" \
+        -codename="${codename}" \
+        -label="${label}" \
+        "${mirrors[@]}" "${source_name}"
+
   done
 done
