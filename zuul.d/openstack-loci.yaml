@@ -370,6 +370,7 @@
         - <<: *horizon_project
         - <<: *heat_project
         - <<: *barbican_project
+        - <<: *placement_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
