@@ -2,8 +2,9 @@ ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
 ARG KUBE_VERSION=1.16.2
-# Nautilus 14.2.5
+# Nautilus 14.2.7
 ARG CEPH_RELEASE=nautilus
+ARG CEPH_RELEASE_TAG=14.2.7-1.0~bionic
 ARG ETCDCTL_VERSION=3.2.18
 ARG CONFD_VERSION=0.16.0
 
@@ -24,16 +25,16 @@ RUN set -ex ;\
     apt-get update ;\
     apt-get dist-upgrade -y ;\
     apt-get install --no-install-recommends -y \
-        ceph \
-        ceph-common \
-        radosgw \
-        ceph-mds \
-        ceph-fuse \
+        ceph=${CEPH_RELEASE_TAG} \
+        ceph-common=${CEPH_RELEASE_TAG} \
+        radosgw=${CEPH_RELEASE_TAG} \
+        ceph-mds=${CEPH_RELEASE_TAG} \
+        ceph-fuse=${CEPH_RELEASE_TAG} \
         gdisk \
         udev \
-        rbd-nbd \
-        rbd-mirror \
-        rbd-fuse \
+        rbd-nbd=${CEPH_RELEASE_TAG} \
+        rbd-mirror=${CEPH_RELEASE_TAG} \
+        rbd-fuse=${CEPH_RELEASE_TAG} \
         s3cmd \
         strace \
         valgrind \

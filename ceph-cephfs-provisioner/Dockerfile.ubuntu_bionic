@@ -1,8 +1,9 @@
 ARG baseimg=docker.io/ubuntu:bionic
 FROM ${baseimg}
 
-# Nautilus 14.2.5
+# Nautilus 14.2.7
 ARG CEPH_RELEASE=nautilus
+ARG CEPH_RELEASE_TAG=14.2.7-1.0~bionic
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/
 ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key
 
@@ -20,12 +21,12 @@ RUN set -ex ;\
     apt-get update ;\
     apt-get dist-upgrade -y ;\
     apt-get install --no-install-recommends -y \
-        ceph \
-        ceph-common ;\
+        ceph=${CEPH_RELEASE_TAG} \
+        ceph-common=${CEPH_RELEASE_TAG} ;\
     rm -rf /var/lib/apt/lists/* ;\
     rm -rf /usr/share/doc/ ;\
     rm -rf /usr/share/man/ ;\
     rm -rf /usr/share/locale/
 
-COPY --from=quay.io/external_storage/cephfs-provisioner:v1.1.0-k8s1.10 /usr/local/bin/cephfs* /usr/local/bin/
+COPY --from=quay.io/external_storage/cephfs-provisioner:v2.1.0-k8s1.11 /usr/local/bin/cephfs* /usr/local/bin/
 RUN chmod -v o+x /usr/local/bin/cephfs_provisioner

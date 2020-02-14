@@ -4,8 +4,9 @@ FROM ${FROM}
 ARG DISTRO_CODENAME='bionic'
 
 ARG KUBE_VERSION=v1.16.2
-# Nautilus 14.2.5
+# Nautilus 14.2.7
 ARG CEPH_RELEASE=nautilus
+ARG CEPH_RELEASE_TAG=14.2.7-1.0~bionic
 
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/${DISTRO_CODENAME}/
 ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/${DISTRO_CODENAME}/archive-ceph-nautilus.key
@@ -24,7 +25,7 @@ RUN set -ex ;\
     apt-get update ;\
     apt-get dist-upgrade -y ;\
     apt-get install --no-install-recommends -y \
-        ceph \
+        ceph=${CEPH_RELEASE_TAG} \
         curl \
         gcc \
         python3 \
