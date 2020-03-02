@@ -134,7 +134,10 @@ def get_nagios_hostgroups_dictionary(node_list):
     nagios_hostgroups = {}
     try:
         for node in node_list:
-            node_name = node.metadata.name
+            if os.environ['NODE_DOMAIN']:
+                node_name = "%s.%s" % (node.metadata.name, os.environ['NODE_DOMAIN'])
+            else:
+                node_name = node.metadata.name
             node_labels = node.metadata.labels
             host_group_labels = set()
             for node_label in node_labels:
@@ -152,7 +155,10 @@ def get_nagios_hosts(node_list):
     try:
         hostgroup_dictionary = get_nagios_hostgroups_dictionary(node_list)
         for node in node_list:
-            host_name = node.metadata.name
+            if os.environ['NODE_DOMAIN']:
+                node_name = "%s.%s" % (node.metadata.name, os.environ['NODE_DOMAIN'])
+            else:
+                host_name = node.metadata.name
             for addr in node.status.addresses:
                 if addr.type == "InternalIP":
                     host_ip = addr.address
