@@ -1,4 +1,4 @@
-FROM opensuse/leap:15.0
+FROM opensuse/leap:15.1
 LABEL maintainer="containers@suse.com"
 
 ARG PROJECT=nova
@@ -21,7 +21,7 @@ RUN set -ex ;\
       qemu-block-rbd \
       qemu-kvm \
       openvswitch ;\
-    zypper ar "http://download.opensuse.org/repositories/Virtualization/openSUSE_Leap_15.0" Virtualization;\
+    zypper ar "http://download.opensuse.org/repositories/Virtualization/openSUSE_Leap_15.1" Virtualization;\
     zypper refresh ;\
     zypper -n install \
       libcgroup1 \
