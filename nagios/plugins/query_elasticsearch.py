@@ -132,7 +132,7 @@ def evaluate_results(response, args):
         pprint(response.json())
 
     results = response.json()
-    hits = len(results['hits']['hits'])
+    hits = int(results['hits']['total']['value'])
     crit_message = ('Found %s >= %s(threshold) occurrences within the last %s minute(s). %s')
     message = ('Found %s >= %s(threshold) occurrences within the last %s minute(s).')
     ok_message = ('Found %s [threshold: %s] occurrences within the last %s minute(s).')
