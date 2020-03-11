@@ -70,7 +70,7 @@ def main():
         '--timeout',
         metavar='timeout',
         type=int,
-        default=20,
+        default=40,
         required=False,
         help='Number of seconds to wait for response.')
 
@@ -147,11 +147,16 @@ def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
         response_json = response.json()
     except requests.exceptions.Timeout:
         error_messages.append(
-            "ERROR while invoking prometheus api, Connection timed out, the maximum timeout value of {} seconds".format(timeout))
+            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(prometheus_api, timeout))
+    except requests.exceptions.ConnectionError:
+        error_messages.append(
+            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(prometheus_api))
+    except requests.exceptions.RequestException:
+        error_messages.append(
+            "ERROR:  Prometheus api connection failed, using URL {}".format(prometheus_api))
     except Exception as e:
         error_messages.append(
-            "ERROR while invoking prometheus api {}".format(
-                str(e)))
+            "ERROR while invoking prometheus api using URL {}, got error: {}".format(prometheus_api, e))
 
     return response_json, error_messages
 
@@ -183,11 +188,16 @@ def check_prom_metrics_available(prometheus_api, metrics, labels_csv, timeout):
                 metrics_available = True
     except requests.exceptions.Timeout:
         error_messages.append(
-            "ERROR while invoking prometheus api, Connection timed out, the maximum timeout value of {} seconds".format(timeout))
+            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(prometheus_api, timeout))
+    except requests.exceptions.ConnectionError:
+        error_messages.append(
+            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(prometheus_api))
+    except requests.exceptions.RequestException:
+        error_messages.append(
+            "ERROR:  Prometheus api connection failed, using URL {}".format(prometheus_api))
     except Exception as e:
         error_messages.append(
-            "ERROR while invoking prometheus api {}".format(
-                str(e)))
+            "ERROR while invoking prometheus api using URL {}, got error: {}".format(prometheus_api, e))
 
     return metrics_available, error_messages
 
