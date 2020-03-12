@@ -156,7 +156,7 @@ def get_nagios_hosts(node_list):
         hostgroup_dictionary = get_nagios_hostgroups_dictionary(node_list)
         for node in node_list:
             if os.environ['NODE_DOMAIN']:
-                node_name = "%s.%s" % (node.metadata.name, os.environ['NODE_DOMAIN'])
+                host_name = "%s.%s" % (node.metadata.name, os.environ['NODE_DOMAIN'])
             else:
                 host_name = node.metadata.name
             for addr in node.status.addresses:
