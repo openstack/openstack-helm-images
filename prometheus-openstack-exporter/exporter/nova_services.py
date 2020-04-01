@@ -12,16 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from base import OSBase
-from collections import Counter
-from collections import defaultdict
-from prometheus_client import CollectorRegistry, generate_latest, Gauge
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
-logger = logging.getLogger(__name__)
+from collections import Counter, defaultdict
 
+from prometheus_client import CollectorRegistry, generate_latest, Gauge
+
+from base import OSBase
+
+logger = logging.getLogger(__name__)
 
 class NovaServiceStats(OSBase):
     """ Class to report the statistics on Nova services.
@@ -68,15 +66,22 @@ class NovaServiceStats(OSBase):
         labels = ['region', 'host', 'service', 'state']
         services_stats_cache = self.get_cache_data()
         for services_stat in services_stats_cache:
-            stat_gauge = Gauge(
-                self.gauge_name_sanitize(
-                    services_stat['stat_name']),
-                'Openstack Nova Service statistic',
-                labels,
-                registry=registry)
-            label_values = [self.osclient.region,
-                            services_stat.get('host', ''),
-                            services_stat.get('service', ''),
-                            services_stat.get('state', '')]
-            stat_gauge.labels(*label_values).set(services_stat['stat_value'])
+            try:
+                stat_gauge = Gauge(
+                    self.gauge_name_sanitize(
+                        services_stat['stat_name']),
+                    'Openstack Nova Service statistic',
+                    labels,
+                    registry=registry)
+                label_values = [self.osclient.region,
+                                services_stat.get('host', ''),
+                                services_stat.get('service', ''),
+                                services_stat.get('state', '')]
+                stat_gauge.labels(*label_values).set(services_stat['stat_value'])
+            except ValueError:
+                logger.debug('Unchanged value for stat {} already present in '
+                             'nova services registry for host {}; ignoring.'
+                            .format(services_stat['stat_name'],
+                                    services_stat['host']))
+
         return generate_latest(registry)

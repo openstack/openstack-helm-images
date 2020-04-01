@@ -12,16 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+from urllib.parse import urlparse
+
+from prometheus_client import CollectorRegistry, generate_latest, Gauge
+
 from base import OSBase
 
-from urllib.parse import urlparse
-from prometheus_client import CollectorRegistry, generate_latest, Gauge
-import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
 logger = logging.getLogger(__name__)
-
 
 class CheckOSApi(OSBase):
     """Class to check the status of OpenStack API services."""

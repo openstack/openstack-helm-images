@@ -17,10 +17,10 @@ import argparse
 import yaml
 import os
 import urllib.parse
-
-from http.server import BaseHTTPRequestHandler
-from http.server import HTTPServer
+import logging
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ForkingMixIn
+
 from prometheus_client import CONTENT_TYPE_LATEST
 
 from osclient import OSClient
@@ -31,10 +31,10 @@ from nova_services import NovaServiceStats
 from cinder_services import CinderServiceStats
 from hypervisor_stats import HypervisorStats
 
-import logging
 logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
+    level=logging.INFO,
+    format="%(asctime)s:%(levelname)s: %(message)s")
+
 logger = logging.getLogger(__name__)
 
 collectors = []
@@ -57,10 +57,15 @@ class OpenstackExporterHandler(BaseHTTPRequestHandler):
                     stats = collector.get_stats()
                     if stats is not None:
                         output = output + stats
-                except BaseException:
+                except BaseException as inst:
                     logger.warning(
-                        "Could not get stats for collector {}".format(
-                            collector.get_cache_key()))
+                        'Could not get stats for collector {}.'
+                        '"{}" Exception "{}" occured.'
+                        .format(
+                            collector.get_cache_key(),
+                            type(inst),
+                            inst
+                        ))
             self.send_response(200)
             self.send_header('Content-Type', CONTENT_TYPE_LATEST)
             self.end_headers()
