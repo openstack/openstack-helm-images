@@ -42,9 +42,6 @@ copyright = u'2018, OpenStack Developers'
 
 # openstackdocstheme options
 repository_name = 'openstack/openstack-helm-images'
-bug_project = '64'
-bug_tag = ''
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
 use_storyboard = True
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
