@@ -14,14 +14,12 @@
 
 from threading import Thread
 from threading import Lock
-from prometheus_client import CollectorRegistry, generate_latest, Gauge
 from time import sleep, time
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
-logger = logging.getLogger(__name__)
 
+from prometheus_client import CollectorRegistry, generate_latest, Gauge
+
+logger = logging.getLogger(__name__)
 
 class ThreadSafeDict(dict):
     def __init__(self, * p_arg, ** n_arg):
@@ -34,7 +32,6 @@ class ThreadSafeDict(dict):
 
     def __exit__(self, type, value, traceback):
         self._lock.release()
-
 
 class OSCache(Thread):
 

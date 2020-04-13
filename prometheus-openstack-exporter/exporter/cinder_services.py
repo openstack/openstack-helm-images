@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from base import OSBase
-from collections import Counter
-from collections import defaultdict
-from prometheus_client import CollectorRegistry, generate_latest, Gauge
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
+from collections import Counter, defaultdict
+
+from prometheus_client import CollectorRegistry, generate_latest, Gauge
+
+from base import OSBase
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,7 +32,7 @@ class CinderServiceStats(OSBase):
 
         aggregated_workers = defaultdict(Counter)
 
-        stats = self.osclient.get_workers('cinder')
+        stats = self.osclient.get_workers('cinderv3')
         for worker in stats:
             service = worker['service']
             state = worker['state']

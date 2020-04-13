@@ -18,15 +18,11 @@ import dateutil.tz
 import requests
 import simplejson as json
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 
 class KeystoneException(Exception):
     pass
-
 
 class OSClient(object):
     """ Base class for querying the OpenStack API endpoints.

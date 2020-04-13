@@ -14,7 +14,6 @@
 
 import re
 
-
 class OSBase(object):
     FAIL = 0
     OK = 1

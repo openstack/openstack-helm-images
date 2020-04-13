@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from base import OSBase
+import logging
 
 from prometheus_client import CollectorRegistry, generate_latest, Gauge
-import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s:%(levelname)s:%(message)s")
+
+from base import OSBase
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,7 +58,7 @@ class HypervisorStats(OSBase):
                     'metrics': {'free_vcpus': 0},
                 }
                 nova_aggregates[agg['name']]['metrics'].update(
-                     {v: 0 for v in list(self.VALUE_MAP.values())}
+                    {v: 0 for v in list(self.VALUE_MAP.values())}
                 )
 
         r = self.osclient.get('nova', 'os-hypervisors/detail')
@@ -137,15 +136,28 @@ class HypervisorStats(OSBase):
         labels = ['region', 'host', 'aggregate', 'aggregate_id']
         hypervisor_stats_cache = self.get_cache_data()
         for hypervisor_stat in hypervisor_stats_cache:
-            stat_gauge = Gauge(
-                self.gauge_name_sanitize(
-                    hypervisor_stat['stat_name']),
-                'Openstack Hypervisor statistic',
-                labels,
-                registry=registry)
-            label_values = [self.osclient.region,
-                            hypervisor_stat.get('host', ''),
-                            hypervisor_stat.get('aggregate', ''),
-                            hypervisor_stat.get('aggregate_id', '')]
-            stat_gauge.labels(*label_values).set(hypervisor_stat['stat_value'])
+            try:
+                stat_gauge = Gauge(
+                    self.gauge_name_sanitize(
+                        hypervisor_stat['stat_name']),
+                    'Openstack Hypervisor statistic',
+                    labels,
+                    registry=registry)
+                label_values = [self.osclient.region,
+                                hypervisor_stat.get('host', ''),
+                                hypervisor_stat.get('aggregate', ''),
+                                hypervisor_stat.get('aggregate_id', '')]
+                stat_gauge.labels(*label_values).set(hypervisor_stat['stat_value'])
+            except ValueError:
+                if 'host' in hypervisor_stat:
+                    location = hypervisor_stat['host']
+                elif 'aggregate' in hypervisor_stat:
+                    location = hypervisor_stat['aggregate']
+                else:
+                    location = 'N/A'
+
+                logger.debug('Unchanged value for stat {} already present in '
+                             'hypervisor registry for host {}; ignoring.'
+                            .format(hypervisor_stat['stat_name'], location))
+
         return generate_latest(registry)
