@@ -5,6 +5,8 @@
 #
 # Authors:
 #   Rakesh Patnaik <rp196m@att.com>
+# Updated:
+#   Radhika Pai <rp592h@att.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,6 +27,7 @@ import sys
 import argparse
 import requests
 import warnings
+from urllib.parse import urlparse
 warnings.filterwarnings("ignore")
 
 STATE_OK = 0
@@ -104,6 +107,10 @@ def main():
     if args.https_proxy:
         proxies["https"] = args.https_proxy
 
+    parsed = urlparse(args.url)
+    replaced = parsed._replace(netloc="{}:{}@{}".format(parsed.username, "???", parsed.hostname))
+    screened_url = replaced.geturl()
+
     try:
         response = requests.get(
             include_schema(
@@ -117,30 +124,30 @@ def main():
 
         if response.status_code not in expected_response_codes:
             print("CRITICAL: using URL {} expected HTTP status codes {} but got {}. {}".format(
-                args.url, expected_response_codes, response.status_code, response_time))
+                screened_url, expected_response_codes, response.status_code, response_time))
             sys.exit(STATE_CRITICAL)
 
         if response_seconds >= warning_seconds and response_seconds < critical_seconds:
             print("WARNING: using URL {} response seconds {} is more than warning threshold {} seconds. {}".format(
-                args.url, response_seconds, warning_seconds, response_time))
+                screened_url, response_seconds, warning_seconds, response_time))
             sys.exit(STATE_WARNING)
 
         if response_seconds >= critical_seconds:
             print("CRITICAL: using URL {} response seconds {} is more than critical threshold {} seconds. {}".format(
-                args.url, response_seconds, critical_seconds, response_time))
+                screened_url, response_seconds, critical_seconds, response_time))
             sys.exit(STATE_CRITICAL)
 
         print("OK: URL {} returned response code {}. {}".format(
-            args.url, response.status_code, response_time))
+            screened_url, response.status_code, response_time))
         sys.exit(STATE_OK)
 
     except requests.exceptions.Timeout:
         print("CRITICAL: Timeout in {} seconds to fetch from URL {}".format(
-            timeout_seconds, args.url))
+            timeout_seconds, screened_url))
         sys.exit(STATE_CRITICAL)
     except Exception as e:
         print("CRITICAL: Failed to fetch from URL {} with reason {}".format(
-            args.url, e))
+            screened_url, e))
         sys.exit(STATE_CRITICAL)
 
     sys.exit(STATE_OK)
