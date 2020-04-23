@@ -32,7 +32,14 @@
         pip_index_url: "{{ _zuul_mirrors.stdout_lines[1] | default('https://pypi.python.org/simple/') }}"
         pip_trusted_host: "{{ _zuul_mirrors.stdout_lines[2] | default('pypi.python.org') }}"
 
-    - name: Build base and requirements images
+    - name: Build base image
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "{{ zuul.project.src_dir }}"
+        docker_images: "{{ base_docker_image }}"
+
+    - name: Build base requirements image
       include_role:
         name: build-docker-image
       vars:
