@@ -1,41 +1,19 @@
-openstack-helm-images
-#####################
-:tags: openstack, cloud, helm
-:category: \*nix
+The source repository for this project can be found at:
 
-Contributor guidelines
-^^^^^^^^^^^^^^^^^^^^^^
+   https://opendev.org/openstack/openstack-helm-images
 
-If you would like to contribute to the development of OpenStack, you must
-follow the steps in this page:
+Pull requests submitted through GitHub are not monitored.
 
-   https://docs.openstack.org/infra/manual/developers.html
+To start contributing to OpenStack, follow the steps in the contribution guide
+to set up and use Gerrit:
 
-If you already have a good understanding of how the system works and your
-OpenStack accounts are set up, you can skip to the development workflow
-section of this documentation to learn how changes to OpenStack should be
-submitted for review via the Gerrit tool:
+   https://docs.openstack.org/contributors/code-and-documentation/quick-start.html
 
-   https://docs.openstack.org/infra/manual/developers.html#development-workflow
+Bugs should be filed on StoryBoard:
 
-Filing bugs or issues
----------------------
+   https://storyboard.openstack.org/#!/project/openstack/openstack-helm-images
 
-Bugs should be filed on Storyboard, not GitHub: `<https://storyboard.openstack.org/#!/project_group/64>`_.
+For more specific information about contributing to this repository, see the
+openstack-helm images contributor guide:
 
-When submitting a bug, or working on a bug, please ensure the following criteria are met:
-    * The description clearly states or describes the original problem or root cause of the problem.
-    * Include historical information on how the problem was identified.
-    * Any relevant logs are included.
-    * The provided information should be totally self-contained. External access to web services/sites should not be needed.
-    * If the issue is a bug that needs fixing in a branch other than Master, add the 'backport potential' tag TO THE ISSUE (not the PR).
-    * If the issue is needed for a hotfix release, add the 'expedite' label.
-    * Steps to reproduce the problem if possible.
-
-Submitting code
----------------
-
-Changes to the project should be submitted for review via the Gerrit tool, following
-the workflow documented at: "https://docs.openstack.org/infra/manual/developers.html#development-workflow"
-
-Pull requests submitted through GitHub will be ignored and closed without regard.
+   https://docs.openstack.org/openstack-helm-images/latest/contributor/contributing.html
