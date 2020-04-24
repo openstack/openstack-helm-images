@@ -6,7 +6,7 @@ sed -i -e 's/=nagiosadmin$/='*'/' ${NAGIOS_HOME}/etc/cgi.cfg
 echo "\$USER1\$=${NAGIOS_PLUGIN_DIR}" >> ${NAGIOS_HOME}/etc/resource.cfg
 if [ -n "$PROMETHEUS_SERVICE" ]; then
   # make unambiguous to remove duplicates
-  PROMETHEUS_SERVICE="$(sed 's/\(.*\):/\1.:/' <<<PROMETHEUS_SERVICE)"
+  PROMETHEUS_SERVICE="$(sed 's/\(.*\):/\1.:/' <<<$PROMETHEUS_SERVICE)"
   echo "\$USER2\$=${PROMETHEUS_SERVICE}" >> ${NAGIOS_HOME}/etc/resource.cfg
 fi
 if [ -n "$CEPH_METRICS_SERVICE" ]; then
@@ -32,7 +32,7 @@ else
 fi
 if [ -n "$ELASTICSEARCH_SERVICE" ]; then
   # make unambiguous to remove duplicates
-  ELASTICSEARCH_SERVICE="$(sed 's/\(.*\):/\1.:/' <<<ELASTICSEARCH_SERVICE)"
+  ELASTICSEARCH_SERVICE="$(sed 's/\(.*\):/\1.:/' <<<$ELASTICSEARCH_SERVICE)"
   echo "\$USER9\$=${ELASTICSEARCH_SERVICE}" >> ${NAGIOS_HOME}/etc/resource.cfg
 fi
 if [ -n "$CEPH_MGR_SERVICE" ]; then
