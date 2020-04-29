@@ -63,6 +63,7 @@ an overview of the build process for each container.
    :maxdepth: 2
    :caption: Contents:
 
+   contributor/contributing
    calicoctl-utility
    ceph-config-helper
    ceph-daemon

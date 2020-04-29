@@ -23,5 +23,8 @@ Release notes for the project can be found at:
 The project source code repository is located at:
 `<https://opendev.org/openstack/openstack-helm-images/>`_
 
-Bugs can be reported at:
-`<https://storyboard.openstack.org/#!/project_group/64>`_
+Contributing
+------------
+
+We welcome contributions. Check out `this <CONTRIBUTING.rst>`_ document if
+you would like to get involved.
