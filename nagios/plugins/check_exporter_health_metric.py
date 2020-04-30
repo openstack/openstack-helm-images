@@ -73,7 +73,7 @@ def main():
     if metrics:
         criticalMessages = []
         warningMessages = []
-        for key, value in metrics.iteritems():
+        for key, value in metrics.items():
             if value == args.critical:
                 criticalMessages.append("Critical: {metric_name} metric is a critical value of {metric_value}({detail})".format(
                                          metric_name=args.health_metric, metric_value=value, detail=key))

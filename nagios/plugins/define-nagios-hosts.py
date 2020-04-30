@@ -118,7 +118,7 @@ def update_config_file(object_file_loc):
 def get_nagios_hostgroups(node_list):
     hostgroup_labels = set()
     for host, labels in get_nagios_hostgroups_dictionary(
-            node_list).iteritems():
+            node_list).items():
         hostgroup_labels.update(labels)
 
     nagios_hostgroups = []
