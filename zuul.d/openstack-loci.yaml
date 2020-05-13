@@ -95,12 +95,24 @@
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
       # the macros named *_project apply project wide. Be careful
       # if editing those.
+      base_repository: "base"
+      ceph_repo: ""
+      ceph_key: ""
+      base_docker_image:
+        - &base_image
+          context: "zuul.d/playbooks/"
+          dockerfile: "Dockerfile_base"
+          repository: '{{ base_repository }}'
+          build_args:
+            - "FROM='{{ from }}'"
+            - "CEPH_REPO='{{ ceph_repo }}'"
+            - "CEPH_KEY='{{ ceph_key }}'"
       prep_docker_images:
         - &requirements_project
           context: "."
           repository: openstackhelm/requirements
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
@@ -109,7 +121,7 @@
           context: "."
           repository: openstackhelm/keystone
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='keystone'"
             - "PROJECT_REF={{ branchname }}"
@@ -123,7 +135,7 @@
           context: "."
           repository: openstackhelm/heat
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='heat'"
             - "PROJECT_REF={{ branchname }}"
@@ -135,7 +147,7 @@
           context: "."
           repository: openstackhelm/barbican
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='barbican'"
             - "PROJECT_REF={{ branchname }}"
@@ -146,7 +158,7 @@
           context: "."
           repository: openstackhelm/glance
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='glance'"
             - "PROJECT_REF={{ branchname }}"
@@ -158,7 +170,7 @@
           context: "."
           repository: openstackhelm/cinder
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='cinder'"
             - "PROJECT_REF={{ branchname }}"
@@ -170,7 +182,7 @@
           context: "."
           repository: openstackhelm/neutron
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
@@ -198,7 +210,7 @@
           context: "."
           repository: openstackhelm/nova
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='nova'"
             - "PROJECT_REF={{ branchname }}"
@@ -209,7 +221,7 @@
           context: "."
           repository: openstackhelm/horizon
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
@@ -220,7 +232,7 @@
           context: "."
           repository: openstackhelm/senlin
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='senlin'"
             - "PROJECT_REF={{ branchname }}"
@@ -231,7 +243,7 @@
           context: "."
           repository: openstackhelm/congress
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='congress'"
             - "PROJECT_REF={{ branchname }}"
@@ -243,7 +255,7 @@
           context: "."
           repository: openstackhelm/magnum
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='magnum'"
             - "PROJECT_REF={{ branchname }}"
@@ -254,7 +266,7 @@
           context: "."
           repository: openstackhelm/ironic
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='ironic'"
             - "PROJECT_REF={{ branchname }}"
@@ -266,7 +278,7 @@
           context: "."
           repository: openstackhelm/placement
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='placement'"
             - "PROJECT_REF={{ branchname }}"
@@ -318,6 +330,11 @@
       python3: "yes"
       #172.17.0.1 is default docker0 ip.
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-nautilus/bionic/ bionic main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -361,6 +378,11 @@
       from: "docker.io/ubuntu:18.04"
       python3: "yes"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-nautilus/bionic/ bionic main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -402,6 +424,11 @@
       from: "docker.io/ubuntu:18.04"
       python3: "yes"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-nautilus/bionic/ bionic main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -445,6 +472,11 @@
       from: "docker.io/ubuntu:18.04"
       python3: "yes"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-nautilus/bionic/ bionic main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -482,6 +514,11 @@
       from: "gcr.io/google_containers/ubuntu-slim:0.14"
       python3: "no"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -575,6 +612,11 @@
       from: "gcr.io/google_containers/ubuntu-slim:0.14"
       python3: "no"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -615,6 +657,11 @@
       from: "gcr.io/google_containers/ubuntu-slim:0.14"
       python3: "no"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - <<: *requirements_project
       docker_images:
@@ -656,11 +703,16 @@
       python3: "no"
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
       from: "gcr.io/google_containers/ubuntu-slim:0.14"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      base_docker_image:
+        - <<: *base_image
       prep_docker_images:
         - context: "."
           repository: openstackhelm/requirements
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
@@ -668,7 +720,7 @@
         - context: "."
           repository: openstackhelm/keystone
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='keystone'"
             - "PROJECT_REF={{ branchname }}"
@@ -679,7 +731,7 @@
         - context: "."
           repository: openstackhelm/heat
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='heat'"
             - "PROJECT_REF={{ branchname }}"
@@ -691,7 +743,7 @@
         - context: "."
           repository: openstackhelm/barbican
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='barbican'"
             - "PROJECT_REF={{ branchname }}"
@@ -702,7 +754,7 @@
         - context: "."
           repository: openstackhelm/glance
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='glance'"
             - "PROJECT_REF={{ branchname }}"
@@ -713,7 +765,7 @@
         - context: "."
           repository: openstackhelm/cinder
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='cinder'"
             - "PROJECT_REF={{ branchname }}"
@@ -724,7 +776,7 @@
         - context: "."
           repository: openstackhelm/neutron
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
@@ -750,7 +802,7 @@
         - context: "."
           repository: openstackhelm/nova
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='nova'"
             - "PROJECT_REF={{ branchname }}"
@@ -761,7 +813,7 @@
         - context: "."
           repository: openstackhelm/horizon
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
@@ -772,7 +824,7 @@
         - context: "."
           repository: openstackhelm/senlin
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='senlin'"
             - "PROJECT_REF={{ branchname }}"
@@ -783,7 +835,7 @@
         - context: "."
           repository: openstackhelm/congress
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='congress'"
             - "PROJECT_REF={{ branchname }}"
@@ -794,7 +846,7 @@
         - context: "."
           repository: openstackhelm/magnum
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='magnum'"
             - "PROJECT_REF={{ branchname }}"
@@ -805,7 +857,7 @@
         - context: "."
           repository: openstackhelm/ironic
           build_args:
-            - "FROM='{{ from }}'"
+            - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='ironic'"
             - "PROJECT_REF={{ branchname }}"
