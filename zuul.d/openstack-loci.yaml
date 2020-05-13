@@ -175,6 +175,7 @@
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent linuxbridge openvswitch'"
+            - "PIP_PACKAGES='tap-as-a-service'"
             - "DIST_PACKAGES='jq'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
@@ -187,6 +188,7 @@
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent neutron linuxbridge openvswitch'"
+            - "PIP_PACKAGES='tap-as-a-service'"
             - "DIST_PACKAGES='ethtool lshw'"
             - "WHEELS='{{ wheels_location }}'"
           tags:
