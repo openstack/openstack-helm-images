@@ -188,7 +188,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent linuxbridge openvswitch'"
             - "PIP_PACKAGES='tap-as-a-service'"
-            - "DIST_PACKAGES='jq'"
+            - "DIST_PACKAGES='jq ethtool lshw'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
         - &neutron_sriov_project
