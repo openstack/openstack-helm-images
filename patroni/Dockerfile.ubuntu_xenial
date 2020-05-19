@@ -8,7 +8,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update -y \
     && apt-get upgrade -y \
     && apt-cache depends patroni | sed -n -e 's/.* Depends: \(python3-.\+\)$/\1/p' \
-            | grep -Ev '^python3-(sphinx|etcd|consul|kazoo|kubernetes)' \
+            | grep -Ev '^python3-(sphinx|etcd|consul|kazoo|kubernetes|urllib3|requests)' \
             | xargs apt-get install -y vim-tiny curl jq locales git python3-pip python3-wheel \
     ## Make sure we have a en_US.UTF-8 locale available
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
