@@ -1,9 +1,9 @@
 ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
-# Nautilus 14.2.8
+# Nautilus 14.2.9
 ARG CEPH_RELEASE=nautilus
-ARG CEPH_RELEASE_TAG=14.2.8-1.0~bionic
+ARG CEPH_RELEASE_TAG=14.2.9-1.0~bionic
 ARG KUBE_VERSION=1.16.2
 
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/
