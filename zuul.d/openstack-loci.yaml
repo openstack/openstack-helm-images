@@ -25,6 +25,7 @@
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
     gate:
       jobs:
@@ -36,6 +37,7 @@
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
     promote:
       jobs:
@@ -47,6 +49,7 @@
         - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
     periodic:
       jobs:
@@ -58,6 +61,7 @@
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
 
 ################
@@ -361,6 +365,53 @@
     description: Promote previously published LOCI master bionic images
     vars: *build_master_bionic_images
     files: *loci-files
+
+##########
+# USSURI #
+##########
+
+- job:
+    name: openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
+    description: Build LOCI ussuri bionic images
+    parent: openstack-helm-images-build-openstack-loci-master
+    vars: &build_ussuri_bionic_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/ussuri"
+      shortbranchname: "ussuri"
+      distroname: "ubuntu_bionic"
+      from: "docker.io/ubuntu:18.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-nautilus/bionic/ bionic main"
+      ceph_key: "https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *requirements_project
+      docker_images:
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI ussuri bionic images
+    vars: *build_ussuri_bionic_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI ussuri bionic images
+    vars: *build_ussuri_bionic_images
 
 #########
 # TRAIN #
