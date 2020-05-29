@@ -17,7 +17,6 @@ neutron_pip_packages=${neutron_pip_packages:-"''"}
 nova_pip_packages=${nova_pip_packages:-"''"}
 horizon_pip_packages=${horizon_pip_packages:-"''"}
 senlin_pip_packages=${senlin_pip_packages:-"''"}
-congress_pip_packages=${congress_pip_packages:-"'python-congressclient'"}
 magnum_pip_packages=${magnum_pip_packages:-"''"}
 ironic_pip_packages=${ironic_pip_packages:-"''"}
 neutron_sriov_pip_packages=${neutron_sriov_pip_packages:-"''"}
