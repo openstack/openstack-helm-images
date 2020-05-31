@@ -56,8 +56,9 @@ project = u'OpenStack Helm Images Release Notes'
 copyright = u'2018, OpenStack Developers'
 
 # openstackdocstheme options
-repository_name = 'openstack/openstack-helm-images'
-use_storyboard = True
+openstackdocs_repo_name = 'openstack/openstack-helm-images'
+openstackdocs_auto_name = False
+openstackdocs_use_storyboard = True
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -99,7 +100,7 @@ exclude_patterns = []
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
