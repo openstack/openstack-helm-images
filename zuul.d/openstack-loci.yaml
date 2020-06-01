@@ -243,18 +243,6 @@
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
-        - &congress_project
-          context: "."
-          repository: openstackhelm/congress
-          build_args:
-            - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
-            - "PROJECT='congress'"
-            - "PROJECT_REF={{ branchname }}"
-            - "PROFILES='fluent'"
-            - "PIP_PACKAGES='python-congressclient'"
-            - "WHEELS='{{ wheels_location }}'"
-          tags: *imagetag
         - &magnum_project
           context: "."
           repository: openstackhelm/magnum
@@ -881,17 +869,6 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
             - "PIP_PACKAGES='pycrypto'"
-            - "WHEELS='{{ wheels_location }}'"
-          tags: *imagetag
-        - context: "."
-          repository: openstackhelm/congress
-          build_args:
-            - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
-            - "PROJECT='congress'"
-            - "PROJECT_REF={{ branchname }}"
-            - "PROFILES='fluent'"
-            - "PIP_PACKAGES='pycrypto python-congressclient'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
         - context: "."

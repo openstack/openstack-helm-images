@@ -26,8 +26,6 @@ horizon_profiles=${horizon_profiles:-"'horizon apache'"}
 horizon_pip_packages=${horizon_pip_packages:-"pycrypto"}
 senlin_profiles=${senlin_profiles:-"'senlin'"}
 senlin_pip_packages=${senlin_pip_packages:-"pycrypto"}
-congress_profiles=${congress_profiles:-"'congress'"}
-congress_pip_packages=${congress_pip_packages:-"'pycrypto python-congressclient'"}
 magnum_profiles=${magnum_profiles:-"'magnum'"}
 magnum_pip_packages=${magnum_pip_packages:-"pycrypto"}
 ironic_profiles=${ironic_profiles:-"'ironic ipxe ipmi qemu tftp'"}
@@ -39,6 +37,6 @@ neutron_sriov_profiles=${neutron_sriov_profiles:-"'neutron linuxbridge openvswit
 neutron_sriov_pip_packages=${neutron_sriov_pip_packages:-"pycrypto"}
 neutron_sriov_dist_packages=${neutron_sriov_dist_packages:-"'ethtool lshw'"}
 neutron_sriov_extra_tag=${neutron_sriov_extra_tag:-'-sriov-1804'}
-BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder neutron neutron_sriov nova horizon senlin congress magnum ironic'}
+BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder neutron neutron_sriov nova horizon senlin magnum ironic'}
 
 source ${SCRIPT_DIR}/build.sh

@@ -202,8 +202,6 @@ horizon_profiles=${horizon_profiles:-"'fluent apache'"}
 horizon_pip_packages=${horizon_pip_packages:-"pycrypto"}
 senlin_profiles=${senlin_profiles:-"fluent"}
 senlin_pip_packages=${senlin_pip_packages:-"pycrypto"}
-congress_profiles=${congress_profiles:-"fluent"}
-congress_pip_packages=${congress_pip_packages:-"'pycrypto python-congressclient'"}
 magnum_profiles=${magnum_profiles:-"fluent"}
 magnum_pip_packages=${magnum_pip_packages:-"pycrypto"}
 ironic_profiles=${ironic_profiles:-"'fluent ipxe ipmi qemu tftp'"}
@@ -265,7 +263,7 @@ else
     LOCI_ARG_FROM="${BASE_IMAGE}"
 fi
 
-BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder neutron neutron_sriov nova horizon senlin congress magnum ironic'}
+BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder neutron neutron_sriov nova horizon senlin magnum ironic'}
 projects=( ${BUILD_PROJECTS} )
 
 pushd ${LOCI_SRC_DIR}
