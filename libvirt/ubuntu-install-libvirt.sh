@@ -4,10 +4,11 @@ export DEBIAN_FRONTEND=noninteractive ;\
 apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
 rm -f /etc/apt/ceph-${CEPH_RELEASE}.key ;\
 echo "deb ${CEPH_REPO} ${UBUNTU_RELEASE} main" | tee /etc/apt/sources.list.d/ceph.list ;\
+if [ -z "${CEPH_RELEASE_TAG}" ]; then ceph="ceph-common"; else ceph="ceph-common=${CEPH_RELEASE_TAG}"; fi ;\
 apt-get update ;\
 apt-get upgrade -y ;\
 apt-get install --no-install-recommends -y \
-  ceph-common \
+  ${ceph} \
   cgroup-tools \
   dmidecode \
   ebtables \

@@ -4,6 +4,7 @@ LABEL maintainer="pete.birley@att.com"
 
 ARG UBUNTU_RELEASE=bionic
 ARG CEPH_RELEASE=mimic
+ARG CEPH_RELEASE_TAG=""
 ARG PROJECT=nova
 ARG UID=42424
 ARG GID=42424
@@ -18,6 +19,8 @@ RUN set -ex ;\
     apt-get update ;\
     apt-get upgrade -y ;\
     apt-get install --no-install-recommends -y \
+      apt-transport-https \
+      ca-certificates \
       gnupg ;\
     /tmp/ubuntu-install-libvirt.sh ;\
     rm -rf /tmp/*
