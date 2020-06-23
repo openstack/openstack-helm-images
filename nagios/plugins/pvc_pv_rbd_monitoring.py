@@ -4,11 +4,10 @@ import sys
 import subprocess
 import argparse
 import ast
-
-import json
 import logging
 import logging.handlers
 import os
+import json
 
 from kubernetes import client
 from kubernetes import config
@@ -153,10 +152,17 @@ def monitoring_pvc(api_instance):
     pvs = get_pv_list(api_instance)
     return_code = 0
     for pv in pvs:
-        rbd = pv.spec.rbd.image
-        if rbd not in rbds:
-            print ("pvc_doesnot_have_rbd:{{namespace={},name={}}} 0".format(ns, pv['metadata']['name']))
-            return_code = 1
+        if pv.spec.rbd is None:
+            continue
+        else:
+            rbd = pv.spec.rbd.image
+            if rbd not in rbds:
+              getallpvc=get_pvc_list(api_instance)
+              for getpvc in getallpvc:
+                 if getpvc.spec.volume_name == pv.metadata.name:
+                      ns=getpvc.metadata.namespace
+              print ("WARNING: pvc_doesnot_have_rbd:{{namespace={},name={}}} 0".format(ns, pv.metadata.name))
+              return_code = 1
     return return_code
 
 def monitoring_rbd(api_instance):
@@ -166,13 +172,16 @@ def monitoring_rbd(api_instance):
     pvs = get_pv_list(api_instance)
     return_code = 0
     for pv in pvs:
-        rbd = pv.spec.rbd.image
-        rbds.append(rbd)
+        if pv.spec.rbd is None:
+            continue
+        else:
+            rbd = pv.spec.rbd.image
+            rbds.append(rbd)
     logger.debug(rbd)
     for i in r:
         if i not in rbds:
             logger.debug("rbd {i} not in pv list".format(i=i))
-            print ("rbd_doesnot_have_pvc:{{name={}}} {}".format(i, len(json.loads(check_rbd_status(api_instance,i))['watchers'])))
+            print ("WARNING: rbd_doesnot_have_pvc:{{name={}}} {}".format(i, len(json.loads(check_rbd_status(api_instance,i))['watchers'])))
             return_code = 1
     return return_code
 
@@ -182,7 +191,7 @@ def monitoring_pv(api_instance):
     return_code = 0
     for pv in pvs:
         if pv.status.phase == "Released":
-            print ("pv_released:{{name={},status={}}} 0".format(pv.metadatai.name, pv.status.phase))
+            print ("WARNING: pv_released:{{name={},status={}}} 0".format(pv.metadata.name, pv.status.phase))
             return_code = 1
     return return_code
 
@@ -204,7 +213,8 @@ def main():
     options = parse_args()
     setup_logging(options)
 
-    config.load_kube_config()
+    #config.load_kube_config()
+    config.load_incluster_config()
     kube_api = client.CoreV1Api()
 
     if options.all:
