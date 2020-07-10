@@ -35,8 +35,15 @@
         #- openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
+
         - openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+        - openstack-helm-images-compute-kit-openstack-loci-stein-ubuntu_bionic
+        - openstack-helm-images-cinder-openstack-loci-stein-ubuntu_bionic
+
         - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-compute-kit-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-cinder-openstack-loci-train-ubuntu_bionic
+
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
     promote:
@@ -275,7 +282,7 @@
             - "PROJECT='placement'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='apache'"
-            - "PIP_PACKAGES='httplib2 pycrypto'"
+            - "PIP_PACKAGES='httplib2'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
     files: &loci-files
@@ -447,6 +454,24 @@
     description: Promote previously published LOCI train bionic images
     vars: *build_train_bionic_images
 
+- job:
+    name: openstack-helm-images-compute-kit-openstack-loci-train-ubuntu_bionic
+    parent: openstack-helm-compute-kit-train-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+    description: Deploy compute kit with train review images
+    files: *loci-files
+    vars: *build_train_bionic_images
+
+- job:
+    name: openstack-helm-images-cinder-openstack-loci-train-ubuntu_bionic
+    parent: openstack-helm-cinder-train-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+    description: Deploy cinder with train review images
+    files: *loci-files
+    vars: *build_train_bionic_images
+
 #########
 # STEIN #
 #########
@@ -490,6 +515,24 @@
     name: openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic
     parent: openstack-helm-images-promote-openstack-loci-master
     description: Promote previously published LOCI stein bionic images
+    vars: *build_stein_bionic_images
+
+- job:
+    name: openstack-helm-images-compute-kit-openstack-loci-stein-ubuntu_bionic
+    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+    description: Deploy compute kit with stein review images
+    files: *loci-files
+    vars: *build_stein_bionic_images
+
+- job:
+    name: openstack-helm-images-cinder-openstack-loci-stein-ubuntu_bionic
+    parent: openstack-helm-cinder-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+    description: Deploy cinder with stein review images
+    files: *loci-files
     vars: *build_stein_bionic_images
 
 #########
