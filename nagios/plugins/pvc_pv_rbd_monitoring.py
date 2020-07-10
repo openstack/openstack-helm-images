@@ -219,16 +219,28 @@ def main():
 
     if options.all:
         logger.debug("all")
-        sys.exit(monitoring(kube_api))
+        status = monitoring(kube_api)
+        if status == 0:
+            print ("OK: All are okay")
+        sys.exit(status)
     if options.rbd:
         logger.debug("rbd")
-        sys.exit(monitoring_rbd(kube_api))
+        status = monitoring_rbd(kube_api)
+        if status == 0:
+            print ("OK: RBD is okay")
+        sys.exit(status)
     if options.pvc:
         logger.debug("pvc")
-        sys.exit(monitoring_pvc(kube_api))
+        status = monitoring_pvc(kube_api)
+        if status == 0:
+           print ("OK: PVC is okay")
+        sys.exit(status)
     if options.pv:
         logger.debug("pv")
-        sys.exit(monitoring_pv(kube_api))
+        status = monitoring_pv(kube_api)
+        if status == 0:
+           print ("OK: PV is okay")
+        sys.exit(status)
 
 if __name__ == "__main__":
     main()
