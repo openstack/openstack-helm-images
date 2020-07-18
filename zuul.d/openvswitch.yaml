@@ -34,18 +34,18 @@
     vars: &openvswitch_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        - context: openvswitch
-          repository: openstackhelm/openvswitch
-          tags:
-            - latest-opensuse_15
-            - "opensuse_15-{{ currentdate }}"
-          dockerfile: Dockerfile.suse_15
-        - context: openvswitch
-          repository: openstackhelm/openvswitch
-          tags:
-            - latest-opensuse_15-dpdk
-            - "opensuse_15-dpdk-{{ currentdate }}"
-          dockerfile: Dockerfile.suse_15-dpdk
+        #- context: openvswitch
+        #  repository: openstackhelm/openvswitch
+        #  tags:
+        #    - latest-opensuse_15
+        #    - "opensuse_15-{{ currentdate }}"
+        #  dockerfile: Dockerfile.suse_15
+        #- context: openvswitch
+        #  repository: openstackhelm/openvswitch
+        #  tags:
+        #    - latest-opensuse_15-dpdk
+        #    - "opensuse_15-dpdk-{{ currentdate }}"
+        #  dockerfile: Dockerfile.suse_15-dpdk
         - context: openvswitch
           repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.debian

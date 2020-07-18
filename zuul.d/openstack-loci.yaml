@@ -19,8 +19,6 @@
         - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-rocky-opensuse_15:
-            voting: false
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
@@ -32,7 +30,6 @@
         - openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
-        #- openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
 
@@ -51,7 +48,6 @@
         - openstack-helm-images-promote-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial
-        #- openstack-helm-images-promote-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic
@@ -63,7 +59,6 @@
         - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-rocky-opensuse_15
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic

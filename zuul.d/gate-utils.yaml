@@ -34,12 +34,12 @@
     vars: &gate-utils_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        - context: gate-utils
-          repository: openstackhelm/gate-utils
-          tags:
-            - latest-opensuse_15
-            - "opensuse_15-{{ currentdate }}"
-          dockerfile: Dockerfile.suse_15
+        #- context: gate-utils
+        #  repository: openstackhelm/gate-utils
+        #  tags:
+        #    - latest-opensuse_15
+        #    - "opensuse_15-{{ currentdate }}"
+        #  dockerfile: Dockerfile.suse_15
         - context: gate-utils
           repository: openstackhelm/gate-utils
           dockerfile: Dockerfile.debian

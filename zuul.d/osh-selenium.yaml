@@ -40,12 +40,12 @@
           tags:
             - latest-ubuntu_bionic
             - "ubuntu_bionic-{{ currentdate }}"
-        - context: osh-selenium
-          repository: openstackhelm/osh-selenium
-          dockerfile: Dockerfile.opensuse_15
-          tags:
-            - latest-opensuse_15
-            - "opensuse_15-{{ currentdate }}"
+        #- context: osh-selenium
+        #  repository: openstackhelm/osh-selenium
+        #  dockerfile: Dockerfile.opensuse_15
+        #  tags:
+        #    - latest-opensuse_15
+        #    - "opensuse_15-{{ currentdate }}"
     files: &osh-selenium_files
       - osh-selenium/.*
       - zuul.d/osh-selenium.yaml
