@@ -34,12 +34,12 @@
     vars: &vbmc_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        - context: vbmc
-          repository: openstackhelm/vbmc
-          tags:
-            - latest-opensuse_15
-            - "opensuse_15-{{ currentdate }}"
-          dockerfile: Dockerfile.suse_15
+        #- context: vbmc
+        #  repository: openstackhelm/vbmc
+        #  tags:
+        #    - latest-opensuse_15
+        #    - "opensuse_15-{{ currentdate }}"
+        #  dockerfile: Dockerfile.suse_15
         - context: vbmc
           repository: openstackhelm/vbmc
           dockerfile: Dockerfile.centos_7
