@@ -20,6 +20,12 @@
     gate:
       jobs:
         - openstack-helm-images-upload-mariadb
+        - openstack-helm-images-compute-kit-stein-mariadb:
+            dependencies:
+              - name: openstack-helm-images-upload-mariadb
+        - openstack-helm-images-compute-kit-train-mariadb:
+            dependencies:
+              - name: openstack-helm-images-upload-mariadb
     promote:
       jobs:
         - openstack-helm-images-promote-mariadb
@@ -55,5 +61,23 @@
     name: openstack-helm-images-promote-mariadb
     parent: openstack-helm-images-promote
     description: Promote a previously published mariadb image to latest.
+    vars: *mariadb_vars
+    files: *mariadb_files
+
+- job:
+    name: openstack-helm-images-compute-kit-stein-mariadb
+    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-mariadb
+    description: Deploy stein compute kit with mariadb proposed image
+    vars: *mariadb_vars
+    files: *mariadb_files
+
+- job:
+    name: openstack-helm-images-compute-kit-train-mariadb
+    parent: openstack-helm-compute-kit-train-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-mariadb
+    description: Deploy train compute kit with mariadb proposed image
     vars: *mariadb_vars
     files: *mariadb_files

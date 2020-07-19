@@ -18,6 +18,9 @@
     gate:
       jobs:
         - openstack-helm-images-upload-node-problem-detector
+        - openstack-helm-images-aio-monitoring-node-problem-detector:
+            dependencies:
+              - name: openstack-helm-images-upload-node-problem-detector
     promote:
       jobs:
         - openstack-helm-images-promote-node-problem-detector
@@ -53,5 +56,14 @@
     name: openstack-helm-images-promote-node-problem-detector
     parent: openstack-helm-images-promote
     description: Promote a previously published Node Problem Detector image.
+    vars: *node-problem-detector_vars
+    files: *node-problem-detector_files
+
+- job:
+    name: openstack-helm-images-aio-monitoring-node-problem-detector
+    parent: openstack-helm-infra-aio-monitoring
+    dependencies:
+      - name: openstack-helm-images-upload-node-problem-detector
+    description: Deploy aio monitoring with node-problem-detector proposed image
     vars: *node-problem-detector_vars
     files: *node-problem-detector_files

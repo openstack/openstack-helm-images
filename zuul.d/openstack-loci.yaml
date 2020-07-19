@@ -454,7 +454,7 @@
     parent: openstack-helm-compute-kit-train-ubuntu_bionic
     dependencies:
       - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
-    description: Deploy compute kit with train review images
+    description: Deploy compute kit with train proposed images
     files: *loci-files
     vars: *build_train_bionic_images
 
@@ -463,7 +463,7 @@
     parent: openstack-helm-cinder-train-ubuntu_bionic
     dependencies:
       - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
-    description: Deploy cinder with train review images
+    description: Deploy cinder with train proposed images
     files: *loci-files
     vars: *build_train_bionic_images
 
@@ -517,7 +517,7 @@
     parent: openstack-helm-compute-kit-stein-ubuntu_bionic
     dependencies:
       - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
-    description: Deploy compute kit with stein review images
+    description: Deploy compute kit with stein proposed images
     files: *loci-files
     vars: *build_stein_bionic_images
 
@@ -526,7 +526,7 @@
     parent: openstack-helm-cinder-stein-ubuntu_bionic
     dependencies:
       - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
-    description: Deploy cinder with stein review images
+    description: Deploy cinder with stein proposed images
     files: *loci-files
     vars: *build_stein_bionic_images
 

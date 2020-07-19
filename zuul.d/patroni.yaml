@@ -20,6 +20,9 @@
     gate:
       jobs:
         - openstack-helm-images-upload-patroni
+        - openstack-helm-images-aio-monitoring-patroni:
+            dependencies:
+              - name: openstack-helm-images-upload-patroni
     promote:
       jobs:
         - openstack-helm-images-promote-patroni
@@ -55,5 +58,14 @@
     name: openstack-helm-images-promote-patroni
     parent: openstack-helm-images-promote
     description: Promote a previously published patroni image to latest.
+    vars: *patroni_vars
+    files: *patroni_files
+
+- job:
+    name: openstack-helm-images-aio-monitoring-patroni
+    parent: openstack-helm-infra-aio-monitoring
+    dependencies:
+      - name: openstack-helm-images-upload-patroni
+    description: Deploy aio monitoring with proposed patroni image
     vars: *patroni_vars
     files: *patroni_files

@@ -20,6 +20,9 @@
     gate:
       jobs:
         - openstack-helm-images-upload-ospurge
+        - openstack-helm-images-compute-kit-ospurge:
+            dependencies:
+              - name: openstack-helm-images-upload-ospurge
     promote:
       jobs:
         - openstack-helm-images-promote-ospurge
@@ -55,5 +58,14 @@
     name: openstack-helm-images-promote-ospurge
     parent: openstack-helm-images-promote
     description: Promote a previously published ospurge image to latest.
+    vars: *ospurge_vars
+    files: *ospurge_files
+
+- job:
+    name: openstack-helm-images-compute-kit-ospurge
+    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-upload-ospurge
+    description: Deploy stein compute-kit with ospurge proposed image
     vars: *ospurge_vars
     files: *ospurge_files

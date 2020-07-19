@@ -18,6 +18,9 @@
     gate:
       jobs:
         - openstack-helm-images-upload-fluentd
+        - openstack-helm-images-aio-logging-fluentd:
+            dependencies:
+              - name: openstack-helm-images-upload-fluentd
     promote:
       jobs:
         - openstack-helm-images-promote-fluentd
@@ -53,5 +56,14 @@
     name: openstack-helm-images-promote-fluentd
     parent: openstack-helm-images-promote
     description: Promote a previously published fluentd image to latest.
+    vars: *fluentd_vars
+    files: *fluentd_files
+
+- job:
+    name: openstack-helm-images-aio-logging-fluentd
+    parent: openstack-helm-infra-aio-logging
+    dependencies:
+      - name: openstack-helm-images-upload-fluentd
+    description: Deploy aio logging with fluentd proposed image
     vars: *fluentd_vars
     files: *fluentd_files

@@ -18,6 +18,9 @@
     gate:
       jobs:
         - openstack-helm-images-upload-elasticsearch-s3
+        - openstack-helm-images-aio-logging-elasticsearch-s3:
+            dependencies:
+              - name: openstack-helm-images-upload-elasticsearch-s3
     promote:
       jobs:
         - openstack-helm-images-promote-elasticsearch-s3
@@ -59,5 +62,14 @@
     name: openstack-helm-images-promote-elasticsearch-s3
     parent: openstack-helm-images-promote
     description: Promote a previously published s3 compatible elasticsearch image to latest.
+    vars: *elasticsearch-s3_vars
+    files: *elasticsearch-s3_files
+
+- job:
+    name: openstack-helm-images-aio-logging-elasticsearch-s3
+    parent: openstack-helm-infra-aio-logging
+    dependencies:
+      - name: openstack-helm-images-upload-elasticsearch-s3
+    description: Deploy aio logging with elasticsearch-s3 proposed image
     vars: *elasticsearch-s3_vars
     files: *elasticsearch-s3_files
