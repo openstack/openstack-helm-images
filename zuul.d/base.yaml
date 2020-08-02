@@ -24,6 +24,16 @@
         - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-stein-ubuntu_bionic
+    gate:
+      jobs:
+        - opendev-buildset-registry
+        - openstack-helm-images-aio-monitoring
+        - openstack-helm-images-aio-logging
+        - openstack-helm-images-compute-kit-stein-ubuntu_bionic
+        - openstack-helm-images-compute-kit-train-ubuntu_bionic
+        - openstack-helm-images-cinder-stein-ubuntu_bionic
+        - openstack-helm-images-cinder-train-ubuntu_bionic
+        - openstack-helm-images-horizon-stein-ubuntu_bionic
     templates:
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
@@ -64,7 +74,9 @@
 # `dockerfile`. Explicit.
 - job:
     name: openstack-helm-images-build
-    parent: opendev-build-docker-image
+    parent: build-docker-image
+    run: zuul.d/playbooks/build.yml
+    match-on-config-updates: false
     dependencies:
       - name: opendev-buildset-registry
     abstract: true
@@ -92,6 +104,10 @@
 - job:
     name: openstack-helm-images-upload
     parent: upload-docker-image
+    run: zuul.d/playbooks/build.yml
+    match-on-config-updates: false
+    dependencies:
+      - name: opendev-buildset-registry
     abstract: true
     ansible-version: 2.8
     secrets:
@@ -102,7 +118,7 @@
 
 - job:
     name: openstack-helm-images-promote
-    parent: opendev-promote-docker-image
+    parent: promote-docker-image
     abstract: true
     ansible-version: 2.8
     secrets:
@@ -116,6 +132,7 @@
 - job:
     name: openstack-helm-images-aio-monitoring
     parent: openstack-helm-infra-aio-monitoring
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-prometheus-openstack-exporter
         soft: true
@@ -130,6 +147,20 @@
       - name: openstack-helm-images-build-minikube-aio
         soft: true
       - name: openstack-helm-images-build-alerta
+        soft: true
+      - name: openstack-helm-images-upload-prometheus-openstack-exporter
+        soft: true
+      - name: openstack-helm-images-upload-patroni
+        soft: true
+      - name: openstack-helm-images-upload-osh-selenium
+        soft: true
+      - name: openstack-helm-images-upload-node-problem-detector
+        soft: true
+      - name: openstack-helm-images-upload-nagios
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-alerta
         soft: true
     files:
       - prometheus-openstack-exporter/.*
@@ -150,6 +181,7 @@
 - job:
     name: openstack-helm-images-aio-logging
     parent: openstack-helm-infra-aio-logging
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-fluentd
         soft: true
@@ -158,6 +190,14 @@
       - name: openstack-helm-images-build-osh-selenium
         soft: true
       - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-fluentd
+        soft: true
+      - name: openstack-helm-images-upload-elasticsearch-s3
+        soft: true
+      - name: openstack-helm-images-upload-osh-selenium
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - fluentd/.*
@@ -172,6 +212,7 @@
 - job:
     name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
     parent: openstack-helm-compute-kit-stein-ubuntu_bionic
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-ospurge
         soft: true
@@ -184,6 +225,18 @@
       - name: openstack-helm-images-build-libvirt
         soft: true
       - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-ospurge
+        soft: true
+      - name: openstack-helm-images-upload-openvswitch
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-libvirt
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - ospurge/.*
@@ -202,6 +255,7 @@
 - job:
     name: openstack-helm-images-compute-kit-train-ubuntu_bionic
     parent: openstack-helm-compute-kit-train-ubuntu_bionic
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-openvswitch
         soft: true
@@ -212,6 +266,16 @@
       - name: openstack-helm-images-build-libvirt
         soft: true
       - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-openvswitch
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-libvirt
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - openvswitch/.*
@@ -228,10 +292,15 @@
 - job:
     name: openstack-helm-images-cinder-stein-ubuntu_bionic
     parent: openstack-helm-cinder-stein-ubuntu_bionic
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
         soft: true
       - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - ^openstack/loci/.*
@@ -242,10 +311,15 @@
 - job:
     name: openstack-helm-images-cinder-train-ubuntu_bionic
     parent: openstack-helm-cinder-train-ubuntu_bionic
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
         soft: true
       - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - ^openstack/loci/.*
@@ -258,12 +332,19 @@
 - job:
     name: openstack-helm-images-horizon-stein-ubuntu_bionic
     parent: openstack-helm-horizon-stein-ubuntu_bionic
+    match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-osh-selenium
         soft: true
       - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
         soft: true
       - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-osh-selenium
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - osh-selenium/.*

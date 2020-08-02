@@ -1,0 +1,21 @@
+- hosts: all
+  pre_tasks:
+    - name: Use buildset registry
+      include_role:
+        name: use-buildset-registry
+    - name: Write buildset registry TLS certificate
+      include_tasks: _write-buildset-registry-cert.yml
+  roles:
+    - build-docker-image
+  tasks:
+    - name: Return images to zuul
+      include_tasks: _return-image.yml
+      loop: "{{ docker_images }}"
+      loop_control:
+        loop_var: zj_image
+    - name: Pause the job
+      when: buildset_registry is defined and zuul.pipeline != 'check'
+      zuul_return:
+        data:
+          zuul:
+            pause: true
