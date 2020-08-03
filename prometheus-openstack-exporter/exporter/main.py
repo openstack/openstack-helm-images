@@ -111,6 +111,7 @@ if __name__ == '__main__':
         'OS_USER_DOMAIN_NAME',
         os.getenv('OS_USER_DOMAIN_NAME'))
     os_region = config.get('OS_REGION_NAME', os.getenv('OS_REGION_NAME'))
+    os_cacert = config.get('OS_CACERT', os.getenv('OS_CACERT'))
     os_timeout = config.get(
         'TIMEOUT_SECONDS', int(
             os.getenv(
@@ -136,6 +137,7 @@ if __name__ == '__main__':
         os_username,
         os_user_domain,
         os_region,
+        os_cacert,
         os_timeout,
         os_retries)
     oscache = OSCache(os_polling_interval, os_region)

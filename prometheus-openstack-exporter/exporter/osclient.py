@@ -38,6 +38,7 @@ class OSClient(object):
             username,
             user_domain,
             region,
+            verify,
             timeout,
             retries):
         self.keystone_url = keystone_url
@@ -51,6 +52,8 @@ class OSClient(object):
         self.token = None
         self.valid_until = None
         self.session = requests.Session()
+        if verify is not None:
+            self.session.verify = verify
         self.session.mount(
             'http://', requests.adapters.HTTPAdapter(max_retries=retries))
         self.session.mount(
