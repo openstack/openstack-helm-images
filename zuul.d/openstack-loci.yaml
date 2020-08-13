@@ -902,7 +902,7 @@
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
-            - "PIP_PACKAGES='pycrypto'"
+            - "PIP_PACKAGES='pycrypto heat-dashboard'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
         - context: "."
