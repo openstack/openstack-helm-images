@@ -1,17 +1,16 @@
 ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
-RUN apt-get -y update \
-        && apt-get install --no-install-recommends -y python3 python3-pip unzip wget gnupg \
-        && python3 -m pip install --upgrade pip \
-        && python3 -m pip install selenium
-
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-        && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-        && wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip \
-        && unzip /tmp/chromedriver_linux64.zip -d /etc/selenium
-
-RUN apt-get -y update \
-        && apt-get install --no-install-recommends -y google-chrome-stable \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/*
+RUN set -xe; \
+    apt-get -y update; \
+    apt-get install --no-install-recommends -y python3 python3-pip unzip wget gnupg; \
+    python3 -m pip install --upgrade pip; \
+    python3 -m pip install selenium; \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -; \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'; \
+    wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip; \
+    unzip /tmp/chromedriver_linux64.zip -d /etc/selenium; \
+    apt-get -y update; \
+    apt-get install --no-install-recommends -y google-chrome-stable; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/*

@@ -3,19 +3,19 @@ FROM ${FROM}
 LABEL maintainer="cloud-devel@suse.com"
 
 COPY linux_signing_key.pub /tmp/
-RUN rpm --import /tmp/linux_signing_key.pub
-RUN rm /tmp/linux_signing_key.pub
-
-RUN zypper --non-interactive addrepo http://dl.google.com/linux/chrome/rpm/stable/x86_64 google_chrome
-
 RUN set -ex ;\
+    rpm --import /tmp/linux_signing_key.pub ;\
+    rm /tmp/linux_signing_key.pub ;\
+    zypper --non-interactive addrepo http://dl.google.com/linux/chrome/rpm/stable/x86_64 google_chrome ;\
     zypper --non-interactive refresh ;\
     zypper --non-interactive up -y ;\
-    zypper --non-interactive install -y python-pip unzip wget google-chrome-stable
-
-RUN /usr/bin/pip install selenium
-
-RUN wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip \
-    && unzip /tmp/chromedriver_linux64.zip -d /etc/selenium
-
-RUN zypper clean -a
+    zypper --non-interactive install -y \
+      python-pip \
+      unzip \
+      wget \
+      google-chrome-stable ;\
+    /usr/bin/pip install \
+      selenium ;\
+    wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip ;\
+    unzip /tmp/chromedriver_linux64.zip -d /etc/selenium ;\
+    zypper clean -a
