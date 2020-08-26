@@ -21,6 +21,7 @@
 import argparse
 import sys
 import requests
+import re
 
 STATE_OK = 0
 STATE_WARNING = 1
@@ -145,16 +146,16 @@ def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
         response_json = response.json()
     except requests.exceptions.Timeout:
         error_messages.append(
-            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(prometheus_api, timeout))
+            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(clean_api_address(prometheus_api) , timeout))
     except requests.exceptions.ConnectionError:
         error_messages.append(
-            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(prometheus_api))
+            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(clean_api_address(prometheus_api)))
     except requests.exceptions.RequestException:
         error_messages.append(
-            "ERROR:  Prometheus api connection failed, using URL {}".format(prometheus_api))
+            "ERROR:  Prometheus api connection failed, using URL {}".format(clean_api_address(prometheus_api)))
     except Exception as e:
         error_messages.append(
-            "ERROR while invoking prometheus api using URL {}, got error: {}".format(prometheus_api, e))
+            "ERROR while invoking prometheus api using URL {}, got error: {}".format(clean_api_address(prometheus_api), e))
 
     return response_json, error_messages
 
@@ -186,16 +187,16 @@ def check_prom_metrics_available(prometheus_api, metrics, labels_csv, timeout):
                 metrics_available = True
     except requests.exceptions.Timeout:
         error_messages.append(
-            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(prometheus_api, timeout))
+            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(clean_api_address(prometheus_api), timeout))
     except requests.exceptions.ConnectionError:
         error_messages.append(
-            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(prometheus_api))
+            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(clean_api_address(prometheus_api)))
     except requests.exceptions.RequestException:
         error_messages.append(
-            "ERROR:  Prometheus api connection failed, using URL {}".format(prometheus_api))
+            "ERROR:  Prometheus api connection failed, using URL {}".format(clean_api_address(prometheus_api)))
     except Exception as e:
         error_messages.append(
-            "ERROR while invoking prometheus api using URL {}, got error: {}".format(prometheus_api, e))
+            "ERROR while invoking prometheus api using URL {}, got error: {}".format(clean_api_address(prometheus_api), e))
 
     return metrics_available, error_messages
 
@@ -207,6 +208,12 @@ def include_schema(prometheus_api):
     else:
         return "http://{}".format(prometheus_api)
 
+def clean_api_address(prometheus_api):
+   try:
+     match = re.match(r'(http(s?):\/\/(.[^:@]*):)(.[^@]*)', prometheus_api)
+     return re.sub(match.group(4), 'REDACTED', prometheus_api)
+   except:
+     return prometheus_api
 
 def get_label_names(s):
     d = {}
