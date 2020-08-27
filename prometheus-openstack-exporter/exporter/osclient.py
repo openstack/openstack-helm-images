@@ -38,7 +38,7 @@ class OSClient(object):
             username,
             user_domain,
             region,
-            verify,
+            cacert,
             timeout,
             retries):
         self.keystone_url = keystone_url
@@ -52,8 +52,9 @@ class OSClient(object):
         self.token = None
         self.valid_until = None
         self.session = requests.Session()
-        if verify is not None:
-            self.session.verify = verify
+        if cacert:
+            self.cacert = cacert
+            self.session.verify = cacert
         self.session.mount(
             'http://', requests.adapters.HTTPAdapter(max_retries=retries))
         self.session.mount(
@@ -165,6 +166,8 @@ class OSClient(object):
             'timeout': self.timeout,
             'headers': {'Content-type': 'application/json'}
         }
+        if self.cacert:
+            kwargs['verify'] = self.cacert
         if token_required and not self.is_valid_token():
             self.get_token()
             if not self.is_valid_token():
