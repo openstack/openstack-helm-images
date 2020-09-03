@@ -5,7 +5,7 @@ ARG KUBE_VERSION=1.16.2
 # Nautilus 14.2.10
 ARG CEPH_RELEASE=nautilus
 ARG CEPH_RELEASE_TAG=14.2.10-1.0~bionic
-ARG ETCDCTL_VERSION=3.2.18
+ARG ETCDCTL_VERSION=3.4.3
 ARG CONFD_VERSION=0.16.0
 
 ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/
