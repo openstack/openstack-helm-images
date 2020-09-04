@@ -47,14 +47,13 @@ class OSClient(object):
         self.username = username
         self.user_domain = user_domain
         self.region = region
+        self.cacert = cacert
         self.timeout = timeout
         self.retries = retries
         self.token = None
         self.valid_until = None
         self.session = requests.Session()
-        if cacert:
-            self.cacert = cacert
-            self.session.verify = cacert
+        self.session.verify = cacert
         self.session.mount(
             'http://', requests.adapters.HTTPAdapter(max_retries=retries))
         self.session.mount(
