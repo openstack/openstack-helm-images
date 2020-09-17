@@ -41,6 +41,12 @@ fi
 if [ -n "$REGION" ]; then
   echo "\$USER11\$=${REGION}" >> ${NAGIOS_HOME}/etc/resource.cfg
 fi
+if [ -n "$DCAE_TOPIC" ]; then
+  echo "\$USER12\$=${DCAE_TOPIC}" >> ${NAGIOS_HOME}/etc/resource.cfg
+fi
+if [ -n "$TSEE_TOPIC" ]; then
+  echo "\$USER13\$=${TSEE_TOPIC}" >> ${NAGIOS_HOME}/etc/resource.cfg
+fi
 
 touch ${NAGIOS_HOME}/etc/objects/prometheus_discovery_objects.cfg
 chown nagios ${NAGIOS_HOME}/etc/objects/prometheus_discovery_objects.cfg
