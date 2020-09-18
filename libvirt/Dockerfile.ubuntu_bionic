@@ -3,7 +3,7 @@ FROM ${FROM}
 LABEL maintainer="pete.birley@att.com"
 
 ARG UBUNTU_RELEASE=bionic
-ARG CEPH_RELEASE=mimic
+ARG CEPH_RELEASE=nautilus
 ARG CEPH_RELEASE_TAG=""
 ARG PROJECT=nova
 ARG UID=42424
