@@ -29,7 +29,7 @@ Acquire::AllowDowngradeToInsecureRepositories \"${ALLOW_UNAUTHENTICATED}\";" \
 ARG KUBE_VERSION="v1.16.2"
 ARG MINIKUBE_VERSION="v1.3.1"
 ARG CALICO_VERSION="v3.9"
-ARG HELM_VERSION="v2.14.1"
+ARG HELM_VERSION="v2.16.9"
 
 COPY images.txt install.sh /opt/
 
