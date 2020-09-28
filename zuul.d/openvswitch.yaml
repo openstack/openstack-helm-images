@@ -20,12 +20,6 @@
     gate:
       jobs:
         - openstack-helm-images-upload-openvswitch
-        - openstack-helm-images-compute-kit-stein-openvswitch:
-            dependencies:
-              - name: openstack-helm-images-upload-openvswitch
-        - openstack-helm-images-compute-kit-train-openvswitch:
-            dependencies:
-              - name: openstack-helm-images-upload-openvswitch
     promote:
       jobs:
         - openstack-helm-images-promote-openvswitch
@@ -85,23 +79,5 @@
     name: openstack-helm-images-promote-openvswitch
     parent: openstack-helm-images-promote
     description: Promote a previously published openvswitch image to latest.
-    vars: *openvswitch_vars
-    files: *openvswitch_files
-
-- job:
-    name: openstack-helm-images-compute-kit-stein-openvswitch
-    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
-    dependencies:
-      - name: openstack-helm-images-upload-openvswitch
-    description: Deploy stein compute kit with openvswitch proposed image
-    vars: *openvswitch_vars
-    files: *openvswitch_files
-
-- job:
-    name: openstack-helm-images-compute-kit-train-openvswitch
-    parent: openstack-helm-compute-kit-train-ubuntu_bionic
-    dependencies:
-      - name: openstack-helm-images-upload-openvswitch
-    description: Deploy train compute kit with openvswitch proposed image
     vars: *openvswitch_vars
     files: *openvswitch_files

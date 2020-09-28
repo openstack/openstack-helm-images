@@ -20,12 +20,6 @@
     gate:
       jobs:
         - openstack-helm-images-upload-osh-selenium
-        - openstack-helm-images-aio-monitoring-osh-selenium:
-            dependencies:
-              - name: openstack-helm-images-upload-osh-selenium
-        - openstack-helm-images-horizon-osh-selenium:
-            dependencies:
-              - name: openstack-helm-images-upload-osh-selenium
     promote:
       jobs:
         - openstack-helm-images-promote-osh-selenium
@@ -67,23 +61,5 @@
     name: openstack-helm-images-promote-osh-selenium
     parent: openstack-helm-images-promote
     description: Promote a previously published selenium image with chrome headless driver.
-    vars: *osh-selenium_vars
-    files: *osh-selenium_files
-
-- job:
-    name: openstack-helm-images-aio-monitoring-osh-selenium
-    parent: openstack-helm-infra-aio-monitoring
-    dependencies:
-      - name: openstack-helm-images-upload-osh-selenuim
-    description: Deploy aio monitoring with osh-selenium proposed image
-    vars: *osh-selenium_vars
-    files: *osh-selenium_files
-
-- job:
-    name: openstack-helm-images-horizon-osh-selenium
-    parent: openstack-helm-horizon-stein-ubuntu_bionic
-    dependencies:
-      - name: openstack-helm-images-upload-osh-selenuim
-    description: Deploy stein horizon with osh-selenium proposed image
     vars: *osh-selenium_vars
     files: *osh-selenium_files

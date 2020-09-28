@@ -28,7 +28,6 @@
 - job:
     name: openstack-helm-images-build-minikube-aio
     parent: openstack-helm-images-build
-    provides: common-images
     description: Build minikube-aio image for OSH gates
     vars: &minikube_aio_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
@@ -45,7 +44,6 @@
 - job:
     name: openstack-helm-images-upload-minikube-aio
     parent: openstack-helm-images-upload
-    provides: common-images
     description: Build and upload minikube-aio image
     vars: *minikube_aio_vars
     files: *minikube_aio_files
