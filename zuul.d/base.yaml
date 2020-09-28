@@ -14,6 +14,16 @@
 # limitations under the License.
 
 - project:
+    check:
+      jobs:
+        - opendev-buildset-registry
+        - openstack-helm-images-aio-monitoring
+        - openstack-helm-images-aio-logging
+        - openstack-helm-images-compute-kit-stein-ubuntu_bionic
+        - openstack-helm-images-compute-kit-train-ubuntu_bionic
+        - openstack-helm-images-cinder-stein-ubuntu_bionic
+        - openstack-helm-images-cinder-train-ubuntu_bionic
+        - openstack-helm-images-horizon-stein-ubuntu_bionic
     templates:
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
@@ -54,7 +64,9 @@
 # `dockerfile`. Explicit.
 - job:
     name: openstack-helm-images-build
-    parent: build-docker-image
+    parent: opendev-build-docker-image
+    dependencies:
+      - name: opendev-buildset-registry
     abstract: true
     # Minimum version required is 2.8.
     # When default in zuul moves to 2.8, remove
@@ -90,7 +102,7 @@
 
 - job:
     name: openstack-helm-images-promote
-    parent: promote-docker-image
+    parent: opendev-promote-docker-image
     abstract: true
     ansible-version: 2.8
     secrets:
@@ -98,3 +110,165 @@
       secret: openstack-helm-dockerhub
       pass-to-parent: true
     timeout: 3600
+
+# Image testing jobs inheriting from osh and osh-infra jobs running against
+# particular image or set of images.
+- job:
+    name: openstack-helm-images-aio-monitoring
+    parent: openstack-helm-infra-aio-monitoring
+    dependencies:
+      - name: openstack-helm-images-build-prometheus-openstack-exporter
+        soft: true
+      - name: openstack-helm-images-build-patroni
+        soft: true
+      - name: openstack-helm-images-build-osh-selenium
+        soft: true
+      - name: openstack-helm-images-build-node-problem-detector
+        soft: true
+      - name: openstack-helm-images-build-nagios
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-build-alerta
+        soft: true
+    files:
+      - prometheus-openstack-exporter/.*
+      - zuul.d/prometheus-openstack-exporter.yaml
+      - patroni/.*
+      - zuul.d/patroni.yaml
+      - osh-selenium/.*
+      - zuul.d/osh-selenium.yaml
+      - node-problem-detector/.*
+      - zuul.d/node-problem-detector.yaml
+      - nagios/.*
+      - zuul.d/nagios.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+      - alerta/.*
+      - zuul.d/alerta.yaml
+
+- job:
+    name: openstack-helm-images-aio-logging
+    parent: openstack-helm-infra-aio-logging
+    dependencies:
+      - name: openstack-helm-images-build-fluentd
+        soft: true
+      - name: openstack-helm-images-build-elasticsearch-s3
+        soft: true
+      - name: openstack-helm-images-build-osh-selenium
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+    files:
+      - fluentd/.*
+      - zuul.d/fluentd.yaml
+      - elasticsearch-s3/.*
+      - zuul.d/elasticsearch-s3.yaml
+      - osh-selenium/.*
+      - zuul.d/osh-selenium.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
+    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-build-ospurge
+        soft: true
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+    files:
+      - ospurge/.*
+      - zuul.d/ospurge.yaml
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+    parent: openstack-helm-compute-kit-train-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+    files:
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-cinder-stein-ubuntu_bionic
+    parent: openstack-helm-cinder-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-cinder-train-ubuntu_bionic
+    parent: openstack-helm-cinder-train-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-horizon-stein-ubuntu_bionic
+    parent: openstack-helm-horizon-stein-ubuntu_bionic
+    dependencies:
+      - name: openstack-helm-images-build-osh-selenium
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+    files:
+      - osh-selenium/.*
+      - zuul.d/osh-selenium.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
