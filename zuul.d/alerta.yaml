@@ -23,7 +23,7 @@
               - name: openstack-helm-images-upload-alerta
     promote:
       jobs:
-        - openstack-helm-images-alerta
+        - openstack-helm-images-promote-alerta
     periodic:
       jobs:
         - openstack-helm-images-build-alerta
@@ -52,9 +52,9 @@
     files: *alerta_files
 
 - job:
-    name: openstack-helm-images-alerta
+    name: openstack-helm-images-promote-alerta
     parent: openstack-helm-images-promote
-    description: Build Alerta image.
+    description: Promote Alerta image.
     vars: *alerta_vars
     files: *alerta_files
 
