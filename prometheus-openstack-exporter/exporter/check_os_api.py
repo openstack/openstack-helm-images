@@ -44,7 +44,7 @@ class CheckOSApi(OSBase):
         'designate': {'path': '/', 'expect': [200, 300], 'name': 'designate-api'},
         'contrail_analytics': {'path': '/', 'expect': [200], 'name': 'contrail-analytics-api'},
         'contrail_config': {'path': '/', 'expect': [200], 'name': 'contrail-config-api'},
-        'placement': {'path': '/', 'expect': [401], 'name': 'placement-api'},
+        'placement': {'path': '/', 'expect': [200, 401], 'name': 'placement-api'},
         'shipyard': {'path': 'api/v1.0/health', 'expect': [204, 503], 'name': 'shipyard'},
         'armada': {'path': 'api/v1.0/health', 'expect': [204, 503], 'name': 'armada'},
         'deckhand': {'path': 'api/v1.0/health', 'expect': [204, 503], 'name': 'deckhand'},
