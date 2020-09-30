@@ -31,6 +31,7 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get -y install --no-install-r
             curl \
             wget \
             gcc \
+            git \
             python3.7 \
             python3-pip \
             python3-venv \
@@ -65,6 +66,10 @@ RUN pip3 --no-cache-dir install pip virtualenv && \
 ENV PATH $PATH:/venv/bin
 
 RUN /venv/bin/pip --no-cache-dir install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
+COPY install-plugins.sh /app/install-plugins.sh
+COPY plugins.txt /app/plugins.txt
+COPY alertad.conf /app/alertad.conf
+RUN /app/install-plugins.sh
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
