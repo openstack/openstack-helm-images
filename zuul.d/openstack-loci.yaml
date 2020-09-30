@@ -496,6 +496,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *watcher_project
+        - <<: *placement_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
