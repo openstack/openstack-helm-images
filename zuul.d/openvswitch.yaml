@@ -25,7 +25,7 @@
         - openstack-helm-images-promote-openvswitch
     periodic:
       jobs:
-        - openstack-helm-images-build-openvswitch
+        - openstack-helm-images-upload-openvswitch
 
 - job:
     name: openstack-helm-images-build-openvswitch

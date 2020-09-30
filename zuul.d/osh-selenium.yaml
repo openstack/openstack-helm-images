@@ -25,7 +25,7 @@
         - openstack-helm-images-promote-osh-selenium
     periodic:
       jobs:
-        - openstack-helm-images-build-osh-selenium
+        - openstack-helm-images-upload-osh-selenium
 
 - job:
     name: openstack-helm-images-build-osh-selenium

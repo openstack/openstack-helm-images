@@ -49,15 +49,15 @@
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
     periodic:
       jobs:
-        - openstack-helm-images-build-openstack-loci-ocata-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-pike-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-queens-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-rocky-ubuntu_xenial
-        - openstack-helm-images-build-openstack-loci-rocky-ubuntu_bionic
-        - openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
-        - openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
-        - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
-        - openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
+        - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
 
 
 ################

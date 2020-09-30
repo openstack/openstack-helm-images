@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-elasticsearch-s3
     periodic:
       jobs:
-        - openstack-helm-images-build-elasticsearch-s3
+        - openstack-helm-images-upload-elasticsearch-s3
 
 - job:
     name: openstack-helm-images-build-elasticsearch-s3

@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-minikube-aio
     periodic:
       jobs:
-        - openstack-helm-images-build-minikube-aio
+        - openstack-helm-images-upload-minikube-aio
 
 - job:
     name: openstack-helm-images-build-minikube-aio

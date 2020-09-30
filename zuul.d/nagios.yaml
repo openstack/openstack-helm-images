@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-nagios
     periodic:
       jobs:
-        - openstack-helm-images-build-nagios
+        - openstack-helm-images-upload-nagios
 
 - job:
     name: openstack-helm-images-build-nagios

@@ -34,6 +34,16 @@
         - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-stein-ubuntu_bionic
+    periodic:
+      jobs:
+        - opendev-buildset-registry
+        - openstack-helm-images-aio-monitoring
+        - openstack-helm-images-aio-logging
+        - openstack-helm-images-compute-kit-stein-ubuntu_bionic
+        - openstack-helm-images-compute-kit-train-ubuntu_bionic
+        - openstack-helm-images-cinder-stein-ubuntu_bionic
+        - openstack-helm-images-cinder-train-ubuntu_bionic
+        - openstack-helm-images-horizon-stein-ubuntu_bionic
     templates:
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
@@ -98,13 +108,16 @@
       - ^releasenotes/.*
     timeout: 3600
 
-# The secret openstack-helm-dockerhub is exposed as docker_credentials dict,
-# which is used by upload-docker-image job to pass those vars to the
-# upload role.
 - job:
     name: openstack-helm-images-upload
-    parent: upload-docker-image
+    parent: openstack-helm-images-build
     run: zuul.d/playbooks/build.yml
+    post-run:
+      - zuul.d/playbooks/upload.yml
+      # Synthetic logic required with current implementation.
+      # Standalone promote job starts once upload one pauses that is undesired,
+      # thus running promote role here for periodic pipeline
+      - zuul.d/playbooks/periodic-promote.yml
     match-on-config-updates: false
     dependencies:
       - name: opendev-buildset-registry
@@ -113,7 +126,6 @@
     secrets:
       name: docker_credentials
       secret: openstack-helm-dockerhub
-      pass-to-parent: true
     timeout: 3600
 
 - job:

@@ -1,0 +1,4 @@
+- hosts: all
+  roles:
+    - role: promote-docker-image
+      when: zuul.pipeline == 'periodic'

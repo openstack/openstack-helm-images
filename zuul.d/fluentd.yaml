@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-fluentd
     periodic:
       jobs:
-        - openstack-helm-images-build-fluentd
+        - openstack-helm-images-upload-fluentd
 
 - job:
     name: openstack-helm-images-build-fluentd

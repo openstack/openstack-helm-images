@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-prometheus-openstack-exporter
     periodic:
       jobs:
-        - openstack-helm-images-build-prometheus-openstack-exporter
+        - openstack-helm-images-upload-prometheus-openstack-exporter
 
 - job:
     name: openstack-helm-images-build-prometheus-openstack-exporter

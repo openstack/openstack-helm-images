@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-node-problem-detector
     periodic:
       jobs:
-        - openstack-helm-images-build-node-problem-detector
+        - openstack-helm-images-upload-node-problem-detector
 
 - job:
     name: openstack-helm-images-build-node-problem-detector

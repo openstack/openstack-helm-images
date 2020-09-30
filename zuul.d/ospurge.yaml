@@ -25,7 +25,7 @@
         - openstack-helm-images-promote-ospurge
     periodic:
       jobs:
-        - openstack-helm-images-build-ospurge
+        - openstack-helm-images-upload-ospurge
 
 - job:
     name: openstack-helm-images-build-ospurge

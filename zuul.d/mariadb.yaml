@@ -25,7 +25,7 @@
         - openstack-helm-images-promote-mariadb
     periodic:
       jobs:
-        - openstack-helm-images-build-mariadb
+        - openstack-helm-images-upload-mariadb
 
 - job:
     name: openstack-helm-images-build-mariadb

@@ -23,7 +23,7 @@
         - openstack-helm-images-promote-alerta
     periodic:
       jobs:
-        - openstack-helm-images-build-alerta
+        - openstack-helm-images-upload-alerta
 
 - job:
     name: openstack-helm-images-build-alerta

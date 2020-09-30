@@ -25,7 +25,7 @@
         - openstack-helm-images-promote-libvirt
     periodic:
       jobs:
-        - openstack-helm-images-build-libvirt
+        - openstack-helm-images-upload-libvirt
 
 - job:
     name: openstack-helm-images-build-libvirt
