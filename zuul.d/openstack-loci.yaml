@@ -277,6 +277,16 @@
             - "PIP_PACKAGES='httplib2'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
+        - &watcher_project
+          context: "."
+          repository: openstackhelm/watcher
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='watcher'"
+            - "PROJECT_REF={{ branchname }}"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -339,6 +349,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *placement_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
@@ -389,6 +400,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *placement_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
@@ -436,6 +448,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *placement_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
@@ -482,6 +495,7 @@
         - <<: *horizon_project
         - <<: *heat_project
         - <<: *barbican_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
@@ -531,6 +545,7 @@
         - <<: *horizon_project
         - <<: *heat_project
         - <<: *barbican_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
@@ -574,6 +589,7 @@
         - <<: *horizon_project
         - <<: *heat_project
         - <<: *barbican_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
@@ -627,6 +643,7 @@
         - <<: *horizon_project
         - <<: *heat_project
         - <<: *barbican_project
+        - <<: *watcher_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
