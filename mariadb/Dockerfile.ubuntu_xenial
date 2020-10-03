@@ -13,7 +13,8 @@ RUN set -ex ;\
     pip3 --no-cache-dir install --upgrade \
       configparser \
       iso8601 \
-      kubernetes ;\
+      kubernetes \
+      pykube-ng ;\
     apt-get clean -y ;\
     rm -rf \
        /var/cache/debconf/* \
