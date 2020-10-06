@@ -26,7 +26,7 @@ Acquire::AllowInsecureRepositories \"${ALLOW_UNAUTHENTICATED}\";\n\
 Acquire::AllowDowngradeToInsecureRepositories \"${ALLOW_UNAUTHENTICATED}\";" \
     >> /etc/apt/apt.conf.d/allow-unathenticated
 
-ARG KUBE_VERSION="v1.16.2"
+ARG KUBE_VERSION="v1.18.9"
 ARG MINIKUBE_VERSION="v1.3.1"
 ARG CALICO_VERSION="v3.9"
 ARG HELM_VERSION="v2.16.9"

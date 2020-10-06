@@ -37,33 +37,30 @@ function extract {
 }
 
 function configure_resolvconf {
-  # Setup resolv.conf to use the k8s api server, which is required for the
-  # kubelet to resolve cluster services.
-  sudo mv /etc/resolv.conf /etc/resolv.conf.backup
+  # here with systemd-resolved disabled, we'll have 2 separate resolv.conf
+  # 1 - /run/systemd/resolve/resolv.conf automatically passed by minikube
+  # to coredns via kubelet.resolv-conf extra param
+  # 2 - /etc/resolv.conf - to be used for resolution on host
 
-  # Create symbolic link to the resolv.conf file managed by systemd-resolved, as
-  # the kubelet.resolv-conf extra-config flag is automatically executed by the
-  # minikube start command, regardless of being passed in here
-  sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+  kube_dns_ip="10.96.0.10"
+  # keep all nameservers from both resolv.conf excluding local addresses
+  old_ns=$(grep -P --no-filename "^nameserver\s+(?!127\.0\.0\.|${kube_dns_ip})" \
+           /etc/resolv.conf /run/systemd/resolve/resolv.conf | sort | uniq)
 
-  sudo bash -c "echo 'nameserver 10.96.0.10' >> /etc/resolv.conf"
-
-  # NOTE(drewwalters96): Use the Google DNS servers to prevent local addresses in
-  # the resolv.conf file unless using a proxy, then use the existing DNS servers,
-  # as custom DNS nameservers are commonly required when using a proxy server.
+  # Add kube-dns ip to /etc/resolv.conf for local usage
+  sudo bash -c "echo 'nameserver ${kube_dns_ip}' > /etc/resolv.conf"
   if [ -z "${HTTP_PROXY}" ]; then
-    sudo bash -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf"
-    sudo bash -c "echo 'nameserver 8.8.4.4' >> /etc/resolv.conf"
+    sudo bash -c "printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' > /run/systemd/resolve/resolv.conf"
+    sudo bash -c "printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' >> /etc/resolv.conf"
   else
-    sed -ne "s/nameserver //p" /etc/resolv.conf.backup | while read -r ns; do
-      sudo bash -c "echo 'nameserver ${ns}' >> /etc/resolv.conf"
-    done
+    sudo bash -c "echo \"${old_ns}\" > /run/systemd/resolve/resolv.conf"
+    sudo bash -c "echo \"${old_ns}\" >> /etc/resolv.conf"
   fi
 
-  sudo bash -c "echo 'search svc.cluster.local cluster.local' >> /etc/resolv.conf"
-  sudo bash -c "echo 'options ndots:5 timeout:1 attempts:1' >> /etc/resolv.conf"
-
-  sudo rm /etc/resolv.conf.backup
+  for file in /etc/resolv.conf /run/systemd/resolve/resolv.conf; do
+    sudo bash -c "echo 'search svc.cluster.local cluster.local' >> ${file}"
+    sudo bash -c "echo 'options ndots:5 timeout:1 attempts:1' >> ${file}"
+  done
 }
 
 # NOTE: Clean Up hosts file
