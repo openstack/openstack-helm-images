@@ -3,8 +3,6 @@
     - name: Use buildset registry
       include_role:
         name: use-buildset-registry
-    - name: Write buildset registry TLS certificate
-      include_tasks: _write-buildset-registry-cert.yml
   roles:
     - build-docker-image
   tasks:
