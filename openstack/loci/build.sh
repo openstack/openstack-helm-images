@@ -213,6 +213,7 @@ neutron_sriov_profiles=${neutron_sriov_profiles:-"'fluent neutron linuxbridge op
 neutron_sriov_pip_packages=${neutron_sriov_pip_packages:-"pycrypto"}
 neutron_sriov_dist_packages=${neutron_sriov_dist_packages:-"'ethtool lshw'"}
 neutron_sriov_extra_tag=${neutron_sriov_extra_tag:-'-sriov-1804'}
+placement_profiles=${placement_profiles:-"'apache'"}
 
 ####################
 # Action starts here
