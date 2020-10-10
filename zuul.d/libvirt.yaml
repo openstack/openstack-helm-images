@@ -42,6 +42,12 @@
         #  dockerfile: Dockerfile.suse_15
         - context: libvirt
           repository: openstackhelm/libvirt
+          dockerfile: Dockerfile.centos_7
+          tags:
+            - latest-centos_7
+            - "centos_7-{{ currentdate }}"
+        - context: libvirt
+          repository: openstackhelm/libvirt
           dockerfile: Dockerfile.ubuntu_xenial
           tags:
             - latest-ubuntu_xenial

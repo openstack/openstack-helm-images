@@ -1,0 +1,19 @@
+ARG FROM=docker.io/centos:7
+FROM ${FROM}
+LABEL maintainer="mnaser@vexxhost.com"
+
+ARG CEPH_RELEASE=nautilus
+ARG PROJECT=nova
+ARG UID=42424
+ARG GID=42424
+
+RUN set -ex ;\
+    yum -y install centos-release-qemu-ev centos-release-ceph-${CEPH_RELEASE} ;\
+    yum -y install libcgroup-tools libvirt qemu-kvm-ev ;\
+    groupadd -g ${GID} ${PROJECT} ;\
+    useradd -u ${UID} -g ${PROJECT} -M -d /var/lib/${PROJECT} -s /usr/sbin/nologin -c "${PROJECT} user" ${PROJECT} ;\
+    mkdir -p /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} ;\
+    chown ${PROJECT}:${PROJECT} /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} ;\
+    usermod -a -G kvm ${PROJECT} ;\
+    yum clean all ;\
+    rm -rf /var/cache/yum
