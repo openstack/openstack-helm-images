@@ -97,7 +97,7 @@ def setup_argparse(parser):
     parser.add_argument('--match', type=check_match, help=match_help)
     parser.add_argument('--range', type=check_range, default=5,
                         help=range_help)
-    parser.add_argument( '--timeout', metavar='timeout', type=int, default=30,
+    parser.add_argument( '--timeout', metavar='timeout', type=int, default=120,
                         required=False, help='Number of seconds to wait for response.')
     parser.add_argument('--usr')
     parser.add_argument('--pwd')
@@ -121,10 +121,10 @@ def evaluate_results(response, args):
     if (not response or not hasattr(response, 'status_code')
             or response.status_code < 200 or response.status_code >= 400
             or not response.json()):
-        NagiosUtil.service_unknown('Unexpected results found. ' + response.text)
+        NagiosUtil.service_warning('Unexpected results found. ' + response.text)
     elif (not response.json()['hits']
           or int(response.json()['hits']['total']['value']) < 0):
-        NagiosUtil.service_unknown('Unexpected results found. ' + str(response.json()))
+        NagiosUtil.service_warning('Unexpected results found. ' + str(response.json()))
 
     if args.debug:
         pprint(response.json())
@@ -231,9 +231,9 @@ def main():
             response = requests.post(url, data=json.dumps(data), timeout=args.timeout,
                                      headers={"Content-Type": "application/json"})
     except requests.exceptions.Timeout as con_ex:
-        NagiosUtil.service_unknown('Elasticsearch connection timed out ' + str(con_ex))
+        NagiosUtil.service_warning('Elasticsearch connection timed out ' + str(con_ex))
     except requests.exceptions.RequestException as req_ex:
-        NagiosUtil.service_unknown('Unexpected Error Occurred. ' + str(req_ex))
+        NagiosUtil.service_warning('Unexpected Error Occurred. ' + str(req_ex))
 
     evaluate_results(response, args)
 
