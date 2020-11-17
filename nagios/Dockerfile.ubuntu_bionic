@@ -27,8 +27,7 @@ RUN pip3 install --upgrade pip \
         && pip3 --no-cache-dir install --upgrade kubernetes \
         && pip3 --no-cache-dir install --upgrade elasticsearch==${ES_VERSION} \
         && pip3 --no-cache-dir install --upgrade elasticsearch-dsl==${ES_DSL_VERSION} \
-        && pip3 uninstall -y urllib3 \
-        && pip3 --no-cache-dir install urllib3==1.23
+        && pip3 install requests -U
 
 RUN groupadd -g 3000 nagios
 RUN useradd -u 3000 -g nagios -d ${NAGIOS_HOME} -s /bin/bash -c 'Nagios Admin' nagios
