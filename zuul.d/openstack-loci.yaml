@@ -127,6 +127,7 @@
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
             - "PIP_PACKAGES='{{ requirements_pip_packages }}'"
+            - "KEEP_ALL_WHEELS=yes"
       docker_images: &project_images
         - &requirements_project
           <<: *prep_requirements_project
@@ -144,6 +145,7 @@
             - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
             - "PIP_PACKAGES='python-openstackclient'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &heat_project
           context: "."
@@ -156,6 +158,7 @@
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
             - "DIST_PACKAGES='curl'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &barbican_project
           context: "."
@@ -167,6 +170,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &glance_project
           context: "."
@@ -179,6 +183,7 @@
             - "PROFILES='fluent ceph'"
             - "PIP_PACKAGES='python-swiftclient'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &cinder_project
           context: "."
@@ -191,6 +196,7 @@
             - "PROFILES='fluent lvm ceph qemu apache'"
             - "PIP_PACKAGES='python-swiftclient'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &neutron_project
           context: "."
@@ -204,6 +210,7 @@
             - "PIP_PACKAGES='tap-as-a-service'"
             - "DIST_PACKAGES='jq ethtool lshw'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &neutron_sriov_project
           context: "."
@@ -217,6 +224,7 @@
             - "PIP_PACKAGES='tap-as-a-service'"
             - "DIST_PACKAGES='ethtool lshw'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags:
             - "{{ shortbranchname }}-18.04-sriov"
             - "{{ shortbranchname }}-18.04-sriov-{{ currentdate }}"
@@ -230,6 +238,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &horizon_project
           context: "."
@@ -242,6 +251,7 @@
             - "PROFILES='fluent apache'"
             - "PIP_PACKAGES='heat-dashboard'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &senlin_project
           context: "."
@@ -253,6 +263,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &magnum_project
           context: "."
@@ -264,6 +275,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &ironic_project
           context: "."
@@ -276,6 +288,7 @@
             - "PROFILES='fluent ipxe ipmi qemu tftp'"
             - "DIST_PACKAGES='ethtool lshw iproute2'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &placement_project
           context: "."
@@ -288,6 +301,7 @@
             - "PROFILES='apache'"
             - "PIP_PACKAGES='httplib2'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &watcher_project
           context: "."
@@ -298,6 +312,7 @@
             - "PROJECT='watcher'"
             - "PROJECT_REF={{ branchname }}"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
@@ -758,6 +773,7 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - <<: *heat_project
         - <<: *barbican_project
@@ -811,6 +827,7 @@
             - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
             - "PIP_PACKAGES='pycrypto python-openstackclient'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/heat
@@ -823,6 +840,7 @@
             - "PIP_PACKAGES='pycrypto'"
             - "DIST_PACKAGES='curl'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/barbican
@@ -834,6 +852,7 @@
             - "PROFILES='fluent'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/glance
@@ -845,6 +864,7 @@
             - "PROFILES='fluent ceph'"
             - "PIP_PACKAGES='pycrypto python-swiftclient'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/cinder
@@ -856,6 +876,7 @@
             - "PROFILES='fluent lvm ceph qemu'"
             - "PIP_PACKAGES='pycrypto python-swiftclient'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/neutron
@@ -868,6 +889,7 @@
             - "DIST_PACKAGES='jq'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/neutron
@@ -880,6 +902,7 @@
             - "DIST_PACKAGES='ethtool lshw'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags:
             - "{{ shortbranchname }}-18.04-sriov"
             - "{{ shortbranchname }}-18.04-sriov-{{ currentdate }}"
@@ -893,6 +916,7 @@
             - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/horizon
@@ -904,6 +928,7 @@
             - "PROFILES='fluent apache'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/senlin
@@ -915,6 +940,7 @@
             - "PROFILES='fluent'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/magnum
@@ -926,6 +952,7 @@
             - "PROFILES='fluent'"
             - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - context: "."
           repository: openstackhelm/ironic
@@ -938,6 +965,7 @@
             - "PIP_PACKAGES='pycrypto'"
             - "DIST_PACKAGES='ethtool lshw iproute2'"
             - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
 
 - job:
