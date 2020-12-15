@@ -98,6 +98,7 @@
       base_repository: "base"
       ceph_repo: ""
       ceph_key: ""
+      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard"
       base_docker_image:
         - &base_image
           context: "zuul.d/playbooks/"
@@ -116,6 +117,7 @@
             - "PYTHON3={{ python3 }}"
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
+            - "PIP_PACKAGES='{{ requirements_pip_packages }}'"
       docker_images: &project_images
         - &requirements_project
           <<: *prep_requirements_project
@@ -229,6 +231,7 @@
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
+            - "PIP_PACKAGES='heat-dashboard'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
         - &senlin_project
@@ -678,6 +681,7 @@
       base_repository: "base"
       ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
       ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard tap-as-a-service==3.0.0"
       base_docker_image:
         - <<: *base_image
       prep_docker_images:
@@ -724,6 +728,7 @@
       base_repository: "base"
       ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
       ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      requirements_pip_packages: "git+https://opendev.org/x/tap-as-a-service@{{ branchname }}#egg=tap-as-a-service"
       base_docker_image:
         - <<: *base_image
       prep_docker_images:
@@ -735,7 +740,16 @@
         - <<: *cinder_project
         - <<: *nova_project
         - <<: *neutron_project
-        - <<: *horizon_project
+        - context: "."
+          repository: openstackhelm/horizon
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='horizon'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='fluent apache'"
+            - "WHEELS='{{ wheels_location }}'"
+          tags: *imagetag
         - <<: *heat_project
         - <<: *barbican_project
 
@@ -771,6 +785,7 @@
       base_repository: "base"
       ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-mimic/xenial/ xenial main"
       ceph_key: "https://mirror.mirantis.com/testing/ceph-mimic/xenial/archive-ceph-mimic.key"
+      requirements_pip_packages: kubernetes
       base_docker_image:
         - <<: *base_image
       prep_docker_images:
@@ -878,7 +893,7 @@
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
-            - "PIP_PACKAGES='pycrypto heat-dashboard'"
+            - "PIP_PACKAGES='pycrypto'"
             - "WHEELS='{{ wheels_location }}'"
           tags: *imagetag
         - context: "."
