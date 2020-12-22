@@ -170,7 +170,7 @@ EOF
 kubectl patch service tiller-deploy -n kube-system --patch "$(cat /tmp/tiller-deploy.yaml)"
 kubectl --namespace=kube-system wait --timeout=240s --for=condition=Ready pod -l app=helm,name=tiller
 
-helm init --client-only
+helm init --client-only --stable-repo-url https://charts.helm.sh/stable
 
 # Set up local helm server
 sudo -E tee /etc/systemd/system/helm-serve.service << EOF
