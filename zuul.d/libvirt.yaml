@@ -55,7 +55,7 @@
           build_args:
             - "CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/"
             - "CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
-            - "CEPH_RELEASE_TAG=14.2.10-1.0~bionic"
+            - "CEPH_RELEASE_TAG=14.2.9-1.0~bionic"
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
