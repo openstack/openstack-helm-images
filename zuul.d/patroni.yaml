@@ -26,6 +26,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-patroni
+        - openstack-helm-images-promote-patroni:
+            dependencies:
+              - name: openstack-helm-images-aio-monitoring
 
 - job:
     name: openstack-helm-images-build-patroni

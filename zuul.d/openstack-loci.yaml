@@ -55,7 +55,16 @@
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
+              - name: openstack-helm-images-cinder-stein-ubuntu_bionic
+              - name: openstack-helm-images-horizon-stein-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+              - name: openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
 

@@ -26,6 +26,12 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-mariadb
+        - openstack-helm-images-promote-mariadb:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
+              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+              - name: openstack-helm-images-cinder-stein-ubuntu_bionic
+              - name: openstack-helm-images-cinder-train-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-mariadb

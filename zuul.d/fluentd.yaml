@@ -24,6 +24,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-fluentd
+        - openstack-helm-images-promote-fluentd:
+            dependencies:
+              - name: openstack-helm-images-aio-monitoring
 
 - job:
     name: openstack-helm-images-build-fluentd

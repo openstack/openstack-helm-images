@@ -11,9 +11,3 @@
       loop: "{{ docker_images }}"
       loop_control:
         loop_var: zj_image
-    - name: Pause the job
-      when: buildset_registry is defined and zuul.pipeline != 'check'
-      zuul_return:
-        data:
-          zuul:
-            pause: true

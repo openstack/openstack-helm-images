@@ -26,6 +26,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-ospurge
+        - openstack-helm-images-promote-ospurge:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-ospurge

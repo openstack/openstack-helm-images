@@ -114,10 +114,6 @@
     run: zuul.d/playbooks/build.yml
     post-run:
       - zuul.d/playbooks/upload.yml
-      # Synthetic logic required with current implementation.
-      # Standalone promote job starts once upload one pauses that is undesired,
-      # thus running promote role here for periodic pipeline
-      - zuul.d/playbooks/periodic-promote.yml
     match-on-config-updates: false
     dependencies:
       - name: opendev-buildset-registry

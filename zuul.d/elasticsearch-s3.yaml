@@ -24,6 +24,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-elasticsearch-s3
+        - openstack-helm-images-promote-elasticsearch-s3:
+            dependencies:
+              - name: openstack-helm-images-aio-logging
 
 - job:
     name: openstack-helm-images-build-elasticsearch-s3

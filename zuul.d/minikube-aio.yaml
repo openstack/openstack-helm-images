@@ -24,6 +24,15 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-minikube-aio
+        - openstack-helm-images-promote-minikube-aio:
+            dependencies:
+              - name: openstack-helm-images-aio-monitoring
+              - name: openstack-helm-images-aio-logging
+              - name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
+              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+              - name: openstack-helm-images-cinder-stein-ubuntu_bionic
+              - name: openstack-helm-images-cinder-train-ubuntu_bionic
+              - name: openstack-helm-images-horizon-stein-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-minikube-aio

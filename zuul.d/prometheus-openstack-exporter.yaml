@@ -24,6 +24,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-prometheus-openstack-exporter
+        - openstack-helm-images-promote-prometheus-openstack-exporter:
+            dependencies:
+              - name: openstack-helm-images-aio-monitoring
 
 - job:
     name: openstack-helm-images-build-prometheus-openstack-exporter

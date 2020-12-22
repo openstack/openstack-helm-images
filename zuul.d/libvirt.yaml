@@ -26,6 +26,10 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-libvirt
+        - openstack-helm-images-promote-libvirt:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
+              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-libvirt

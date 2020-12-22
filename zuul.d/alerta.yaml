@@ -24,6 +24,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-alerta
+        - openstack-helm-images-promote-alerta:
+            dependencies:
+              - name: openstack-helm-images-aio-monitoring
 
 - job:
     name: openstack-helm-images-build-alerta

@@ -24,6 +24,9 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-nagios
+        - openstack-helm-images-promote-nagios:
+            dependencies:
+              - name: openstack-helm-images-aio-monitoring
 
 - job:
     name: openstack-helm-images-build-nagios
