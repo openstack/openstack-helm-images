@@ -50,10 +50,25 @@
     periodic:
       jobs:
         - openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-ocata-ubuntu_xenial:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-ocata-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-pike-ubuntu_xenial:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-pike-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-queens-ubuntu_xenial:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-queens-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
+        - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_xenial:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
         - openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-rocky-ubuntu_bionic:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-stein-ubuntu_bionic:
             dependencies:
@@ -67,6 +82,9 @@
               - name: openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
 
 
 ################
