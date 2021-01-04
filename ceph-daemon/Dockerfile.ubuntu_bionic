@@ -2,13 +2,13 @@ ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
 ARG KUBE_VERSION=1.16.2
-# Nautilus 14.2.9
-ARG CEPH_RELEASE=nautilus
-ARG CEPH_RELEASE_TAG=14.2.9-1.0~bionic
+# Octopus 15.2.8
+ARG CEPH_RELEASE=octopus
+ARG CEPH_RELEASE_TAG=15.2.8-1bionic
 ARG CONFD_VERSION=0.16.0
 
-ARG CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/
-ARG CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key
+ARG CEPH_REPO=https://download.ceph.com/debian-octopus/
+ARG CEPH_KEY=https://download.ceph.com/keys/release.asc
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
@@ -48,6 +48,7 @@ RUN set -ex ;\
         jq \
         alien ;\
     curl -sSL https://bootstrap.pypa.io/get-pip.py | python3 ;\
+    pip3 --no-cache-dir install --upgrade --ignore-installed PyYAML ;\
     pip3 --no-cache-dir install --upgrade \
       six \
       python-openstackclient \
