@@ -81,6 +81,9 @@
               - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
               - name: openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic:
             dependencies:
