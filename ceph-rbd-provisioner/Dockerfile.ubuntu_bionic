@@ -5,8 +5,8 @@ FROM ${baseimg}
 ARG CEPH_RELEASE=octopus
 ARG CEPH_RELEASE_TAG=15.2.8-1bionic
 
-ARG CEPH_REPO=https://download.ceph.com/debian-octopus/
-ARG CEPH_KEY=https://download.ceph.com/keys/release.asc
+ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-octopus/
+ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-octopus/release.asc
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
