@@ -335,6 +335,19 @@
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
+        - &monasca_api_project
+          context: "."
+          repository: openstackhelm/monasca-api
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='monasca-api'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PROFILES='monasca api'"
+            - "PIP_PACKAGES='influxdb cassandra-driver sqlalchemy'"
+            - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -397,6 +410,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *placement_project
+        - <<: *monasca_api_project
         - <<: *watcher_project
 
 - job:
@@ -448,6 +462,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *placement_project
+        - <<: *monasca_api_project
         - <<: *watcher_project
 
 - job:
@@ -496,6 +511,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *placement_project
+        - <<: *monasca_api_project
         - <<: *watcher_project
 
 - job:
@@ -545,6 +561,7 @@
         - <<: *barbican_project
         - <<: *watcher_project
         - <<: *placement_project
+        - <<: *monasca_api_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
