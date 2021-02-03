@@ -111,8 +111,8 @@
 - job:
     name: openstack-helm-images-upload
     parent: openstack-helm-images-build
-    run: zuul.d/playbooks/build.yml
-    post-run:
+    run:
+      - zuul.d/playbooks/build.yml
       - zuul.d/playbooks/upload.yml
     match-on-config-updates: false
     dependencies:
