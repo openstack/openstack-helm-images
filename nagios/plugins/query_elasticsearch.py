@@ -134,7 +134,7 @@ def evaluate_results(response, args):
     crit_message = ('Found %s >= %s(threshold) occurrences within the last %s minute(s). %s')
     message = ('Found %s >= %s(threshold) occurrences within the last %s minute(s).')
     ok_message = ('Found %s [threshold: %s] occurrences within the last %s minute(s).')
-    if hits > args.critical_threshold:
+    if hits >= args.critical_threshold:
         if args.simple_query_fields:
             allmsgs = ', '.join([m["_source"][args.simple_query_fields] for m in results['hits']['hits']])
             NagiosUtil.service_critical(crit_message % (str(hits), args.critical_threshold, args.range, allmsgs))
