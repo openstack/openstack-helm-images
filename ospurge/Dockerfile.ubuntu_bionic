@@ -9,12 +9,11 @@ LABEL org.opencontainers.image.vendor='Openstack-Helm Authors'
 LABEL org.opencontainers.image.licenses='BSD-3-Clause'
 
 RUN set -xe \
-    && apt-get update && apt-get dist-upgrade -y \
-    && apt-get install python3 -y \
-    && apt-get install python3-pip -y
+    && apt-get update \
+    && apt-get install curl python3 python3-setuptools -y \
+    && curl -sSL https://bootstrap.pypa.io/get-pip.py | python3
 
-RUN pip3 install ospurge \
-    && pip3 install python-openstackclient
+RUN pip install ospurge python-openstackclient
 
 WORKDIR /tmp
 ENTRYPOINT ["/bin/sh", "-c"]
