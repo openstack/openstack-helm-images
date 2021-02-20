@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG FROM_UBUNTU=ubuntu:18.04
-ARG FROM_NGINX=nginx
-FROM ${FROM_UBUNTU} as aptly
+ARG BUILD_FROM=ubuntu:18.04
+ARG FROM=nginx
+FROM ${BUILD_FROM} as aptly
 
 ARG APTLY_CONFIG_PATH=etc/aptly.conf
 ARG MIRROR_SOURCE_FILE=mini-mirror-sources.yaml
@@ -40,7 +40,7 @@ COPY tools/publish_snapshots.sh /opt/publish_snapshots.sh
 
 RUN /opt/publish_snapshots.sh "${RELEASE_SIGN_KEY_PASSPHRASE}"
 
-FROM ${FROM_NGINX}
+FROM ${FROM}
 
 ARG APTLY_SNAPSHOT_DIR=/srv
 

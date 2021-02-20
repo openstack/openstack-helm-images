@@ -45,8 +45,8 @@ APTLY_REFSPEC=${APTLY_REFSPEC:-"allow-custom-codename"}
 
 docker build -f "${PROJECT_PATH}"/Dockerfile."${DISTRO}" --network=host \
   -t "${REGISTRY_URI}""${IMAGE}":"${VERSION}"-"${DISTRO}""${EXTRA_TAG_INFO}" \
-  ${BASE_IMAGE_UBUNTU:+--build-arg FROM_UBUNTU=${BASE_IMAGE_UBUNTU}} \
-  ${BASE_IMAGE_NGINX:+--build-arg FROM_NGINX=${BASE_IMAGE_NGINX}} \
+  ${BASE_IMAGE_UBUNTU:+--build-arg BUILD_FROM=${BASE_IMAGE_UBUNTU}} \
+  ${BASE_IMAGE_NGINX:+--build-arg FROM=${BASE_IMAGE_NGINX}} \
   --build-arg http_proxy="${HTTP_PROXY}" \
   --build-arg https_proxy="${HTTPS_PROXY}" \
   --build-arg HTTP_PROXY="${HTTP_PROXY}" \
