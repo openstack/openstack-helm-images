@@ -154,8 +154,6 @@
         soft: true
       - name: openstack-helm-images-build-minikube-aio
         soft: true
-      - name: openstack-helm-images-build-alerta
-        soft: true
       - name: openstack-helm-images-upload-prometheus-openstack-exporter
         soft: true
       - name: openstack-helm-images-upload-patroni
@@ -167,8 +165,6 @@
       - name: openstack-helm-images-upload-nagios
         soft: true
       - name: openstack-helm-images-upload-minikube-aio
-        soft: true
-      - name: openstack-helm-images-upload-alerta
         soft: true
     files:
       - prometheus-openstack-exporter/.*
@@ -183,8 +179,6 @@
       - zuul.d/nagios.yaml
       - minikube-aio/.*
       - zuul.d/minikube-aio.yaml
-      - alerta/.*
-      - zuul.d/alerta.yaml
 
 - job:
     name: openstack-helm-images-aio-logging

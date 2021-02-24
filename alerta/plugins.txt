@@ -1,4 +1,0 @@
-plugins/enhance master
-plugins/forward master
-plugins/normalise master
-plugins/prometheus master
