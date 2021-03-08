@@ -52,7 +52,7 @@ RUN set -ex ;\
         uuid-runtime \
         jq \
         alien ;\
-    curl -sSL https://bootstrap.pypa.io/3.5/get-pip.py | python3 ;\
+    curl -sSL https://bootstrap.pypa.io/pip/3.5/get-pip.py | python3 ;\
     pip3 --no-cache-dir install --upgrade \
       six \
       python-openstackclient \
