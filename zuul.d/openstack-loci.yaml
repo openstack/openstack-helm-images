@@ -348,6 +348,17 @@
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
+        - &cyborg_project
+          context: "."
+          repository: openstackhelm/cyborg
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='cyborg'"
+            - "PROJECT_REF={{ branchname }}"
+            - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -412,6 +423,7 @@
         - <<: *placement_project
         - <<: *monasca_api_project
         - <<: *watcher_project
+        - <<: *cyborg_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
@@ -464,6 +476,7 @@
         - <<: *placement_project
         - <<: *monasca_api_project
         - <<: *watcher_project
+        - <<: *cyborg_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
@@ -513,6 +526,7 @@
         - <<: *placement_project
         - <<: *monasca_api_project
         - <<: *watcher_project
+        - <<: *cyborg_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
@@ -560,6 +574,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *watcher_project
+        - <<: *cyborg_project
         - <<: *placement_project
         - <<: *monasca_api_project
 
@@ -612,6 +627,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *watcher_project
+        - <<: *cyborg_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_bionic
@@ -656,6 +672,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *watcher_project
+        - <<: *cyborg_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-ubuntu_xenial
@@ -710,6 +727,7 @@
         - <<: *heat_project
         - <<: *barbican_project
         - <<: *watcher_project
+        - <<: *cyborg_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-rocky-opensuse_15
