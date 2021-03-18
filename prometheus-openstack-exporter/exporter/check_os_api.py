@@ -96,6 +96,10 @@ class CheckOSApi(OSBase):
                         name, status_code, check['expect'])
                 )
                 status = self.FAIL
+                if status_code == 401 and name != 'placement':
+                    self.osclient.clear_token()
+                    logger.info(
+                        "Received 401 authorization error. Resetting the token.")
             else:
                 status = self.OK
 
