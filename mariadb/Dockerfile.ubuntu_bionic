@@ -1,0 +1,24 @@
+# mariadb:10.5.3-bionic
+ARG FROM=docker.io/mariadb@sha256:bd5b3470601aa4a28132ec60a8b1c33516d09a1391864fe1dbf82a4030397fd1
+FROM ${FROM}
+
+RUN set -ex ;\
+    apt-get update ;\
+    apt-get install -y --no-install-recommends \
+        python3-pip ;\
+    pip3 --no-cache-dir install --upgrade pip ;\
+    hash -r ;\
+    pip3 --no-cache-dir install --upgrade setuptools ;\
+    pip3 --no-cache-dir install --upgrade \
+      configparser \
+      iso8601 \
+      kubernetes \
+      pykube-ng ;\
+    apt-get clean -y ;\
+    rm -rf \
+       /var/cache/debconf/* \
+       /var/lib/apt/lists/* \
+       /var/log/* \
+       /tmp/* \
+       /var/tmp/* ;\
+    usermod -s /bin/false mysql
