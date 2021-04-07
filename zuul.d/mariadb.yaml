@@ -37,13 +37,14 @@
     description: Build mariadb images
     vars: &mariadb_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      release: "focal"
       docker_images:
         - context: mariadb
           repository: openstackhelm/mariadb
-          dockerfile: Dockerfile.ubuntu_xenial
+          dockerfile: Dockerfile.ubuntu_{{ release }}
           tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
+            - "latest-ubuntu_{{ release }}"
+            - "ubuntu_{{ release }}-{{ currentdate }}"
     files: &mariadb_files
       - mariadb/.*
       - zuul.d/mariadb.yaml
