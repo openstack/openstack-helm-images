@@ -23,7 +23,7 @@
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
         - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
-        - openstack-helm-images-horizon-stein-ubuntu_bionic
+        - openstack-helm-images-horizon-train-ubuntu_bionic
     gate:
       jobs:
         - opendev-buildset-registry
@@ -33,7 +33,7 @@
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
         - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
-        - openstack-helm-images-horizon-stein-ubuntu_bionic
+        - openstack-helm-images-horizon-train-ubuntu_bionic
     periodic:
       jobs:
         - opendev-buildset-registry
@@ -43,7 +43,7 @@
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
         - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
-        - openstack-helm-images-horizon-stein-ubuntu_bionic
+        - openstack-helm-images-horizon-train-ubuntu_bionic
     templates:
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
@@ -332,19 +332,19 @@
       - zuul.d/minikube-aio.yaml
 
 - job:
-    name: openstack-helm-images-horizon-stein-ubuntu_bionic
-    parent: openstack-helm-horizon-stein-ubuntu_bionic
+    name: openstack-helm-images-horizon-train-ubuntu_bionic
+    parent: openstack-helm-horizon-train-ubuntu_bionic
     match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-osh-selenium
         soft: true
-      - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
+      - name: openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
         soft: true
       - name: openstack-helm-images-build-minikube-aio
         soft: true
       - name: openstack-helm-images-upload-osh-selenium
         soft: true
-      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
+      - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
         soft: true
       - name: openstack-helm-images-upload-minikube-aio
         soft: true
