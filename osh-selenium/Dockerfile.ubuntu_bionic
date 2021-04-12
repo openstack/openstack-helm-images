@@ -6,11 +6,20 @@ RUN set -xe; \
     apt-get install --no-install-recommends -y python3 python3-pip unzip wget gnupg; \
     python3 -m pip install --upgrade pip; \
     python3 -m pip install selenium; \
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -; \
-    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'; \
-    wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip; \
+
+    #wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -; \
+    #sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'; \
+    #apt-get -y update; \
+    #apt-get install --no-install-recommends -y google-chrome-stable; \
+    wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_88.0.4324.182-1_amd64.deb; \
+    apt install -y /tmp/chrome.deb; \
+
+    # We'll keep it here for later to be able to easily remove chrome pinning
+    CHROME_VER=$(dpkg -s google-chrome-stable | grep -Po '(?<=^Version: ).*' | awk -F'.' '{print $1"."$2"."}'); \
+    wget -O /tmp/index.xml https://chromedriver.storage.googleapis.com/; \
+    DRIVER_PATH=$(grep -Po "(?<=<Key>)${CHROME_VER}[^<]*?chromedriver_linux64\.zip(?=</Key>)" /tmp/index.xml | tail -1); \
+
+    wget --directory-prefix=/tmp/ https://chromedriver.storage.googleapis.com/${DRIVER_PATH}; \
     unzip /tmp/chromedriver_linux64.zip -d /etc/selenium; \
-    apt-get -y update; \
-    apt-get install --no-install-recommends -y google-chrome-stable; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/*
