@@ -319,9 +319,13 @@
         soft: true
       - name: openstack-helm-images-build-minikube-aio
         soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
       - name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
         soft: true
       - name: openstack-helm-images-upload-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
         soft: true
     files:
       - ^openstack/loci/.*
