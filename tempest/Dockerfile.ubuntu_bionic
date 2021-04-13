@@ -12,6 +12,7 @@ RUN set -ex ;\
         python3-pip \
         libssl-dev \
         git ;\
+    pip3 install -U pip ;\
     git clone https://git.openstack.org/openstack/tempest ;\
     git clone https://git.openstack.org/openstack/cinder-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/heat-tempest-plugin ;\

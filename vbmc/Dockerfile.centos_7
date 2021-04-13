@@ -27,6 +27,7 @@ RUN set -ex ;\
       python3-devel \
       python3-pip \
       qemu-kvm ;\
+    pip3 install -U pip ;\
     yum -y group install \
       "Development Tools" ;\
     yum clean all ;\
