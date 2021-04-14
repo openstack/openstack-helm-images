@@ -374,7 +374,12 @@
     timeout: 5400
     required-projects:
       - openstack/loci
-    run: zuul.d/playbooks/build-loci.yml
+    run:
+      - zuul.d/playbooks/build-loci.yml
+      - zuul.d/playbooks/upload.yml
+    secrets:
+      name: docker_credentials
+      secret: openstack-helm-dockerhub
     vars: *build_master_images
     files: *loci-files
 
