@@ -19,9 +19,7 @@
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
-        - openstack-helm-images-compute-kit-stein-ubuntu_bionic
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
-        - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-train-ubuntu_bionic
     gate:
@@ -29,9 +27,7 @@
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
-        - openstack-helm-images-compute-kit-stein-ubuntu_bionic
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
-        - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-train-ubuntu_bionic
     periodic:
@@ -39,9 +35,7 @@
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
-        - openstack-helm-images-compute-kit-stein-ubuntu_bionic
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
-        - openstack-helm-images-cinder-stein-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-train-ubuntu_bionic
     templates:
@@ -212,49 +206,6 @@
       - zuul.d/minikube-aio.yaml
 
 - job:
-    name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
-    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
-    match-on-config-updates: false
-    dependencies:
-      - name: openstack-helm-images-build-ospurge
-        soft: true
-      - name: openstack-helm-images-build-openvswitch
-        soft: true
-      - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
-        soft: true
-      - name: openstack-helm-images-build-mariadb
-        soft: true
-      - name: openstack-helm-images-build-libvirt
-        soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
-      - name: openstack-helm-images-upload-ospurge
-        soft: true
-      - name: openstack-helm-images-upload-openvswitch
-        soft: true
-      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
-        soft: true
-      - name: openstack-helm-images-upload-mariadb
-        soft: true
-      - name: openstack-helm-images-upload-libvirt
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
-        soft: true
-    files:
-      - ospurge/.*
-      - zuul.d/ospurge.yaml
-      - openvswitch/.*
-      - zuul.d/openvswitch.yaml
-      - ^openstack/loci/.*
-      - zuul.d/openstack-loci.yaml
-      - mariadb/.*
-      - zuul.d/mariadb.yaml
-      - libvirt/.*
-      - zuul.d/libvirt.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
-
-- job:
     name: openstack-helm-images-compute-kit-train-ubuntu_bionic
     parent: openstack-helm-compute-kit-train-ubuntu_bionic
     match-on-config-updates: false
@@ -288,25 +239,6 @@
       - zuul.d/mariadb.yaml
       - libvirt/.*
       - zuul.d/libvirt.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
-
-- job:
-    name: openstack-helm-images-cinder-stein-ubuntu_bionic
-    parent: openstack-helm-cinder-stein-ubuntu_bionic
-    match-on-config-updates: false
-    dependencies:
-      - name: openstack-helm-images-build-openstack-loci-stein-ubuntu_bionic
-        soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
-      - name: openstack-helm-images-upload-openstack-loci-stein-ubuntu_bionic
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
-        soft: true
-    files:
-      - ^openstack/loci/.*
-      - zuul.d/openstack-loci.yaml
       - minikube-aio/.*
       - zuul.d/minikube-aio.yaml
 
