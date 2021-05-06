@@ -13,9 +13,11 @@ apt-get install --no-install-recommends -y \
   dmidecode \
   ebtables \
   iproute2 \
-  libvirt-bin \
+  ipxe-qemu \
+  libvirt-clients \
+  libvirt-daemon-system \
   pm-utils \
-  qemu \
+  qemu-kvm \
   qemu-block-extra \
   qemu-efi \
   openvswitch-switch \

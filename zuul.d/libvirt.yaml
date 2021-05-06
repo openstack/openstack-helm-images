@@ -52,12 +52,6 @@
             - "centos_7-{{ currentdate }}"
         - context: libvirt
           repository: openstackhelm/libvirt
-          dockerfile: Dockerfile.ubuntu_xenial
-          tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
-        - context: libvirt
-          repository: openstackhelm/libvirt
           dockerfile: Dockerfile.ubuntu_bionic
           tags:
             - latest-ubuntu_bionic
@@ -66,6 +60,12 @@
             - "CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/"
             - "CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
             - "CEPH_RELEASE_TAG=14.2.9-1.0~bionic"
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile.ubuntu_focal
+          tags:
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
