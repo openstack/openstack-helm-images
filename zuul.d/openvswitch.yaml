@@ -68,6 +68,12 @@
           tags:
             - latest-ubuntu_bionic-dpdk
             - "ubuntu_bionic-dpdk-{{ currentdate }}"
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu_focal
+          tags:
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
