@@ -47,6 +47,12 @@
           tags:
             - latest-ubuntu_bionic
             - "ubuntu_bionic-{{ currentdate }}"
+        - context: nova-ssh
+          repository: openstackhelm/nova-ssh
+          dockerfile: Dockerfile.ubuntu_focal
+          tags:
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &nova_ssh_files
       - nova-ssh/.*
       - zuul.d/nova-ssh.yaml
