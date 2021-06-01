@@ -214,7 +214,7 @@ neutron_sriov_pip_packages=${neutron_sriov_pip_packages:-"pycrypto"}
 neutron_sriov_dist_packages=${neutron_sriov_dist_packages:-"'ethtool lshw'"}
 neutron_sriov_extra_tag=${neutron_sriov_extra_tag:-'-sriov-1804'}
 placement_profiles=${placement_profiles:-"'apache'"}
-monasca_api_profile=${monasca_api_profile:-"'monasca api'"}
+monasca_api_profile=${monasca_api_profile:-"'apache monasca api'"}
 monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
 ####################
 # Action starts here

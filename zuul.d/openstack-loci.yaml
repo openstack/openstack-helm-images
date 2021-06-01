@@ -300,7 +300,7 @@
             - "PYTHON3={{ python3 }}"
             - "PROJECT='monasca-api'"
             - "PROJECT_REF={{ branchname }}"
-            - "PROFILES='monasca api'"
+            - "PROFILES='apache monasca api'"
             - "PIP_PACKAGES='influxdb cassandra-driver sqlalchemy'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
