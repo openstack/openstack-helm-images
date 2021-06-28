@@ -19,6 +19,7 @@
 # Output:
 #  CRITICAL: statefulset prometheus has low replica count
 import argparse
+import os
 import sys
 import requests
 import re
@@ -139,10 +140,15 @@ def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
             promql = promql + "," + labels_csv
         promql = promql + "}"
         query = {'query': promql}
-        response = requests.get(
-            include_schema(prometheus_api) +
-            "/api/v1/query",
-            params=query, timeout=timeout)
+        kwargs = {
+            'params': query,
+            'timeout': timeout
+        }
+        cacert = os.getenv('CA_CERT_PATH', "")
+        if cacert:
+            kwargs['verify'] = cacert
+
+        response = requests.get(include_schema(prometheus_api) + "/api/v1/query", **kwargs)
         response_json = response.json()
     except requests.exceptions.Timeout:
         error_messages.append(

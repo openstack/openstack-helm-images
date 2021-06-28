@@ -24,6 +24,7 @@ import sys
 import argparse
 import datetime
 import json
+import os
 from pprint import pprint
 import requests
 
@@ -223,13 +224,19 @@ def main():
         pprint(data)
 
     try:
+        kwargs = {
+            'data': json.dumps(data),
+            'timeout': args.timeout,
+            'headers': {'Content-Type': 'application/json'}
+        }
         if args.usr and args.pwd:
-            response = requests.post(url, data=json.dumps(data), timeout=args.timeout,
-                                     headers={"Content-Type": "application/json"},
-                                     auth=(args.usr, args.pwd))
-        else:
-            response = requests.post(url, data=json.dumps(data), timeout=args.timeout,
-                                     headers={"Content-Type": "application/json"})
+            kwargs['auth'] = (args.usr, args.pwd)
+        cacert = os.getenv('CA_CERT_PATH', "")
+        if cacert:
+            kwargs['verify'] = cacert
+
+        response = requests.post(url, **kwargs)
+
     except requests.exceptions.Timeout as con_ex:
         NagiosUtil.service_warning('Elasticsearch connection timed out ' + str(con_ex))
     except requests.exceptions.RequestException as req_ex:
