@@ -96,10 +96,10 @@ def main():
         severity = metric['metric']['severity']
         message = args.msg_format.format(**metric['metric'])
         if alertstate == 'firing':
-           if severity == 'page':
-              firingScalarMessages_critical.append(message)
-           if severity == 'warning':
-              firingScalarMessages_warning.append(message)
+            if severity == 'page':
+                firingScalarMessages_critical.append(message)
+            if severity == 'warning':
+                firingScalarMessages_warning.append(message)
 
     if firingScalarMessages_critical:
         print(",".join(firingScalarMessages_critical))
@@ -134,34 +134,54 @@ def main():
 def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
     error_messages = []
     response_json = dict()
-    try:
-        promql = 'ALERTS{alertname="' + alertname + '"'
-        if labels_csv:
-            promql = promql + "," + labels_csv
-        promql = promql + "}"
-        query = {'query': promql}
-        kwargs = {
-            'params': query,
-            'timeout': timeout
-        }
-        cacert = os.getenv('CA_CERT_PATH', "")
-        if cacert:
-            kwargs['verify'] = cacert
+    max_retry = 5
+    retry = 1
+    while retry < max_retry:
+        try:
+            promql = 'ALERTS{alertname="' + alertname + '"'
+            if labels_csv:
+                promql = promql + "," + labels_csv
+            promql = promql + "}"
+            query = {'query': promql}
+            kwargs = {
+                'params': query,
+                'timeout': timeout
+            }
+            cacert = os.getenv('CA_CERT_PATH', "")
+            if cacert:
+                kwargs['verify'] = cacert
 
-        response = requests.get(include_schema(prometheus_api) + "/api/v1/query", **kwargs)
-        response_json = response.json()
-    except requests.exceptions.Timeout:
-        error_messages.append(
-            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(clean_api_address(prometheus_api) , timeout))
-    except requests.exceptions.ConnectionError:
-        error_messages.append(
-            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(clean_api_address(prometheus_api)))
-    except requests.exceptions.RequestException:
-        error_messages.append(
-            "ERROR:  Prometheus api connection failed, using URL {}".format(clean_api_address(prometheus_api)))
-    except Exception as e:
-        error_messages.append(
-            "ERROR while invoking prometheus api using URL {}, got error: {}".format(clean_api_address(prometheus_api), e))
+            response = requests.get(include_schema(
+                prometheus_api) + "/api/v1/query", **kwargs)
+            response_json = response.json()
+        except requests.exceptions.Timeout:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(clean_api_address(prometheus_api), timeout))
+        except requests.exceptions.ConnectionError:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(clean_api_address(prometheus_api)))
+        except requests.exceptions.RequestException:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR:  Prometheus api connection failed, using URL {}".format(clean_api_address(prometheus_api)))
+        except Exception as e:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR while invoking prometheus api using URL {}, got error: {}".format(clean_api_address(prometheus_api), e))
 
     return response_json, error_messages
 
@@ -169,40 +189,58 @@ def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
 def check_prom_metrics_available(prometheus_api, metrics, labels_csv, timeout):
     error_messages = []
     metrics_available = False
-    try:
-        metrics_with_query = []
-        for metric in metrics:
-            if labels_csv:
-                metrics_with_query.append(
-                    "absent({metric}{{{labels}}})".format(
-                        metric=metric, labels=labels_csv))
-            else:
-                metrics_with_query.append(
-                    "absent({metric})".format(metric=metric))
-        promql = " OR ".join(metrics_with_query)
-        query = {'query': promql}
-        response = requests.get(
-            include_schema(prometheus_api) +
-            "/api/v1/query",
-            params=query, timeout=timeout)
-        response_json = response.json()
-        if response_json['data']['result']:
-            if response_json['data']['result'][0]['value'][1] == "1":
-                metrics_available = False
-            else:
-                metrics_available = True
-    except requests.exceptions.Timeout:
-        error_messages.append(
-            "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(clean_api_address(prometheus_api), timeout))
-    except requests.exceptions.ConnectionError:
-        error_messages.append(
-            "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(clean_api_address(prometheus_api)))
-    except requests.exceptions.RequestException:
-        error_messages.append(
-            "ERROR:  Prometheus api connection failed, using URL {}".format(clean_api_address(prometheus_api)))
-    except Exception as e:
-        error_messages.append(
-            "ERROR while invoking prometheus api using URL {}, got error: {}".format(clean_api_address(prometheus_api), e))
+    max_retry = 5
+    retry = 1
+    while retry < max_retry:
+        try:
+            metrics_with_query = []
+            for metric in metrics:
+                if labels_csv:
+                    metrics_with_query.append(
+                        "absent({metric}{{{labels}}})".format(
+                            metric=metric, labels=labels_csv))
+                else:
+                    metrics_with_query.append(
+                        "absent({metric})".format(metric=metric))
+            promql = " OR ".join(metrics_with_query)
+            query = {'query': promql}
+            response = requests.get(
+                include_schema(prometheus_api) +
+                "/api/v1/query",
+                params=query, timeout=timeout)
+            response_json = response.json()
+            if response_json['data']['result']:
+                if response_json['data']['result'][0]['value'][1] == "1":
+                    metrics_available = False
+                else:
+                    metrics_available = True
+        except requests.exceptions.Timeout:
+            if retry < max_retry:
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR: Prometheus api connection timed out, using URL {}, the maximum timeout value is {} seconds".format(clean_api_address(prometheus_api), timeout))
+        except requests.exceptions.ConnectionError:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR:  Prometheus api cannot be connected[connection refused], using URL {}".format(clean_api_address(prometheus_api)))
+        except requests.exceptions.RequestException:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR:  Prometheus api connection failed, using URL {}".format(clean_api_address(prometheus_api)))
+        except Exception as e:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR while invoking prometheus api using URL {}, got error: {}".format(clean_api_address(prometheus_api), e))
 
     return metrics_available, error_messages
 
@@ -214,12 +252,14 @@ def include_schema(prometheus_api):
     else:
         return "http://{}".format(prometheus_api)
 
+
 def clean_api_address(prometheus_api):
-   try:
-     match = re.match(r'(http(s?):\/\/(.[^:@]*):)(.[^@]*)', prometheus_api)
-     return re.sub(match.group(4), 'REDACTED', prometheus_api)
-   except:
-     return prometheus_api
+    try:
+        match = re.match(r'(http(s?):\/\/(.[^:@]*):)(.[^@]*)', prometheus_api)
+        return re.sub(match.group(4), 'REDACTED', prometheus_api)
+    except:
+        return prometheus_api
+
 
 def get_label_names(s):
     d = {}

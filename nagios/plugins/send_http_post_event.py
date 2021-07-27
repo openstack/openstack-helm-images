@@ -32,7 +32,7 @@
 #                      --state-id 2
 #                      --output 'nova-compute stop/waiting'
 #                      --monitoring-hostname 'nagioshost.x.y.com'
-# sends HTTP POST with following payload:
+#  sends HTTP POST with following payload:
 #    "SvcEvent":{
 #        "SvcHostname":"hostwithevent.y.x.com",
 #        "SvcDesc":"Service_nova-compute",
@@ -103,6 +103,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 payload = {}
+max_retry = 5
+retry = 1
 
 if args.type == 'host':
     payload['HostEvent'] = {
@@ -123,23 +125,35 @@ elif args.type == 'service':
         'MonitoringHostName': args.monitoring_hostname
     }
 
-try:
-    requests.post(
-        args.primary_url,
-        data=json.dumps(payload),
-        timeout=args.timeout,
-        verify=False)
-except Exception as e:
-    pass
-
-if args.secondary_url:
+while retry < max_retry:
     try:
         requests.post(
-            args.secondary_url,
+            args.primary_url,
             data=json.dumps(payload),
             timeout=args.timeout,
             verify=False)
     except Exception as e:
+        if retry < max_retry:
+            print('Request timeout, Retrying - {}'.format(retry))
+            retry += 1
+            continue
         pass
+
+if args.secondary_url:
+    retry = 1
+    while retry < max_retry:
+        try:
+            requests.post(
+                args.secondary_url,
+                data=json.dumps(payload),
+                timeout=args.timeout,
+                verify=False)
+            break
+        except Exception as e:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            pass
 
 sys.exit(0)

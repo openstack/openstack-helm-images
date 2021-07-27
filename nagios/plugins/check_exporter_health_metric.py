@@ -74,13 +74,13 @@ def main():
         for key, value in metrics.items():
             if value == args.critical:
                 criticalMessages.append("Critical: {metric_name} metric is a critical value of {metric_value}({detail})".format(
-                                         metric_name=args.health_metric, metric_value=value, detail=key))
+                    metric_name=args.health_metric, metric_value=value, detail=key))
             elif value == args.warning:
                 warningMessages.append("Warning: {metric_name} metric is a warning value of {metric_value}({detail})".format(
-                                         metric_name=args.health_metric, metric_value=value, detail=key))
+                    metric_name=args.health_metric, metric_value=value, detail=key))
     else:
         print("Unknown: Query response for {metric_name} has Null value({detail})".format(
-                     metric_name=args.health_metric, detail=str(metrics)))
+            metric_name=args.health_metric, detail=str(metrics)))
         sys.exit(STATE_UNKNOWN)
 
     if criticalMessages:
@@ -96,36 +96,49 @@ def main():
 
 
 def query_exporter_metric(exporter_namespace, label_selector, metric_name):
-    exporter_endpoint = find_active_endpoint(exporter_namespace, label_selector)
+    exporter_endpoint = find_active_endpoint(
+        exporter_namespace, label_selector)
     error_messages = []
     metrics = dict()
-    try:
-        response = requests.get(include_schema(exporter_endpoint), verify=False)  # nosec
-        line_item_metrics = re.findall(
-            "^{}.*".format(metric_name),
-            response.text,
-            re.MULTILINE)
-        for metric in line_item_metrics:
-            metric_with_labels, value = metric.split(" ")
-            metrics[metric_with_labels] = float(value)
-    except Exception as e:
-        error_messages.append(
-            "ERROR retrieving exporter endpoint {}".format(
-                str(e)))
+    max_retry = 5
+    retry = 1
+    while retry < max_retry:
+        try:
+            response = requests.get(include_schema(
+                exporter_endpoint), verify=False)  # nosec
+            line_item_metrics = re.findall(
+                "^{}.*".format(metric_name),
+                response.text,
+                re.MULTILINE)
+            for metric in line_item_metrics:
+                metric_with_labels, value = metric.split(" ")
+                metrics[metric_with_labels] = float(value)
+        except Exception as e:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            error_messages.append(
+                "ERROR retrieving exporter endpoint {}".format(
+                    str(e)))
     return metrics, error_messages
+
 
 def get_kubernetes_api():
     kubernetes.config.load_incluster_config()
     api = kubernetes.client.CoreV1Api()
     return api
 
+
 def get_kubernetes_endpoints(namespace, label_selector):
     kube_api = get_kubernetes_api()
     try:
-        endpoint_list = kube_api.list_namespaced_endpoints(namespace=namespace, label_selector=label_selector)
+        endpoint_list = kube_api.list_namespaced_endpoints(
+            namespace=namespace, label_selector=label_selector)
     except ApiException as e:
         print("Exception when calling CoreV1Api->list_namespaced_endpoints: %s\n" % e)
     return endpoint_list.items
+
 
 def get_endpoint_metric_port(endpoint):
     ports = endpoint.ports
@@ -134,6 +147,7 @@ def get_endpoint_metric_port(endpoint):
             return port.port
     print("No metrics ports exposed on {} endpoint".format(endpoint))
     sys.exit(STATE_CRITICAL)
+
 
 def get_kubernetes_endpoint_addresses(endpoints):
     addresses = []
@@ -144,6 +158,7 @@ def get_kubernetes_endpoint_addresses(endpoints):
                 addresses.append("{}:{}/metrics".format(address.ip, port))
     return addresses
 
+
 def find_active_endpoint(namespace, label_selector):
     kube_api = get_kubernetes_api()
     exporter_endpoints = get_kubernetes_endpoints(namespace, label_selector)
@@ -152,8 +167,10 @@ def find_active_endpoint(namespace, label_selector):
         response = requests.get(include_schema(address), verify=False)  # nosec
         if response.text:
             return address
-    print("No active exporters in {} namespace with selectors {} found!".format(namespace, label_selector))
+    print("No active exporters in {} namespace with selectors {} found!".format(
+        namespace, label_selector))
     sys.exit(STATE_CRITICAL)
+
 
 def include_schema(endpoint):
     if endpoint.startswith("http://") or endpoint.startswith("https://"):

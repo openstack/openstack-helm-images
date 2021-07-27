@@ -77,6 +77,7 @@ def main():
     timeout_seconds = 10
     warning_seconds = timeout_seconds
     critical_seconds = timeout_seconds
+    max_retry = 5
 
     if args.warning_response_seconds:
         warning_seconds = int(args.warning_response_seconds)
@@ -108,49 +109,58 @@ def main():
         proxies["https"] = args.https_proxy
 
     parsed = urlparse(args.url)
-    replaced = parsed._replace(netloc="{}:{}@{}".format(parsed.username, "???", parsed.hostname))
+    replaced = parsed._replace(
+        netloc="{}:{}@{}".format(parsed.username, "???", parsed.hostname))
     screened_url = replaced.geturl()
 
-    try:
-        response = requests.get(
-            include_schema(
-                args.url),
-            proxies=proxies,
-            timeout=timeout_seconds,
-            verify=False)  # nosec
+    retry = 1
 
-        response_seconds = response.elapsed.total_seconds()
-        response_time = "[RT={:.4f}]".format(response_seconds)
+    while retry < max_retry:
+        try:
+            response = requests.get(
+                include_schema(
+                    args.url),
+                proxies=proxies,
+                timeout=timeout_seconds,
+                verify=False)  # nosec
 
-        if response.status_code not in expected_response_codes:
-            print("CRITICAL: using URL {} expected HTTP status codes {} but got {}. {}".format(
-                screened_url, expected_response_codes, response.status_code, response_time))
+            response_seconds = response.elapsed.total_seconds()
+            response_time = "[RT={:.4f}]".format(response_seconds)
+
+            if response_seconds >= warning_seconds and response_seconds < critical_seconds:
+                print("WARNING: using URL {} response seconds {} is more than warning threshold {} seconds. {}".format(
+                    screened_url, response_seconds, warning_seconds, response_time))
+                sys.exit(STATE_WARNING)
+
+            if response.status_code not in expected_response_codes:
+                print("CRITICAL: using URL {} expected HTTP status codes {} but got {}. {}".format(
+                    screened_url, expected_response_codes, response.status_code, response_time))
+                sys.exit(STATE_CRITICAL)
+
+            if response_seconds >= critical_seconds:
+                print("CRITICAL: using URL {} response seconds {} is more than critical threshold {} seconds. {}".format(
+                    screened_url, response_seconds, critical_seconds, response_time))
+                sys.exit(STATE_CRITICAL)
+
+            print("OK: URL {} returned response code {}. {}".format(
+                screened_url, response.status_code, response_time))
+            sys.exit(STATE_OK)
+
+        except requests.exceptions.Timeout:
+            if retry < max_retry:
+                print('Request timeout, Retrying - {}'.format(retry))
+                retry += 1
+                continue
+            else:
+                print("CRITICAL: Timeout in {} seconds to fetch from URL {}".format(
+                    timeout_seconds, screened_url))
+                sys.exit(STATE_CRITICAL)
+        except Exception as e:
+            print("CRITICAL: Failed to fetch from URL {} with reason {}".format(
+                screened_url, e))
             sys.exit(STATE_CRITICAL)
 
-        if response_seconds >= warning_seconds and response_seconds < critical_seconds:
-            print("WARNING: using URL {} response seconds {} is more than warning threshold {} seconds. {}".format(
-                screened_url, response_seconds, warning_seconds, response_time))
-            sys.exit(STATE_WARNING)
-
-        if response_seconds >= critical_seconds:
-            print("CRITICAL: using URL {} response seconds {} is more than critical threshold {} seconds. {}".format(
-                screened_url, response_seconds, critical_seconds, response_time))
-            sys.exit(STATE_CRITICAL)
-
-        print("OK: URL {} returned response code {}. {}".format(
-            screened_url, response.status_code, response_time))
         sys.exit(STATE_OK)
-
-    except requests.exceptions.Timeout:
-        print("CRITICAL: Timeout in {} seconds to fetch from URL {}".format(
-            timeout_seconds, screened_url))
-        sys.exit(STATE_CRITICAL)
-    except Exception as e:
-        print("CRITICAL: Failed to fetch from URL {} with reason {}".format(
-            screened_url, e))
-        sys.exit(STATE_CRITICAL)
-
-    sys.exit(STATE_OK)
 
 
 def include_schema(api):
