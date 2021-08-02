@@ -46,15 +46,18 @@
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic:
             dependencies:
-              - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
+              - name: openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
+              - name: openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal:
             dependencies:
-              - name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-victoria-ubuntu_focal
+              - name: openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal:
             dependencies:
-              - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
+              - name: openstack-helm-images-cinder-wallaby-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
             dependencies:
