@@ -1,9 +1,9 @@
 ARG baseimg=docker.io/ubuntu:bionic
 FROM ${baseimg}
 
-# Octopus 15.2.8
+# Octopus 15.2.13
 ARG CEPH_RELEASE=octopus
-ARG CEPH_RELEASE_TAG=15.2.8-1bionic
+ARG CEPH_RELEASE_TAG=15.2.13-1bionic
 ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-octopus/
 ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-octopus/release.asc
 
