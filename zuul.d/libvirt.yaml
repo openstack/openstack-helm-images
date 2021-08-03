@@ -28,8 +28,10 @@
         - openstack-helm-images-upload-libvirt
         - openstack-helm-images-promote-libvirt:
             dependencies:
-              - name: openstack-helm-images-compute-kit-stein-ubuntu_bionic
               - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+              - name: openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
+              - name: openstack-helm-images-compute-kit-victoria-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
 
 - job:
     name: openstack-helm-images-build-libvirt

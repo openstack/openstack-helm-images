@@ -22,6 +22,8 @@
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-train-ubuntu_bionic
+        - openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
+        - openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
@@ -34,6 +36,8 @@
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-train-ubuntu_bionic
+        - openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
+        - openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
@@ -46,6 +50,8 @@
         - openstack-helm-images-compute-kit-train-ubuntu_bionic
         - openstack-helm-images-cinder-train-ubuntu_bionic
         - openstack-helm-images-horizon-train-ubuntu_bionic
+        - openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
+        - openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
@@ -301,6 +307,68 @@
       - zuul.d/osh-selenium.yaml
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
+    parent: openstack-helm-compute-kit-ussuri-ubuntu_bionic
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-openvswitch
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-libvirt
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
+        soft: true
+    files:
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+      - minikube-aio/.*
+      - zuul.d/minikube-aio.yaml
+
+- job:
+    name: openstack-helm-images-cinder-ussuri-ubuntu_bionic
+    parent: openstack-helm-cinder-ussuri-ubuntu_bionic
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-build-minikube-aio
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
+        soft: true
+      - name: openstack-helm-images-upload-minikube-aio
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
       - minikube-aio/.*
       - zuul.d/minikube-aio.yaml
 
