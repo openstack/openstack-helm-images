@@ -18,17 +18,23 @@
       jobs:
         - openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
-        - openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
+        - openstack-helm-images-build-openstack-loci-victoria-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-master-ubuntu_focal
     gate:
       jobs:
         - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
-        - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
+        - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic
-        - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
+        - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
     periodic:
       jobs:
         - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
@@ -41,10 +47,18 @@
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic:
             dependencies:
               - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
-        - openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
-        - openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic:
+        - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal:
             dependencies:
-              - name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
+              - name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
 
 
 ################
@@ -300,7 +314,7 @@
             - "PYTHON3={{ python3 }}"
             - "PROJECT='monasca-api'"
             - "PROJECT_REF={{ branchname }}"
-            - "PROFILES='apache monasca api'"
+            - "PROFILES='monasca api'"
             - "PIP_PACKAGES='influxdb cassandra-driver sqlalchemy'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
@@ -312,17 +326,6 @@
             - "FROM='{{ base_repository }}'"
             - "PYTHON3={{ python3 }}"
             - "PROJECT='cyborg'"
-            - "PROJECT_REF={{ branchname }}"
-            - "WHEELS='{{ wheels_location }}'"
-            - "KEEP_ALL_WHEELS=yes"
-          tags: *imagetag
-        - &designate_project
-          context: "."
-          repository: openstackhelm/designate
-          build_args:
-            - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
-            - "PROJECT='designate'"
             - "PROJECT_REF={{ branchname }}"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
@@ -364,21 +367,21 @@
 #############
 
 - job:
-    name: openstack-helm-images-build-openstack-loci-master-ubuntu_bionic
-    description: Build LOCI master bionic images
+    name: openstack-helm-images-build-openstack-loci-master-ubuntu_focal
+    description: Build LOCI master focal images
     parent: openstack-helm-images-build-openstack-loci-master
-    vars: &build_master_bionic_images
+    vars: &build_master_focal_images
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       branchname: "master"
       shortbranchname: "master"
-      distroname: "ubuntu_bionic"
-      from: "docker.io/ubuntu:18.04"
+      distroname: "ubuntu_focal"
+      from: "docker.io/ubuntu:20.04"
       python3: "yes"
       #172.17.0.1 is default docker0 ip.
       wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
       base_repository: "base"
-      ceph_repo: "deb https://mirror.mirantis.com/testing/ceph-nautilus/bionic/ bionic main"
-      ceph_key: "https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
+      ceph_repo: "deb https://download.ceph.com/debian-octopus/ focal main"
+      ceph_key: "http://download.ceph.com/keys/release.asc"
       base_docker_image:
         - <<: *base_image
       prep_docker_images:
@@ -397,21 +400,122 @@
         - <<: *monasca_api_project
         - <<: *watcher_project
         - <<: *cyborg_project
-        - <<: *designate_project
 
 - job:
-    name: openstack-helm-images-upload-openstack-loci-master-ubuntu_bionic
-    description: Build and upload LOCI master bionic images
+    name: openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
+    description: Build and upload LOCI master focal images
     parent: openstack-helm-images-upload-openstack-loci-master
-    vars: *build_master_bionic_images
+    vars: *build_master_focal_images
     files: *loci-files
 
 - job:
-    name: openstack-helm-images-promote-openstack-loci-master-ubuntu_bionic
+    name: openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
     parent: openstack-helm-images-promote-openstack-loci-master
-    description: Promote previously published LOCI master bionic images
-    vars: *build_master_bionic_images
+    description: Promote previously published LOCI master focal images
+    vars: *build_master_focal_images
     files: *loci-files
+
+###########
+# WALLABY #
+###########
+
+- job:
+    name: openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
+    description: Build LOCI wallaby focal images
+    parent: openstack-helm-images-build-openstack-loci-master
+    vars: &build_wallaby_focal_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/wallaby"
+      shortbranchname: "wallaby"
+      distroname: "ubuntu_focal"
+      from: "docker.io/ubuntu:20.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-octopus/ focal main"
+      ceph_key: "https://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        - <<: *watcher_project
+        - <<: *cyborg_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI wallaby focal images
+    vars: *build_wallaby_focal_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI wallaby focal images
+    vars: *build_wallaby_focal_images
+
+############
+# VICTORIA #
+############
+
+- job:
+    name: openstack-helm-images-build-openstack-loci-victoria-ubuntu_focal
+    description: Build LOCI victoria focal images
+    parent: openstack-helm-images-build-openstack-loci-master
+    vars: &build_victoria_focal_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/victoria"
+      shortbranchname: "victoria"
+      distroname: "ubuntu_focal"
+      from: "docker.io/ubuntu:20.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-octopus/ focal main"
+      ceph_key: "https://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        - <<: *watcher_project
+        - <<: *cyborg_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI victoria focal images
+    vars: *build_victoria_focal_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI victoria focal images
+    vars: *build_victoria_focal_images
 
 ##########
 # USSURI #
@@ -451,7 +555,6 @@
         - <<: *monasca_api_project
         - <<: *watcher_project
         - <<: *cyborg_project
-        - <<: *designate_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
@@ -502,7 +605,6 @@
         - <<: *monasca_api_project
         - <<: *watcher_project
         - <<: *cyborg_project
-        - <<: *designate_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
