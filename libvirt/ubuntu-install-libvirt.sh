@@ -16,6 +16,7 @@ apt-get install --no-install-recommends -y \
   ipxe-qemu \
   libvirt-clients \
   libvirt-daemon-system \
+  openssh-client \
   pm-utils \
   qemu-kvm \
   qemu-block-extra \
