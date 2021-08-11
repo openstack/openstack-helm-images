@@ -47,7 +47,7 @@ RUN set -ex; \
     GOOGLE_REPO_URL=https://storage.googleapis.com ;\
     MINIKUBE_REPO_URL=${GOOGLE_REPO_URL}/minikube/releases/${MINIKUBE_VERSION} ;\
     GOOGLE_KUBERNETES_REPO_URL=${GOOGLE_REPO_URL}/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64 ;\
-    GOOGLE_HELM_REPO_URL=${GOOGLE_REPO_URL}/kubernetes-helm ;\
+    HELM_REPO_URL=https://get.helm.sh ;\
     CNI_REPO_URL=https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION} ;\
     BINARY_DIR=/opt/binaries ;\
     mkdir ${BINARY_DIR}; \
@@ -56,7 +56,7 @@ RUN set -ex; \
       curl -sSLo ${BINARY_DIR}/${BINARY} ${GOOGLE_KUBERNETES_REPO_URL}/${BINARY} ;\
     done ;\
     TMP_DIR=$(mktemp -d) ;\
-    curl -sSL ${GOOGLE_HELM_REPO_URL}/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -zxv --strip-components=1 -C ${TMP_DIR} ;\
+    curl -sSL ${HELM_REPO_URL}/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -zxv --strip-components=1 -C ${TMP_DIR} ;\
     mv ${TMP_DIR}/helm ${BINARY_DIR} ;\
     rm -rf ${TMP_DIR} ;\
     chmod +x ${BINARY_DIR}/* ;\
