@@ -154,6 +154,7 @@ def query_prometheus(prometheus_api, alertname, labels_csv, timeout):
             response = requests.get(include_schema(
                 prometheus_api) + "/api/v1/query", **kwargs)
             response_json = response.json()
+            break
         except requests.exceptions.Timeout:
             if retry < max_retry:
                 print('Request timeout, Retrying - {}'.format(retry))
@@ -214,6 +215,7 @@ def check_prom_metrics_available(prometheus_api, metrics, labels_csv, timeout):
                     metrics_available = False
                 else:
                     metrics_available = True
+            break
         except requests.exceptions.Timeout:
             if retry < max_retry:
                 retry += 1

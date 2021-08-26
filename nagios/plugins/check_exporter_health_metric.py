@@ -113,6 +113,7 @@ def query_exporter_metric(exporter_namespace, label_selector, metric_name):
             for metric in line_item_metrics:
                 metric_with_labels, value = metric.split(" ")
                 metrics[metric_with_labels] = float(value)
+            break
         except Exception as e:
             if retry < max_retry:
                 print('Request timeout, Retrying - {}'.format(retry))
