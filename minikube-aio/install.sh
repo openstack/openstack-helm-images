@@ -32,7 +32,7 @@ function extract {
     sudo docker load < ${image}
   done
   cp calico.yaml /tmp/
-  sudo docker images | sort | uniq | tee /tmp/loaded_images
+  sudo docker images --format "{{.Repository}}:{{.Tag}}" | sort | uniq | tee /tmp/loaded_images
   cd -
 }
 
@@ -215,4 +215,10 @@ kubectl label nodes --all ceph-mgr=enabled
 kubectl label --overwrite namespace default name=default
 kubectl label --overwrite namespace kube-system name=kube-system
 kubectl label --overwrite namespace kube-public name=kube-public
-sudo docker images | sort | uniq | tee /tmp/images_after_installation
+sudo docker images --format "{{.Repository}}:{{.Tag}}" | sort | uniq | tee /tmp/images_after_installation
+
+if ! cmp -s /tmp/loaded_images /tmp/images_after_installation; then
+    printf "ERROR: minikube-aio pulls additional images"
+    diff /tmp/loaded_images /tmp/images_after_installation
+    exit 1
+fi
