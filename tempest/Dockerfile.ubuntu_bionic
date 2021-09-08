@@ -18,7 +18,7 @@ RUN set -ex ;\
     git clone https://git.openstack.org/openstack/heat-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/keystone-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/neutron-tempest-plugin ;\
-    pip3 install -U setuptools ;\
+    pip3 install -U setuptools==58.0.0 ;\
     pip3 install wheel ;\
     pip3 install -e tempest/ \
                     cinder-tempest-plugin/ \
