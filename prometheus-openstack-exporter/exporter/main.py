@@ -41,7 +41,6 @@ collectors = []
 class ForkingHTTPServer(ForkingMixIn, HTTPServer):
     pass
 
-
 class OpenstackExporterHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
@@ -54,7 +53,7 @@ class OpenstackExporterHandler(BaseHTTPRequestHandler):
                 try:
                     stats = collector.get_stats()
                     if stats is not None:
-                        output = output + stats
+                        output = output + remove_duplicate_help_text(stats)
                 except BaseException as inst:
                     logger.warning(
                         'Could not get stats for collector {}.'
@@ -85,6 +84,22 @@ class OpenstackExporterHandler(BaseHTTPRequestHandler):
 
 def handler(*args, **kwargs):
     OpenstackExporterHandler(*args, **kwargs)
+
+def remove_duplicate_help_text(stats):
+    """ Ocassionally this exporter produces output which is not compatible
+    with the telegraf prometheus input plugin. This function is a filter
+    to remove duplicated # HELP and # TYPE texts from the output """
+
+    seen = set()
+    clean_stats = []
+
+    for line in stats.decode().splitlines():
+        if line not in seen:
+            if line.startswith('#'):
+                seen.add(line)
+            clean_stats.append(line)
+
+    return '\n'.join(clean_stats).encode() + b'\n'
 
 
 if __name__ == '__main__':
