@@ -216,6 +216,7 @@ neutron_sriov_extra_tag=${neutron_sriov_extra_tag:-'-sriov-1804'}
 placement_profiles=${placement_profiles:-"'apache'"}
 monasca_api_profile=${monasca_api_profile:-"'apache monasca api'"}
 monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
+masakari_profiles=${masakari_profiles:-"'masakari'"}
 ####################
 # Action starts here
 ####################
