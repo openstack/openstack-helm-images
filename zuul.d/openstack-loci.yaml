@@ -327,6 +327,18 @@
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
+        - &masakari_monitors_project
+          context: "."
+          repository: openstackhelm/masakari-monitors
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PYTHON3={{ python3 }}"
+            - "PROJECT='masakari-monitors'"
+            - "PROJECT_REF={{ branchname }}"
+            - "PIP_PACKAGES='libvirt-python'"
+            - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -453,6 +465,7 @@
         - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
+        - <<: *masakari_monitors_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
@@ -505,6 +518,7 @@
         - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
+        - <<: *masakari_monitors_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
@@ -557,6 +571,7 @@
         - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
+        - <<: *masakari_monitors_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
@@ -608,6 +623,7 @@
         - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
+        - <<: *masakari_monitors_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic

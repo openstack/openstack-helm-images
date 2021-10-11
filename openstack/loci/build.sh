@@ -217,6 +217,7 @@ placement_profiles=${placement_profiles:-"'apache'"}
 monasca_api_profile=${monasca_api_profile:-"'apache monasca api'"}
 monasca_api_pip_packages=${monasca_api_pip_packages:-"influxdb cassandra-driver sqlalchemy"}
 masakari_profiles=${masakari_profiles:-"'masakari'"}
+masakari_monitors_profiles=${masakari_monitors_profiles:-"'masakari-monitors'"}
 ####################
 # Action starts here
 ####################
