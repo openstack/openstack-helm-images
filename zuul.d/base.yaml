@@ -156,8 +156,6 @@
     dependencies:
       - name: openstack-helm-images-build-prometheus-openstack-exporter
         soft: true
-      - name: openstack-helm-images-build-patroni
-        soft: true
       - name: openstack-helm-images-build-osh-selenium
         soft: true
       - name: openstack-helm-images-build-node-problem-detector
@@ -167,8 +165,6 @@
       - name: openstack-helm-images-build-minikube-aio
         soft: true
       - name: openstack-helm-images-upload-prometheus-openstack-exporter
-        soft: true
-      - name: openstack-helm-images-upload-patroni
         soft: true
       - name: openstack-helm-images-upload-osh-selenium
         soft: true
@@ -181,8 +177,6 @@
     files:
       - prometheus-openstack-exporter/.*
       - zuul.d/prometheus-openstack-exporter.yaml
-      - patroni/.*
-      - zuul.d/patroni.yaml
       - osh-selenium/.*
       - zuul.d/osh-selenium.yaml
       - node-problem-detector/.*

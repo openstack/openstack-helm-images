@@ -36,12 +36,6 @@
       docker_images:
         - context: ceph-rbd-provisioner
           repository: openstackhelm/ceph-rbd-provisioner
-          dockerfile: Dockerfile.ubuntu_xenial
-          tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
-        - context: ceph-rbd-provisioner
-          repository: openstackhelm/ceph-rbd-provisioner
           dockerfile: Dockerfile.ubuntu_bionic
           tags:
             - latest-ubuntu_bionic

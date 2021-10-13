@@ -17,37 +17,16 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-build-mini-mirror-xenial
         - openstack-helm-images-build-mini-mirror-bionic
     gate:
       jobs:
-        - openstack-helm-images-upload-mini-mirror-xenial
         - openstack-helm-images-upload-mini-mirror-bionic
     promote:
       jobs:
-        - openstack-helm-images-promote-mini-mirror-xenial
         - openstack-helm-images-promote-mini-mirror-bionic
     periodic:
       jobs:
-        - openstack-helm-images-build-mini-mirror-xenial
         - openstack-helm-images-build-mini-mirror-bionic
-
-- job:
-    name: openstack-helm-images-build-mini-mirror-xenial
-    parent: openstack-helm-images-build
-    description: Build mini-mirror images
-    vars: &mini-mirror-xenial_vars
-      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
-      docker_images:
-        - context: mini-mirror
-          repository: openstackhelm/mini-mirror
-          dockerfile: Dockerfile.ubuntu_xenial
-          tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
-    files: &mini-mirror_files
-      - mini-mirror/.*
-      - zuul.d/mini-mirror.yaml
 
 - job:
     name: openstack-helm-images-build-mini-mirror-bionic
@@ -62,27 +41,15 @@
           tags:
             - latest-ubuntu_bionic
             - "ubuntu_bionic-{{ currentdate }}"
-    files: *mini-mirror_files
-
-- job:
-    name: openstack-helm-images-upload-mini-mirror-xenial
-    parent: openstack-helm-images-upload
-    description: Build and upload mini-mirror images
-    vars: *mini-mirror-xenial_vars
-    files: *mini-mirror_files
+    files: &mini-mirror_files
+      - mini-mirror/.*
+      - zuul.d/mini-mirror.yaml
 
 - job:
     name: openstack-helm-images-upload-mini-mirror-bionic
     parent: openstack-helm-images-upload
     description: Build and upload mini-mirror images
     vars: *mini-mirror-bionic_vars
-    files: *mini-mirror_files
-
-- job:
-    name: openstack-helm-images-promote-mini-mirror-xenial
-    parent: openstack-helm-images-promote
-    description: Promote a previously published mini-mirror image to latest.
-    vars: *mini-mirror-xenial_vars
     files: *mini-mirror_files
 
 - job:

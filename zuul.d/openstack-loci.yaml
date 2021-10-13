@@ -102,7 +102,7 @@
       base_repository: "base"
       ceph_repo: ""
       ceph_key: ""
-      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard"
+      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard python-ceilometerclient==2.9.0"
       base_docker_image:
         - &base_image
           context: "zuul.d/playbooks/"
@@ -118,7 +118,6 @@
           repository: openstackhelm/requirements
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
             - "PIP_PACKAGES='{{ requirements_pip_packages }}'"
@@ -134,7 +133,6 @@
           repository: openstackhelm/keystone
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='keystone'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
@@ -147,11 +145,12 @@
           repository: openstackhelm/heat
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='heat'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
+            # FIXME(aostapenko) python-ceilometerclient was removed from global reqs but is still in heat reqs
+            - "PIP_PACKAGES='python-ceilometerclient==2.9.0'"
             - "DIST_PACKAGES='curl'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
@@ -160,7 +159,6 @@
           repository: openstackhelm/barbican
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='barbican'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
@@ -172,7 +170,6 @@
           repository: openstackhelm/glance
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='glance'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent ceph'"
@@ -185,7 +182,6 @@
           repository: openstackhelm/cinder
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='cinder'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent lvm ceph qemu apache'"
@@ -198,7 +194,6 @@
           repository: openstackhelm/neutron
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent linuxbridge openvswitch apache'"
@@ -212,7 +207,6 @@
           repository: openstackhelm/neutron
           build_args:
             - "FROM=docker.io/ubuntu:18.04"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent neutron linuxbridge openvswitch'"
@@ -228,7 +222,6 @@
           repository: openstackhelm/nova
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='nova'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache migration'"
@@ -240,7 +233,6 @@
           repository: openstackhelm/horizon
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
@@ -253,7 +245,6 @@
           repository: openstackhelm/senlin
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='senlin'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
@@ -265,7 +256,6 @@
           repository: openstackhelm/magnum
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='magnum'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent'"
@@ -277,7 +267,6 @@
           repository: openstackhelm/ironic
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='ironic'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent ipxe ipmi qemu tftp'"
@@ -290,7 +279,6 @@
           repository: openstackhelm/placement
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='placement'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='apache'"
@@ -303,10 +291,11 @@
           repository: openstackhelm/watcher
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='watcher'"
             - "PROJECT_REF={{ branchname }}"
             - "WHEELS='{{ wheels_location }}'"
+            # FIXME(aostapenko) python-ceilometerclient was removed from global reqs but is still used in watcher
+            - "PIP_PACKAGES='python-ceilometerclient==2.9.0'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &monasca_api_project
@@ -314,7 +303,6 @@
           repository: openstackhelm/monasca-api
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='monasca-api'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='monasca api'"
@@ -327,7 +315,6 @@
           repository: openstackhelm/cyborg
           build_args:
             - "FROM='{{ base_repository }}'"
-            - "PYTHON3={{ python3 }}"
             - "PROJECT='cyborg'"
             - "PROJECT_REF={{ branchname }}"
             - "WHEELS='{{ wheels_location }}'"

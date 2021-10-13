@@ -42,12 +42,6 @@
         #  dockerfile: Dockerfile.suse_15
         - context: ceph-config-helper
           repository: openstackhelm/ceph-config-helper
-          dockerfile: Dockerfile.ubuntu_xenial
-          tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
-        - context: ceph-config-helper
-          repository: openstackhelm/ceph-config-helper
           dockerfile: Dockerfile.ubuntu_bionic
           tags:
             - latest-ubuntu_bionic
