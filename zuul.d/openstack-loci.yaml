@@ -102,7 +102,7 @@
       base_repository: "base"
       ceph_repo: ""
       ceph_key: ""
-      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard python-ceilometerclient==2.9.0"
+      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard"
       base_docker_image:
         - &base_image
           context: "zuul.d/playbooks/"
@@ -149,8 +149,6 @@
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
             - "WHEELS='{{ wheels_location }}'"
-            # FIXME(aostapenko) python-ceilometerclient was removed from global reqs but is still in heat reqs
-            - "PIP_PACKAGES='python-ceilometerclient==2.9.0'"
             - "DIST_PACKAGES='curl'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
@@ -294,8 +292,6 @@
             - "PROJECT='watcher'"
             - "PROJECT_REF={{ branchname }}"
             - "WHEELS='{{ wheels_location }}'"
-            # FIXME(aostapenko) python-ceilometerclient was removed from global reqs but is still used in watcher
-            - "PIP_PACKAGES='python-ceilometerclient==2.9.0'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
         - &monasca_api_project
@@ -399,7 +395,8 @@
         - <<: *barbican_project
         - <<: *placement_project
         - <<: *monasca_api_project
-        - <<: *watcher_project
+        # Watcher depends on retired python-ceilometerclient not compatible with current master constraints
+        # - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
 
