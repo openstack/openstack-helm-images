@@ -37,10 +37,10 @@
       docker_images:
         - context: nagios
           repository: openstackhelm/nagios
-          dockerfile: Dockerfile.ubuntu_xenial
+          dockerfile: Dockerfile.ubuntu_bionic
           tags:
-            - latest-ubuntu_xenial
-            - "ubuntu_xenial-{{ currentdate }}"
+            - latest-ubuntu_bionic
+            - "ubuntu_bionic-{{ currentdate }}"
     files: &nagios_files
       - nagios/.*
       - zuul.d/nagios.yaml
