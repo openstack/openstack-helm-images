@@ -2,9 +2,9 @@ ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
 ARG KUBE_VERSION=1.16.2
-# Octopus 15.2.8
+# Octopus 15.2.15
 ARG CEPH_RELEASE=octopus
-ARG CEPH_RELEASE_TAG=15.2.8-1.0~bionic
+ARG CEPH_RELEASE_TAG=15.2.15-1bionic
 ARG CONFD_VERSION=0.16.0
 
 ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-octopus/
