@@ -22,6 +22,7 @@ apt-get install --no-install-recommends -y \
   qemu-block-extra \
   qemu-efi \
   openvswitch-switch \
+  ovmf \
   kmod ;\
 groupadd -g ${GID} ${PROJECT} ;\
 useradd -u ${UID} -g ${PROJECT} -M -d /var/lib/${PROJECT} -s /usr/sbin/nologin -c "${PROJECT} user" ${PROJECT} ;\
