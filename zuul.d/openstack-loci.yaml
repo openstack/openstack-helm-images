@@ -623,6 +623,7 @@
         - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
+        - <<: *senlin_project
         - <<: *masakari_monitors_project
 
 - job:
