@@ -17,7 +17,7 @@
 set -e
 
 if [[ ! -z "$1" ]]; then
-  gpg --import /opt/release.gpg
+  gpg --import --no-tty --batch --yes /opt/release.gpg
 fi
 
 sources=$(yq "." /opt/mini-mirror-sources.yaml | jq -s '.')
