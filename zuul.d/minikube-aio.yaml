@@ -36,7 +36,7 @@
               - name: openstack-helm-images-cinder-ussuri-ubuntu_bionic
               - name: openstack-helm-images-cinder-victoria-ubuntu_focal
               - name: openstack-helm-images-cinder-wallaby-ubuntu_focal
-                #              - name: openstack-helm-images-horizon-train-ubuntu_bionic
+              - name: openstack-helm-images-horizon-wallaby-ubuntu_focal
 
 - job:
     name: openstack-helm-images-build-minikube-aio
