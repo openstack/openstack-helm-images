@@ -336,6 +336,7 @@
             - "PROJECT='masakari-monitors'"
             - "PROJECT_REF={{ branchname }}"
             - "PIP_PACKAGES='libvirt-python'"
+            - "DIST_PACKAGES='libvirt-daemon-system libvirt-clients tcpdump pacemaker-cli-utils'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
