@@ -194,7 +194,7 @@
             - "FROM='{{ base_repository }}'"
             - "PROJECT='neutron'"
             - "PROJECT_REF={{ branchname }}"
-            - "PROFILES='fluent linuxbridge openvswitch apache'"
+            - "PROFILES='fluent linuxbridge openvswitch apache vpn'"
             - "PIP_PACKAGES='tap-as-a-service'"
             - "DIST_PACKAGES='jq ethtool lshw'"
             - "WHEELS='{{ wheels_location }}'"
