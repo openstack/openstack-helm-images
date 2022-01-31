@@ -61,6 +61,8 @@
             dependencies:
               - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
               - name: openstack-helm-images-cinder-wallaby-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
             dependencies:
