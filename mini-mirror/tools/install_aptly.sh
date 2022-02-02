@@ -18,7 +18,7 @@ set -xe
 
 export APTLY_REPO=${APTLY_REPO:-"https://github.com/aptly-dev/aptly.git"}
 export APTLY_REFSPEC=${APTLY_REFSPEC:-"master"}
-export GO_SOURCE="https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz"
+export GO_SOURCE="https://dl.google.com/go/go1.17.6.linux-amd64.tar.gz"
 
 function install_aptly_from_apt {
   tee /etc/apt/sources.list.d/aptly.list << EOF

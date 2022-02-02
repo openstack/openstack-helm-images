@@ -33,7 +33,7 @@ RUN set -ex ;\
         gdisk \
         udev \
         jq ;\
-    curl -sSL https://bootstrap.pypa.io/get-pip.py | python3 ;\
+    curl -sSL https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3 ;\
     pip3 --no-cache-dir install --upgrade --ignore-installed PyYAML ;\
     pip3 --no-cache-dir install --upgrade \
       crush \

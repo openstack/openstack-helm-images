@@ -11,7 +11,7 @@ LABEL org.opencontainers.image.licenses='BSD-3-Clause'
 RUN set -xe \
     && apt-get update \
     && apt-get install curl python3 python3-setuptools -y \
-    && curl -sSL https://bootstrap.pypa.io/get-pip.py | python3
+    && curl -sSL https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3
 
 RUN pip install ospurge python-openstackclient
 
