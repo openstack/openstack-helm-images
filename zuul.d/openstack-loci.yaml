@@ -16,7 +16,7 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
+#        - openstack-helm-images-build-openstack-loci-train-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
@@ -24,7 +24,7 @@
         - openstack-helm-images-build-openstack-loci-master-ubuntu_focal
     gate:
       jobs:
-        - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+#        - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
@@ -32,7 +32,7 @@
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
     promote:
       jobs:
-        - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic
+#        - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal
@@ -40,12 +40,12 @@
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
     periodic:
       jobs:
-        - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
-        - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic:
-            dependencies:
-              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
-              - name: openstack-helm-images-cinder-train-ubuntu_bionic
-              - name: openstack-helm-images-horizon-train-ubuntu_bionic
+#        - openstack-helm-images-upload-openstack-loci-train-ubuntu_bionic
+#        - openstack-helm-images-promote-openstack-loci-train-ubuntu_bionic:
+#            dependencies:
+#              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+#              - name: openstack-helm-images-cinder-train-ubuntu_bionic
+#              - name: openstack-helm-images-horizon-train-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic:
             dependencies:

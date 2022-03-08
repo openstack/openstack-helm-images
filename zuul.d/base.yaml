@@ -19,9 +19,9 @@
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
-        - openstack-helm-images-compute-kit-train-ubuntu_bionic
-        - openstack-helm-images-cinder-train-ubuntu_bionic
-        - openstack-helm-images-horizon-train-ubuntu_bionic
+#        - openstack-helm-images-compute-kit-train-ubuntu_bionic
+#        - openstack-helm-images-cinder-train-ubuntu_bionic
+#        - openstack-helm-images-horizon-train-ubuntu_bionic
         - openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
         - openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
@@ -33,9 +33,9 @@
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
-        - openstack-helm-images-compute-kit-train-ubuntu_bionic
-        - openstack-helm-images-cinder-train-ubuntu_bionic
-        - openstack-helm-images-horizon-train-ubuntu_bionic
+#        - openstack-helm-images-compute-kit-train-ubuntu_bionic
+#        - openstack-helm-images-cinder-train-ubuntu_bionic
+#        - openstack-helm-images-horizon-train-ubuntu_bionic
         - openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
         - openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
@@ -47,9 +47,9 @@
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
-        - openstack-helm-images-compute-kit-train-ubuntu_bionic
-        - openstack-helm-images-cinder-train-ubuntu_bionic
-        - openstack-helm-images-horizon-train-ubuntu_bionic
+ #       - openstack-helm-images-compute-kit-train-ubuntu_bionic
+ #       - openstack-helm-images-cinder-train-ubuntu_bionic
+ #       - openstack-helm-images-horizon-train-ubuntu_bionic
         - openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
         - openstack-helm-images-cinder-ussuri-ubuntu_bionic
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
