@@ -98,8 +98,9 @@ def get_kubernetes_node_list():
     kube_api = kubernetes.client.CoreV1Api()
     try:
         node_list = kube_api.list_node(pretty='false', limit=100, timeout_seconds=60)
-    except ApiException as e:
+    except Exception as e:
         print("Exception when calling CoreV1Api->list_node: %s\n" % e)
+        sys.exit(NAGIOS_CRITICAL)
     return node_list.items
 
 def update_config_file(object_file_loc):
