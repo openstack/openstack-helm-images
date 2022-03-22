@@ -14,4 +14,4 @@ RUN set -ex && \
 RUN useradd -r -u ${UID} -d /var/lib/nova nova && \
     chown -R nova: /etc/ssh && \
     mkdir /var/run/sshd && \
-    chmod 0775 /var/run/sshd
+    chmod 0755 /var/run/sshd
