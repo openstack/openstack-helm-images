@@ -28,15 +28,15 @@
             dependencies:
               - name: openstack-helm-images-aio-monitoring
               - name: openstack-helm-images-aio-logging
-              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
+                #              - name: openstack-helm-images-compute-kit-train-ubuntu_bionic
               - name: openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
               - name: openstack-helm-images-compute-kit-victoria-ubuntu_focal
               - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
-              - name: openstack-helm-images-cinder-train-ubuntu_bionic
+                #              - name: openstack-helm-images-cinder-train-ubuntu_bionic
               - name: openstack-helm-images-cinder-ussuri-ubuntu_bionic
               - name: openstack-helm-images-cinder-victoria-ubuntu_focal
               - name: openstack-helm-images-cinder-wallaby-ubuntu_focal
-              - name: openstack-helm-images-horizon-train-ubuntu_bionic
+                #              - name: openstack-helm-images-horizon-train-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-minikube-aio
