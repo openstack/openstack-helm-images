@@ -68,13 +68,6 @@
           tags:
             - latest-ubuntu_focal
             - "ubuntu_focal-{{ currentdate }}"
-        # NOTE(gagehugo): Once jammy is released, use that and delete impish
-        - context: libvirt
-          repository: openstackhelm/libvirt
-          dockerfile: Dockerfile.ubuntu_impish
-          tags:
-            - latest-ubuntu_impish
-            - "ubuntu_impish-{{ currentdate }}"
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
