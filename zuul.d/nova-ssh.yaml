@@ -21,9 +21,9 @@
         - openstack-helm-images-compute-kit-stein-nova-ssh:
             dependencies:
               - name: openstack-helm-images-upload-nova-ssh
-        - openstack-helm-images-compute-kit-train-nova-ssh:
-            dependencies:
-              - name: openstack-helm-images-upload-nova-ssh
+                #        - openstack-helm-images-compute-kit-train-nova-ssh:
+                #            dependencies:
+                #              - name: openstack-helm-images-upload-nova-ssh
         - openstack-helm-images-compute-kit-ussuri-nova-ssh:
             dependencies:
               - name: openstack-helm-images-upload-nova-ssh
