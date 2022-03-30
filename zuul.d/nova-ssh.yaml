@@ -18,12 +18,6 @@
     gate:
       jobs:
         - openstack-helm-images-upload-nova-ssh
-        - openstack-helm-images-compute-kit-stein-nova-ssh:
-            dependencies:
-              - name: openstack-helm-images-upload-nova-ssh
-                #        - openstack-helm-images-compute-kit-train-nova-ssh:
-                #            dependencies:
-                #              - name: openstack-helm-images-upload-nova-ssh
         - openstack-helm-images-compute-kit-ussuri-nova-ssh:
             dependencies:
               - name: openstack-helm-images-upload-nova-ssh
@@ -68,24 +62,6 @@
     name: openstack-helm-images-promote-nova-ssh
     parent: openstack-helm-images-promote
     description: Promote a previously published nova-ssh image to latest.
-    vars: *nova_ssh_vars
-    files: *nova_ssh_files
-
-- job:
-    name: openstack-helm-images-compute-kit-stein-nova-ssh
-    parent: openstack-helm-compute-kit-stein-ubuntu_bionic
-    dependencies:
-      - name: openstack-helm-images-upload-nova-ssh
-    description: Deploy stein compute kit with nova-ssh proposed image
-    vars: *nova_ssh_vars
-    files: *nova_ssh_files
-
-- job:
-    name: openstack-helm-images-compute-kit-train-nova-ssh
-    parent: openstack-helm-compute-kit-train-ubuntu_bionic
-    dependencies:
-      - name: openstack-helm-images-upload-nova-ssh
-    description: Deploy train compute kit with nova-ssh proposed image
     vars: *nova_ssh_vars
     files: *nova_ssh_files
 
