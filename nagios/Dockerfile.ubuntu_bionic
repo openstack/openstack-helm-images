@@ -24,7 +24,7 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN pip3 install --upgrade pip \
         && hash -r \
         && pip3 --no-cache-dir install --upgrade setuptools \
-        && pip3 --no-cache-dir install --upgrade kubernetes \
+        && pip3 --no-cache-dir install --upgrade kubernetes==22.6.0 \
         && pip3 --no-cache-dir install --upgrade elasticsearch==${ES_VERSION} \
         && pip3 --no-cache-dir install --upgrade elasticsearch-dsl==${ES_DSL_VERSION} \
         && pip3 install requests -U
