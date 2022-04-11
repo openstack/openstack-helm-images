@@ -40,12 +40,12 @@
           tags:
             - latest-ubuntu_bionic
             - "ubuntu_bionic-{{ currentdate }}"
-        #- context: tempest
-        #  repository: openstackhelm/tempest
-        #  dockerfile: Dockerfile.opensuse_15
-        #  tags:
-        #    - latest-opensuse_15
-        #    - "opensuse_15-{{ currentdate }}"
+        - context: tempest
+          repository: openstackhelm/tempest
+          dockerfile: Dockerfile.ubuntu_focal
+          tags:
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &tempest_files
       - tempest/.*
       - zuul.d/tempest.yaml
