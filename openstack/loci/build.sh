@@ -238,7 +238,7 @@ case ${BASE_IMAGE} in
         #Mark the need to build image from LOCI Dockerfiles
         BUILD_IMAGE="yes"
         #Makes sure the name of the distro is consistent with other OSH-images.
-        DISTRO="ubuntu_bionic"
+        DISTRO="ubuntu_focal"
         ;;
     leap15)
         BUILD_IMAGE="yes"
