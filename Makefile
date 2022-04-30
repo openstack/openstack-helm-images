@@ -43,12 +43,6 @@ images: build_$(IMAGE_NAME)
 # Make targets intended for use by the primary targets above.
 .PHONY: build_$(IMAGE_NAME)
 build_$(IMAGE_NAME):
-ifeq ($(OS_RELEASE), ubuntu_xenial)
-	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
-	--network host \
-	$(EXTRA_BUILD_ARGS) \
-	-t $(IMAGE) \
-	.
 else ifeq ($(OS_RELEASE), ubuntu_bionic)
 	docker build -f $(IMAGE_NAME)/Dockerfile.$(OS_RELEASE) \
 	--network host \

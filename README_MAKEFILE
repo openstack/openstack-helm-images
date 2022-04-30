@@ -8,7 +8,7 @@ Usage:
   make IMAGE_NAME=<> OS_RELEASE=<>
 eg:
 
-  make IMAGE_NAME=ceph-daemon OS_RELEASE=ubuntu_xenial
+  make IMAGE_NAME=ceph-daemon OS_RELEASE=ubuntu_focal
 
   make IMAGE_NAME=openvswitch OS_RELEASE=debian
 

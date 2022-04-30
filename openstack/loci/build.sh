@@ -170,7 +170,7 @@ VERSION=${VERSION:-"latest"}
 # The openstack branch to build, if no per project branch is given.
 OPENSTACK_VERSION=${OPENSTACK_VERSION:-"master"}
 # Sepcify OS distribution
-DISTRO=${DISTRO:-"ubuntu_xenial"}
+DISTRO=${DISTRO:-"ubuntu_focal"}
 # extra build arguments for the base image. See loci's dockerfiles for
 # arguments that could be used for example.
 base_extra_build_args=${base_extra_build_args:-"--force-rm --pull --no-cache"}
