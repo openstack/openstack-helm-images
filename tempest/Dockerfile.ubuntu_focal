@@ -14,13 +14,17 @@ RUN set -ex ;\
         git ;\
     pip3 install -U pip ;\
     git clone https://git.openstack.org/openstack/tempest ;\
+    git clone https://git.openstack.org/openstack/barbican-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/cinder-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/heat-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/keystone-tempest-plugin ;\
     git clone https://git.openstack.org/openstack/neutron-tempest-plugin ;\
+    git clone https://git.openstack.org/openstack/requirements ;\
     pip3 install -U setuptools==58.0.0 ;\
     pip3 install wheel ;\
-    pip3 install -e tempest/ \
+    pip3 install -c requirements/upper-constraints.txt \
+                    tempest/ \
+                    barbican-tempest-plugin/ \
                     cinder-tempest-plugin/ \
                     heat-tempest-plugin/ \
                     keystone-tempest-plugin/ \
