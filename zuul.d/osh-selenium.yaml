@@ -30,7 +30,6 @@
             dependencies:
               - name: openstack-helm-images-aio-monitoring
               - name: openstack-helm-images-aio-logging
-                #              - name: openstack-helm-images-horizon-train-ubuntu_bionic
 
 - job:
     name: openstack-helm-images-build-osh-selenium
