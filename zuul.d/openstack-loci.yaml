@@ -102,7 +102,6 @@
       base_repository: "base"
       ceph_repo: ""
       ceph_key: ""
-      requirements_pip_packages: "git+https://opendev.org/openstack/heat-dashboard@{{ branchname }}#egg=heat-dashboard"
       base_docker_image:
         - &base_image
           context: "zuul.d/playbooks/"
@@ -120,7 +119,6 @@
             - "FROM='{{ base_repository }}'"
             - "PROJECT='requirements'"
             - "PROJECT_REF={{ branchname }}"
-            - "PIP_PACKAGES='{{ requirements_pip_packages }}'"
             - "KEEP_ALL_WHEELS=yes"
       docker_images: &project_images
         - &requirements_project
@@ -234,7 +232,6 @@
             - "PROJECT='horizon'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent apache'"
-            - "PIP_PACKAGES='heat-dashboard'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
