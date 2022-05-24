@@ -156,8 +156,6 @@
         soft: true
       - name: openstack-helm-images-build-nagios
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-upload-prometheus-openstack-exporter
         soft: true
       - name: openstack-helm-images-upload-osh-selenium
@@ -165,8 +163,6 @@
       - name: openstack-helm-images-upload-node-problem-detector
         soft: true
       - name: openstack-helm-images-upload-nagios
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - prometheus-openstack-exporter/.*
@@ -177,8 +173,6 @@
       - zuul.d/node-problem-detector.yaml
       - nagios/.*
       - zuul.d/nagios.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-aio-logging
@@ -191,15 +185,11 @@
         soft: true
       - name: openstack-helm-images-build-osh-selenium
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-upload-fluentd
         soft: true
       - name: openstack-helm-images-upload-elasticsearch-s3
         soft: true
       - name: openstack-helm-images-upload-osh-selenium
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - fluentd/.*
@@ -208,8 +198,6 @@
       - zuul.d/elasticsearch-s3.yaml
       - osh-selenium/.*
       - zuul.d/osh-selenium.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-horizon-wallaby-ubuntu_focal
@@ -220,21 +208,15 @@
         soft: true
       - name: openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-upload-osh-selenium
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - osh-selenium/.*
       - zuul.d/osh-selenium.yaml
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-compute-kit-ussuri-ubuntu_bionic
@@ -249,8 +231,6 @@
         soft: true
       - name: openstack-helm-images-build-libvirt
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-upload-openvswitch
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
@@ -258,8 +238,6 @@
       - name: openstack-helm-images-upload-mariadb
         soft: true
       - name: openstack-helm-images-upload-libvirt
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - openvswitch/.*
@@ -270,8 +248,6 @@
       - zuul.d/mariadb.yaml
       - libvirt/.*
       - zuul.d/libvirt.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-cinder-ussuri-ubuntu_bionic
@@ -280,13 +256,9 @@
     dependencies:
       - name: openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
@@ -295,8 +267,6 @@
       - zuul.d/openstack-loci.yaml
       - mariadb/.*
       - zuul.d/mariadb.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-compute-kit-victoria-ubuntu_focal
@@ -311,8 +281,6 @@
         soft: true
       - name: openstack-helm-images-build-libvirt
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-upload-openvswitch
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
@@ -320,8 +288,6 @@
       - name: openstack-helm-images-upload-mariadb
         soft: true
       - name: openstack-helm-images-upload-libvirt
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - openvswitch/.*
@@ -332,8 +298,6 @@
       - zuul.d/mariadb.yaml
       - libvirt/.*
       - zuul.d/libvirt.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-cinder-victoria-ubuntu_focal
@@ -342,13 +306,9 @@
     dependencies:
       - name: openstack-helm-images-build-openstack-loci-victoria-ubuntu_focal
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
@@ -357,8 +317,6 @@
       - zuul.d/openstack-loci.yaml
       - mariadb/.*
       - zuul.d/mariadb.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
@@ -373,8 +331,6 @@
         soft: true
       - name: openstack-helm-images-build-libvirt
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-upload-openvswitch
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
@@ -382,8 +338,6 @@
       - name: openstack-helm-images-upload-mariadb
         soft: true
       - name: openstack-helm-images-upload-libvirt
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
     files:
       - openvswitch/.*
@@ -394,8 +348,6 @@
       - zuul.d/mariadb.yaml
       - libvirt/.*
       - zuul.d/libvirt.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml
 
 - job:
     name: openstack-helm-images-cinder-wallaby-ubuntu_focal
@@ -404,13 +356,9 @@
     dependencies:
       - name: openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
         soft: true
-      - name: openstack-helm-images-build-minikube-aio
-        soft: true
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
-        soft: true
-      - name: openstack-helm-images-upload-minikube-aio
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
@@ -419,5 +367,3 @@
       - zuul.d/openstack-loci.yaml
       - mariadb/.*
       - zuul.d/mariadb.yaml
-      - minikube-aio/.*
-      - zuul.d/minikube-aio.yaml

@@ -1,3 +1,0 @@
-gcr.io/k8s-minikube/storage-provisioner:v1.8.1
-ghcr.io/helm/tiller:${HELM_VERSION}
-k8s.gcr.io/kube-addon-manager:v9.0
