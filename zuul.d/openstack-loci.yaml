@@ -19,18 +19,24 @@
         - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-master-ubuntu_focal
     gate:
       jobs:
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
     periodic:
       jobs:
@@ -49,6 +55,16 @@
             dependencies:
               - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
               - name: openstack-helm-images-cinder-wallaby-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-xena-ubuntu_focal
+              - name: openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal:
+            dependencies:
+              - name: openstack-helm-images-compute-kit-yoga-ubuntu_focal
+              - name: openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
             dependencies:
@@ -414,6 +430,112 @@
     description: Promote previously published LOCI master focal images
     vars: *build_master_focal_images
     files: *loci-files
+
+########
+# YOGA #
+########
+
+- job:
+    name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
+    description: Build LOCI yoga focal images
+    parent: openstack-helm-images-build-openstack-loci-master
+    vars: &build_yoga_focal_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/yoga"
+      shortbranchname: "yoga"
+      distroname: "ubuntu_focal"
+      from: "docker.io/ubuntu:20.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-quincy/ focal main"
+      ceph_key: "https://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        - <<: *watcher_project
+        - <<: *cyborg_project
+        - <<: *masakari_project
+        - <<: *masakari_monitors_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI yoga focal images
+    vars: *build_yoga_focal_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI yoga focal images
+    vars: *build_yoga_focal_images
+
+########
+# XENA #
+########
+
+- job:
+    name: openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
+    description: Build LOCI xena focal images
+    parent: openstack-helm-images-build-openstack-loci-master
+    vars: &build_xena_focal_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/xena"
+      shortbranchname: "xena"
+      distroname: "ubuntu_focal"
+      from: "docker.io/ubuntu:20.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-quincy/ focal main"
+      ceph_key: "https://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        - <<: *watcher_project
+        - <<: *cyborg_project
+        - <<: *masakari_project
+        - <<: *masakari_monitors_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI xena focal images
+    vars: *build_xena_focal_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI xena focal images
+    vars: *build_xena_focal_images
 
 ###########
 # WALLABY #
