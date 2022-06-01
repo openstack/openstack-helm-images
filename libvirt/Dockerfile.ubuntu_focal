@@ -3,7 +3,7 @@ FROM ${FROM}
 LABEL maintainer="mnaser@vexxhost.com"
 
 ARG UBUNTU_RELEASE=focal
-ARG CEPH_RELEASE=octopus
+ARG CEPH_RELEASE=pacific
 ARG CEPH_RELEASE_TAG=""
 ARG PROJECT=nova
 ARG UID=42424

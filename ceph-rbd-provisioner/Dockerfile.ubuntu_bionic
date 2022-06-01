@@ -1,12 +1,12 @@
 ARG baseimg=docker.io/ubuntu:bionic
 FROM ${baseimg}
 
-# Octopus 15.2.15
-ARG CEPH_RELEASE=octopus
-ARG CEPH_RELEASE_TAG=15.2.15-1bionic
+# Pacific 16.2.9
+ARG CEPH_RELEASE=pacific
+ARG CEPH_RELEASE_TAG=16.2.9-1bionic
 
-ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-octopus/
-ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-octopus/release.asc
+ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-pacific/
+ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-pacific/release.asc
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
