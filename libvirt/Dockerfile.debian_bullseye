@@ -1,0 +1,24 @@
+ARG FROM=docker.io/debian:bullseye
+FROM ${FROM}
+
+ARG UBUNTU_RELEASE=bullseye
+ARG CEPH_RELEASE=quincy
+ARG CEPH_RELEASE_TAG=""
+ARG PROJECT=nova
+ARG UID=42424
+ARG GID=42424
+
+ARG CEPH_REPO=http://download.ceph.com/debian-${CEPH_RELEASE}/
+ARG CEPH_KEY=http://download.ceph.com/keys/release.asc
+
+ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
+COPY ./ubuntu-install-libvirt.sh /tmp/ubuntu-install-libvirt.sh
+RUN set -ex ;\
+    export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get install --no-install-recommends -y \
+      apt-transport-https \
+      ca-certificates \
+      gnupg ;\
+    /tmp/ubuntu-install-libvirt.sh ;\
+    rm -rf /tmp/*

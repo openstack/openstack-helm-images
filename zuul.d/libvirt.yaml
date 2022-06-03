@@ -39,12 +39,6 @@
     vars: &libvirt_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        #- context: libvirt
-        #  repository: openstackhelm/libvirt
-        #  tags:
-        #    - latest-opensuse_15
-        #    - "opensuse_15-{{ currentdate }}"
-        #  dockerfile: Dockerfile.suse_15
         - context: libvirt
           repository: openstackhelm/libvirt
           dockerfile: Dockerfile.centos_7
@@ -67,6 +61,12 @@
           tags:
             - latest-ubuntu_focal
             - "ubuntu_focal-{{ currentdate }}"
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile.debian_bullseye
+          tags:
+            - latest-debian_bullseye
+            - "debian_bullseye-{{ currentdate }}"
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
