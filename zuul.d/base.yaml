@@ -25,6 +25,10 @@
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
+        - openstack-helm-images-compute-kit-xena-ubuntu_focal
+        - openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-compute-kit-yoga-ubuntu_focal
+        - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     gate:
       jobs:
@@ -37,6 +41,10 @@
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
+        - openstack-helm-images-compute-kit-xena-ubuntu_focal
+        - openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-compute-kit-yoga-ubuntu_focal
+        - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     periodic:
       jobs:
@@ -49,6 +57,10 @@
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
+        - openstack-helm-images-compute-kit-xena-ubuntu_focal
+        - openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-compute-kit-yoga-ubuntu_focal
+        - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     templates:
       - publish-openstack-docs-pti
@@ -359,6 +371,106 @@
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+
+- job:
+    name: openstack-helm-images-compute-kit-xena-ubuntu_focal
+    parent: openstack-helm-compute-kit-xena-ubuntu_focal
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+      - name: openstack-helm-images-upload-openvswitch
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-libvirt
+        soft: true
+    files:
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+
+- job:
+    name: openstack-helm-images-cinder-xena-ubuntu_focal
+    parent: openstack-helm-cinder-xena-ubuntu_focal
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+
+- job:
+    name: openstack-helm-images-compute-kit-yoga-ubuntu_focal
+    parent: openstack-helm-compute-kit-yoga-ubuntu_focal
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+      - name: openstack-helm-images-upload-openvswitch
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-libvirt
+        soft: true
+    files:
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+
+- job:
+    name: openstack-helm-images-cinder-yoga-ubuntu_focal
+    parent: openstack-helm-cinder-yoga-ubuntu_focal
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
