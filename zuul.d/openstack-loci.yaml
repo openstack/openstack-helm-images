@@ -19,24 +19,25 @@
         - openstack-helm-images-build-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-build-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
-        - openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
-        - openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
+        # NOTE(gagehugo): Fix the issue with X & Y, then uncomment
+        #- openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
+        #- openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-master-ubuntu_focal
     gate:
       jobs:
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
-        - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
-        - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
+        # - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        # - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-wallaby-ubuntu_focal
-        - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal
-        - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
+        # - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal
+        # - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
     periodic:
       jobs:
@@ -55,16 +56,18 @@
             dependencies:
               - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
               - name: openstack-helm-images-cinder-wallaby-ubuntu_focal
-        - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
-        - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal:
-            dependencies:
-              - name: openstack-helm-images-compute-kit-xena-ubuntu_focal
-              - name: openstack-helm-images-cinder-xena-ubuntu_focal
-        - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
-        - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal:
-            dependencies:
-              - name: openstack-helm-images-compute-kit-yoga-ubuntu_focal
-              - name: openstack-helm-images-cinder-yoga-ubuntu_focal
+        # NOTE(gagehugo): Fix X & Y jobs, then re-enable
+        # - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
+        # - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal:
+        #    dependencies:
+        #      - name: openstack-helm-images-compute-kit-xena-ubuntu_focal
+        #      - name: openstack-helm-images-cinder-xena-ubuntu_focal
+        # - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
+        # - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal:
+        #   dependencies:
+              # TODO(gagehugo): Fix osh job and uncomment here
+              # - name: openstack-helm-images-compute-kit-yoga-ubuntu_focal
+              # - name: openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
             dependencies:
