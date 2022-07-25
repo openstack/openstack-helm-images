@@ -21,7 +21,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-prometheus-openstack-exporter
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-prometheus-openstack-exporter
         - openstack-helm-images-promote-prometheus-openstack-exporter:

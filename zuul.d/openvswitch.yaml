@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-openvswitch
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-openvswitch
         - openstack-helm-images-promote-openvswitch:

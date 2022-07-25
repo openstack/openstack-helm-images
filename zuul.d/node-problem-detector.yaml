@@ -21,7 +21,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-node-problem-detector
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-node-problem-detector
         - openstack-helm-images-promote-node-problem-detector:

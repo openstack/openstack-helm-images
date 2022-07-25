@@ -47,7 +47,7 @@
         # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         # - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
-    periodic:
+    periodic-weekly:
       jobs:
         - opendev-buildset-registry
         - openstack-helm-images-aio-monitoring

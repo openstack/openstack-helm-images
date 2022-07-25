@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-osh-selenium
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-osh-selenium
         - openstack-helm-images-promote-osh-selenium:

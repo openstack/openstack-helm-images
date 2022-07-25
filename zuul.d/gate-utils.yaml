@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-gate-utils
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-build-gate-utils
 

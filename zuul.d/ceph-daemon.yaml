@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-ceph-daemon
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-build-ceph-daemon
 

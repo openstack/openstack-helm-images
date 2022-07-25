@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-ospurge
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-ospurge
         - openstack-helm-images-promote-ospurge:

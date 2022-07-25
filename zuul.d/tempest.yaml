@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-tempest
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-build-tempest
 

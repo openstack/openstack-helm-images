@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-mariadb
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-mariadb
         - openstack-helm-images-promote-mariadb:

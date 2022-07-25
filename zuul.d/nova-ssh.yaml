@@ -24,7 +24,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-nova-ssh
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-build-nova-ssh
 

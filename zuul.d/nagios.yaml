@@ -21,7 +21,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-nagios
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-nagios
         - openstack-helm-images-promote-nagios:

@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-libvirt
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-libvirt
         - openstack-helm-images-promote-libvirt:

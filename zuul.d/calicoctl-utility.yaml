@@ -23,7 +23,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-calicoctl-utility
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-build-calicoctl-utility
 

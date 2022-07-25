@@ -39,7 +39,7 @@
         # - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal
         # - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-openstack-loci-ussuri-ubuntu_bionic
         - openstack-helm-images-promote-openstack-loci-ussuri-ubuntu_bionic:

@@ -21,7 +21,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-fluentd
-    periodic:
+    periodic-weekly:
       jobs:
         - openstack-helm-images-upload-fluentd
         - openstack-helm-images-promote-fluentd:
