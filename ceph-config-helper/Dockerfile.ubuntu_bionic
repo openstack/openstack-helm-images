@@ -4,9 +4,9 @@ FROM ${FROM}
 ARG DISTRO_CODENAME='bionic'
 
 ARG KUBE_VERSION=v1.16.2
-# Pacific 16.2.9
+# Pacific 16.2.10
 ARG CEPH_RELEASE=pacific
-ARG CEPH_RELEASE_TAG=16.2.9-1bionic
+ARG CEPH_RELEASE_TAG=16.2.10-1bionic
 
 ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-pacific/
 ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-pacific/release.asc
