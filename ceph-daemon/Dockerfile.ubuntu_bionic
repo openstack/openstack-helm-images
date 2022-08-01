@@ -2,9 +2,9 @@ ARG FROM=docker.io/ubuntu:bionic
 FROM ${FROM}
 
 ARG KUBE_VERSION=1.16.2
-# Pacific 16.2.9
+# Pacific 16.2.10
 ARG CEPH_RELEASE=pacific
-ARG CEPH_RELEASE_TAG=16.2.9-1bionic
+ARG CEPH_RELEASE_TAG=16.2.10-1bionic
 ARG CONFD_VERSION=0.16.0
 
 ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-pacific/
