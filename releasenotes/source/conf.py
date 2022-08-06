@@ -52,8 +52,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OpenStack Helm Images Release Notes'
-copyright = u'2018, OpenStack Developers'
+project = 'OpenStack Helm Images Release Notes'
+copyright = '2018, OpenStack Developers'
 
 # openstackdocstheme options
 openstackdocs_repo_name = 'openstack/openstack-helm-images'
@@ -212,8 +212,8 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     ('index', 'OpenStack-Helm-ImagesReleaseNotes.tex',
-     u'OpenStack-Helm-Images Release Notes Documentation',
-     u'OpenStack Foundation', 'manual'),
+     'OpenStack-Helm-Images Release Notes Documentation',
+     'OpenStack Foundation', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -243,8 +243,8 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'OpenStack-Helm-Imagesrereleasenotes',
-     u'OpenStack-Helm-Images Release Notes Documentation',
-     [u'OpenStack Foundation'], 1)
+     'OpenStack-Helm-Images Release Notes Documentation',
+     ['OpenStack Foundation'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -258,8 +258,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'OpenStack-Helm-Images ReleaseNotes',
-     u'OpenStack-Helm-Images Release Notes Documentation',
-     u'OpenStack Foundation', 'OpenStack-Helm-ImagesReleaseNotes',
+     'OpenStack-Helm-Images Release Notes Documentation',
+     'OpenStack Foundation', 'OpenStack-Helm-ImagesReleaseNotes',
      'One line description of project.',
      'Miscellaneous'),
 ]
