@@ -25,9 +25,9 @@
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
-        # TODO(gagehugo): Fix the job in osh and uncomment
-        # - openstack-helm-images-compute-kit-xena-ubuntu_focal
-        # - openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-compute-kit-xena-ubuntu_focal
+        - openstack-helm-images-cinder-xena-ubuntu_focal
+        # TODO(gagehugo): Fix the yoga job failure and uncomment
         # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         # - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
@@ -42,8 +42,8 @@
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
-        # - openstack-helm-images-compute-kit-xena-ubuntu_focal
-        # - openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-compute-kit-xena-ubuntu_focal
+        - openstack-helm-images-cinder-xena-ubuntu_focal
         # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         # - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
@@ -58,8 +58,8 @@
         - openstack-helm-images-cinder-victoria-ubuntu_focal
         - openstack-helm-images-compute-kit-wallaby-ubuntu_focal
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
-        # - openstack-helm-images-compute-kit-xena-ubuntu_focal
-        # - openstack-helm-images-cinder-xena-ubuntu_focal
+        - openstack-helm-images-compute-kit-xena-ubuntu_focal
+        - openstack-helm-images-cinder-xena-ubuntu_focal
         # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         # - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
