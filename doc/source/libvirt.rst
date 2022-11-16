@@ -1,30 +1,26 @@
-=======================
-libvirt container image
-=======================
+===========================
+``libvirt`` container image
+===========================
 
 This container builds a small image with Libvirt for use with OpenStack-Helm.
 
-Manual build for Ubuntu Xenial
-==============================
-
-Here are the instructions for building Xenial image:
-
-.. literalinclude:: ../../libvirt/build.sh
-    :lines: 7-13
-    :language: shell
-
-Alternatively, this step can be performed by running the script directly:
+If you need to build a ``libvirt`` image, you can use the ``Dockerfile`` with
+the ``FROM`` build argument set to your source image and the ``RELEASE`` set to
+the OpenStack release you're deploying.  For example::
 
 .. code-block:: shell
 
-  ./libvirt/build.sh
+   docker buildx build \
+     --build-arg FROM=ubuntu:22.04 \
+     --build-arg RELEASE=zed \
+     libvirt/
 
-openSUSE Leap 15
-----------------
-
-To build and openSUSE leap 15 image, you can export variables before running
-the build script:
+You can also use ``buildx`` to build the image for multiple architectures::
 
 .. code-block:: shell
 
-  DISTRO=suse_15 ./libvirt/build.sh
+   docker buildx build \
+     --build-arg FROM=ubuntu:22.04 \
+     --build-arg RELEASE=zed \
+     --platform linux/amd64,linux/arm64 \
+     libvirt/

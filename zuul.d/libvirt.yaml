@@ -40,32 +40,64 @@
       docker_images:
         - context: libvirt
           repository: openstackhelm/libvirt
-          dockerfile: Dockerfile.centos_7
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
           tags:
-            - latest-centos_7
-            - "centos_7-{{ currentdate }}"
-        - context: libvirt
-          repository: openstackhelm/libvirt
-          dockerfile: Dockerfile.ubuntu_bionic
-          tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
+            - "wallaby-focal-{{ currentdate }}"
+            - "wallaby-focal"
+            - "wallaby"
           build_args:
-            - "CEPH_REPO=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/"
-            - "CEPH_KEY=https://mirror.mirantis.com/testing/ceph-nautilus/bionic/archive-ceph-nautilus.key"
-            - "CEPH_RELEASE_TAG=14.2.9-1.0~bionic"
+            - FROM=ubuntu:focal
+            - RELEASE=wallaby
         - context: libvirt
           repository: openstackhelm/libvirt
-          dockerfile: Dockerfile.ubuntu_focal
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
           tags:
-            - latest-ubuntu_focal
-            - "ubuntu_focal-{{ currentdate }}"
+            - "xena-focal-{{ currentdate }}"
+            - "xena-focal"
+            - "xena"
+          build_args:
+            - FROM=ubuntu:focal
+            - RELEASE=xena
         - context: libvirt
           repository: openstackhelm/libvirt
-          dockerfile: Dockerfile.debian_bullseye
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
           tags:
-            - latest-debian_bullseye
-            - "debian_bullseye-{{ currentdate }}"
+            - "yoga-focal-{{ currentdate }}"
+            - "yoga-focal"
+            - "yoga"
+          build_args:
+            - FROM=ubuntu:focal
+            - RELEASE=yoga
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "yoga-jammy-{{ currentdate }}"
+            - "yoga-jammy"
+          build_args:
+            - FROM=ubuntu:jammy
+            - RELEASE=yoga
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "zed-jammy-{{ currentdate }}"
+            - "zed-jammy"
+            - "zed"
+            - "latest"
+          build_args:
+            - FROM=ubuntu:jammy
+            - RELEASE=zed
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
