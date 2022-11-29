@@ -42,10 +42,10 @@
         #  dockerfile: Dockerfile.suse_15
         - context: ceph-config-helper
           repository: openstackhelm/ceph-config-helper
-          dockerfile: Dockerfile.ubuntu_bionic
+          dockerfile: Dockerfile.ubuntu_focal
           tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &ceph-config-helper_files
       - ceph-config-helper/.*
       - zuul.d/ceph-config-helper.yaml

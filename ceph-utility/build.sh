@@ -6,7 +6,7 @@ cd ${SCRIPT_DIR}/..
 
 IMAGE="ceph-utility"
 VERSION=${VERSION:-latest}
-DISTRO=${DISTRO:-ubuntu_bionic}
+DISTRO=${DISTRO:-ubuntu_focal}
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
 EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
 docker build -f ${IMAGE}/Dockerfile.${DISTRO} --network=host -t ${REGISTRY_URI}${IMAGE}:${VERSION}-${DISTRO}${EXTRA_TAG_INFO} ${extra_build_args} ${IMAGE}

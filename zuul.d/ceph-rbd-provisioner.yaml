@@ -36,10 +36,10 @@
       docker_images:
         - context: ceph-rbd-provisioner
           repository: openstackhelm/ceph-rbd-provisioner
-          dockerfile: Dockerfile.ubuntu_bionic
+          dockerfile: Dockerfile.ubuntu_focal
           tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &ceph-rbd-provisioner_files
       - ceph-rbd-provisioner/.*
       - zuul.d/ceph-rbd-provisioner.yaml

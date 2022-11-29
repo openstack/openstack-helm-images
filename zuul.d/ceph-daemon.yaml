@@ -36,10 +36,10 @@
       docker_images:
         - context: ceph-daemon
           repository: openstackhelm/ceph-daemon
-          dockerfile: Dockerfile.ubuntu_bionic
+          dockerfile: Dockerfile.ubuntu_focal
           tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &ceph-daemon_files
       - ceph-daemon/.*
       - zuul.d/ceph-daemon.yaml
