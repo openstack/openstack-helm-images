@@ -40,6 +40,7 @@ RUN set -ex ;\
       rgwadmin \
       six \
       s3cmd \
+      cryptography==37.0.4 \
       python-openstackclient \
       python-swiftclient ;\
     curl -sSL https://dl.k8s.io/${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz | tar -zxv --strip-components=1 ;\
