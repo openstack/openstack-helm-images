@@ -41,6 +41,12 @@
           tags:
             - latest-ubuntu_bionic
             - "ubuntu_bionic-{{ currentdate }}"
+        - context: nagios
+          repository: openstackhelm/nagios
+          dockerfile: Dockerfile.ubuntu_focal
+          tags:
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &nagios_files
       - nagios/.*
       - zuul.d/nagios.yaml

@@ -1,0 +1,66 @@
+ARG FROM=docker.io/ubuntu:focal
+FROM ${FROM}
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV APACHE_FRONTEND_PORT 8000
+ENV APACHE_FRONTEND_SECURE_PORT 8443
+ENV ES_DSL_VERSION=7.4.0
+ENV ES_VERSION=7.17.8
+ENV KUBE_VERSION=1.24.6
+
+ENV NAGIOSADMIN_EMAIL nagios@localhost
+ENV NAGIOS_HOME /opt/nagios
+ENV NAGIOS_PLUGIN_DIR /usr/lib/nagios/plugins
+ENV VERSION=4.4.9
+
+RUN apt-get -o Acquire::ForceIPv4=true -y update && apt-get -y upgrade && \
+    apt-get -y install curl apache2 checkinstall unzip libapache2-mod-php snmp snmpd snmp-mibs-downloader jq python3-requests libssl-dev && \
+    apt-get -y install --no-install-recommends monitoring-plugins python3-pip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN rm -f /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
+
+RUN pip3 install --upgrade pip && \
+    hash -r && \
+    pip3 --no-cache-dir install --upgrade setuptools && \
+    pip3 --no-cache-dir install --upgrade kubernetes && \
+    pip3 --no-cache-dir install --upgrade elasticsearch==${ES_VERSION} && \
+    pip3 --no-cache-dir install --upgrade elasticsearch-dsl==${ES_DSL_VERSION} && \
+    pip3 install requests -U
+
+RUN groupadd -g 3000 nagios
+RUN useradd -u 3000 -g nagios -d ${NAGIOS_HOME} -s /bin/bash -c 'Nagios Admin' nagios
+RUN adduser www-data nagios
+
+RUN TMP_DIR=$(mktemp --directory) && \
+    cd ${TMP_DIR} && \
+    curl -sSL https://dl.k8s.io/v${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz | tar -zxv --strip-components=1 && \
+    mv ${TMP_DIR}/client/bin/kubectl /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl
+
+ADD https://assets.nagios.com/downloads/nagioscore/releases/nagios-${VERSION}.tar.gz ${TMP_DIR}/
+RUN cd ${TMP_DIR} && \
+    tar zxf ${TMP_DIR}/nagios-${VERSION}.tar.gz && \
+    cd nagios-${VERSION} && \
+    ./configure --with-lockfile=/var/run/nagios.lock --prefix=${NAGIOS_HOME} --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios && \
+    make all && \
+    make install && \
+    make install-init && \
+    make install-config && \
+    make install-commandmode && \
+    make install-webconf && \
+    cd ${TMP_DIR} && rm -rf nagios-* && rm -rf ${TMP_DIR}
+
+COPY apache2/sites-available/* /etc/apache2/sites-available/
+COPY apache2/ports.conf /etc/apache2/
+
+RUN  a2ensite nagios && a2enmod cgi && a2dissite 000-default
+
+COPY scripts/entrypoint.sh /entrypoint.sh
+COPY plugins/* ${NAGIOS_PLUGIN_DIR}/
+COPY scripts/snmp-mibs/* /usr/share/snmp/mibs/
+
+EXPOSE ${APACHE_FRONTEND_PORT}/tcp
+EXPOSE ${APACHE_FRONTEND_SECURE_PORT}/tcp
+
+ENTRYPOINT ["/entrypoint.sh"]
