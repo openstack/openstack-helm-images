@@ -1,11 +1,11 @@
 ARG baseimg=docker.io/ubuntu:focal
 FROM ${baseimg}
 
-# Pacific 16.2.10
-ARG CEPH_RELEASE=pacific
-ARG CEPH_RELEASE_TAG=16.2.10-1focal
-ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-pacific/
-ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-pacific/release.asc
+# Quincy 17.2.5
+ARG CEPH_RELEASE=quincy
+ARG CEPH_RELEASE_TAG=17.2.5-1focal
+ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-quincy/
+ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-quincy/release.asc
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\
