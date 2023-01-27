@@ -29,6 +29,7 @@ RUN set -ex ;\
         radosgw=${CEPH_RELEASE_TAG} \
         ceph-mds=${CEPH_RELEASE_TAG} \
         ceph-fuse=${CEPH_RELEASE_TAG} \
+        ceph-volume=${CEPH_RELEASE_TAG} \
         gdisk \
         udev \
         rbd-nbd=${CEPH_RELEASE_TAG} \
@@ -47,7 +48,8 @@ RUN set -ex ;\
         python3-openssl \
         uuid-runtime \
         jq \
-        alien ;\
+        alien \
+        lvm2 ;\
     curl -sSL https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3 ;\
     pip3 --no-cache-dir install --upgrade --ignore-installed PyYAML ;\
     pip3 --no-cache-dir install --upgrade \
