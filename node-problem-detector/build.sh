@@ -6,12 +6,11 @@ cd ${SCRIPT_DIR}/..
 
 IMAGE="node-problem-detector"
 VERSION=${VERSION:-latest}
-DISTRO=${DISTRO:-ubuntu_bionic}
+DISTRO=${DISTRO:-ubuntu_focal}
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
 EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
 
 NPD_VERSION=${NPD_VERSION:-v0.8.10}
-
 
 docker build -f ${IMAGE}/Dockerfile.${DISTRO} --network=host -t ${REGISTRY_URI}${IMAGE}:${VERSION}-${DISTRO}${EXTRA_TAG_INFO} ${extra_build_args} ${IMAGE}
 
