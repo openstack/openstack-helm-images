@@ -1,0 +1,7 @@
+FROM docker.io/ubuntu:focal
+
+RUN apt-get update && apt-get install -y \
+      ovn-host \
+      ovn-central \
+      dnsutils \
+      && rm -rf /var/lib/apt/lists/*
