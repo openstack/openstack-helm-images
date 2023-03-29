@@ -161,6 +161,8 @@
             - "PROFILES='fluent'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
+            - "DIST_PACKAGES='python3-dev gcc'"
+            - "PIP_ARGS='--only-binary :none:'"
           tags: *imagetag
         - &glance_project
           context: "."
@@ -339,6 +341,16 @@
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
+        - &manila_project
+          context: "."
+          repository: openstackhelm/manila
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PROJECT='manila'"
+            - "PROJECT_REF={{ branchname }}"
+            - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
+          tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -411,6 +423,7 @@
         # - <<: *watcher_project
         - <<: *cyborg_project
         - <<: *masakari_project
+        - <<: *manila_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
@@ -466,6 +479,7 @@
         - <<: *cyborg_project
         - <<: *masakari_project
         - <<: *masakari_monitors_project
+        - <<: *manila_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
@@ -519,6 +533,7 @@
         - <<: *cyborg_project
         - <<: *masakari_project
         - <<: *masakari_monitors_project
+        - <<: *manila_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
@@ -572,6 +587,7 @@
         - <<: *cyborg_project
         - <<: *masakari_project
         - <<: *masakari_monitors_project
+        - <<: *manila_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
@@ -625,6 +641,7 @@
         - <<: *cyborg_project
         - <<: *masakari_project
         - <<: *masakari_monitors_project
+        - <<: *manila_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
