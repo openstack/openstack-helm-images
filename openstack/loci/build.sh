@@ -188,6 +188,8 @@ heat_pip_packages=${heat_pip_packages:-"pycrypto"}
 heat_dist_packages=${heat_dist_packages:-"curl"}
 barbican_profiles=${barbican_profiles:-"fluent"}
 barbican_pip_packages=${barbican_pip_packages:-"pycrypto"}
+barbican_dist_packages=${barbican_dist_packages:-"'python3-dev gcc'"}
+barbican_pip_args=${barbican_pip_args:-"'--only-binary :none:'"}
 glance_profiles=${glance_profiles:-"'fluent ceph'"}
 glance_pip_packages=${glance_pip_packages:-"'pycrypto python-swiftclient'"}
 cinder_profiles=${cinder_profiles:-"'fluent lvm ceph qemu apache'"}
@@ -267,7 +269,7 @@ else
     LOCI_ARG_FROM="${BASE_IMAGE}"
 fi
 
-BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic'}
+BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic manila'}
 projects=( ${BUILD_PROJECTS} )
 
 pushd ${LOCI_SRC_DIR}
