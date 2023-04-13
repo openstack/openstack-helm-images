@@ -52,7 +52,7 @@ RUN set -ex ;\
         lvm2 ;\
     curl -sSL https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3 ;\
     pip3 --no-cache-dir install --upgrade --ignore-installed PyYAML ;\
-    pip3 --no-cache-dir install --upgrade \
+    pip3 --no-cache-dir install --upgrade --ignore-installed \
       six \
       python-openstackclient \
       python-swiftclient ;\
