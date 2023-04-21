@@ -4,9 +4,9 @@ FROM ${FROM}
 ARG DISTRO_CODENAME='focal'
 
 ARG KUBE_VERSION=v1.16.2
-# Quincy 17.2.5
+# Quincy 17.2.6
 ARG CEPH_RELEASE=quincy
-ARG CEPH_RELEASE_TAG=17.2.5-1focal
+ARG CEPH_RELEASE_TAG=17.2.6-1focal
 
 ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-quincy/
 ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-quincy/release.asc
