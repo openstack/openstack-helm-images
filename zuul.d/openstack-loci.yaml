@@ -224,7 +224,7 @@
             - "PROJECT='nova'"
             - "PROJECT_REF={{ branchname }}"
             - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache migration'"
-            - "DIST_PACKAGES='net-tools'"
+            - "DIST_PACKAGES='net-tools openssh-server'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
