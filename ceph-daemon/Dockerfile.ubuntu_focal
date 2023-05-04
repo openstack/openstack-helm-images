@@ -2,13 +2,12 @@ ARG FROM=docker.io/ubuntu:focal
 FROM ${FROM}
 
 ARG KUBE_VERSION=1.16.2
-# Quincy 17.2.6
-ARG CEPH_RELEASE=quincy
-ARG CEPH_RELEASE_TAG=17.2.6-1focal
+ARG CEPH_RELEASE
+ARG CEPH_RELEASE_TAG
 ARG CONFD_VERSION=0.16.0
 
-ARG CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-quincy/
-ARG CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-quincy/release.asc
+ARG CEPH_REPO
+ARG CEPH_KEY
 
 ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
 RUN set -ex ;\

@@ -1,0 +1,190 @@
+---
+# Copyright 2019, SUSE LINUX GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-build-ceph-cephfs-provisioner
+        - openstack-helm-images-build-ceph-config-helper
+        - openstack-helm-images-build-ceph-daemon
+        - openstack-helm-images-build-ceph-rbd-provisioner
+        - openstack-helm-images-build-ceph-utility
+    gate:
+      jobs:
+        - openstack-helm-images-upload-ceph-cephfs-provisioner
+        - openstack-helm-images-upload-ceph-config-helper
+        - openstack-helm-images-upload-ceph-daemon
+        - openstack-helm-images-upload-ceph-rbd-provisioner
+        - openstack-helm-images-upload-ceph-utility
+    promote:
+      jobs:
+        - openstack-helm-images-promote-ceph-cephfs-provisioner
+        - openstack-helm-images-promote-ceph-config-helper
+        - openstack-helm-images-promote-ceph-daemon
+        - openstack-helm-images-promote-ceph-rbd-provisioner
+        - openstack-helm-images-promote-ceph-utility
+    periodic-weekly:
+      jobs:
+        - openstack-helm-images-build-ceph-cephfs-provisioner
+        - openstack-helm-images-build-ceph-config-helper
+        - openstack-helm-images-build-ceph-daemon
+        - openstack-helm-images-build-ceph-rbd-provisioner
+        - openstack-helm-images-build-ceph-utility
+
+- job:
+    name: openstack-helm-images-build-ceph-common
+    parent: openstack-helm-images-build
+    abstract: true
+    vars:
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - &ceph_image
+          dockerfile: Dockerfile.ubuntu_focal
+          build_args:
+            - "CEPH_RELEASE='quincy'"
+            - "CEPH_RELEASE_TAG='17.2.6-1focal'"
+            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-quincy/'"
+            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-quincy/release.asc'"
+          tags:
+            - latest-ubuntu_focal
+            - "ubuntu_focal_17.2.6-1-{{ currentdate }}"
+    files: &ceph_files
+      - ceph.*
+      - zuul.d/ceph.*
+
+- job:
+    name: openstack-helm-images-build-ceph-cephfs-provisioner
+    parent: openstack-helm-images-build-ceph-common
+    description: Build ceph-cephfs-provisioner images
+    vars: &ceph-cephfs-provisioner_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - <<: *ceph_image
+          context: ceph-cephfs-provisioner
+          repository: openstackhelm/ceph-cephfs-provisioner
+
+- job:
+    name: openstack-helm-images-upload-ceph-cephfs-provisioner
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-cephfs-provisioner images
+    vars: *ceph-cephfs-provisioner_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-cephfs-provisioner
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-cephfs-provisioner image to latest.
+    vars: *ceph-cephfs-provisioner_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-build-ceph-config-helper
+    parent: openstack-helm-images-build-ceph-common
+    description: Build ceph-config-helper images
+    vars: &ceph-config-helper_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - <<: *ceph_image
+          context: ceph-config-helper
+          repository: openstackhelm/ceph-config-helper
+
+- job:
+    name: openstack-helm-images-upload-ceph-config-helper
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-config-helper images
+    vars: *ceph-config-helper_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-config-helper
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-config-helper image to latest.
+    vars: *ceph-config-helper_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-build-ceph-daemon
+    parent: openstack-helm-images-build-ceph-common
+    description: Build ceph-daemon images
+    vars: &ceph-daemon_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - <<: *ceph_image
+          context: ceph-daemon
+          repository: openstackhelm/ceph-daemon
+
+- job:
+    name: openstack-helm-images-upload-ceph-daemon
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-daemon images
+    vars: *ceph-daemon_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-daemon
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-daemon image to latest.
+    vars: *ceph-daemon_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-build-ceph-rbd-provisioner
+    parent: openstack-helm-images-build-ceph-common
+    description: Build ceph-rbd-provisioner images
+    vars: &ceph-rbd-provisioner_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - <<: *ceph_image
+          context: ceph-rbd-provisioner
+          repository: openstackhelm/ceph-rbd-provisioner
+
+- job:
+    name: openstack-helm-images-upload-ceph-rbd-provisioner
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-rbd-provisioner images
+    vars: *ceph-rbd-provisioner_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-rbd-provisioner
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-rbd-provisioner image to latest.
+    vars: *ceph-rbd-provisioner_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-build-ceph-utility
+    parent: openstack-helm-images-build-ceph-common
+    description: Build ceph-utility images
+    vars: &ceph-utility_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - <<: *ceph_image
+          context: ceph-utility
+          repository: openstackhelm/ceph-utility
+
+- job:
+    name: openstack-helm-images-upload-ceph-utility
+    parent: openstack-helm-images-upload
+    description: Build and upload ceph-utility images
+    vars: *ceph-utility_vars
+    files: *ceph_files
+
+- job:
+    name: openstack-helm-images-promote-ceph-utility
+    parent: openstack-helm-images-promote
+    description: Promote a previously published ceph-utility image to latest.
+    vars: *ceph-utility_vars
+    files: *ceph_files
