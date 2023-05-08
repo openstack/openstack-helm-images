@@ -37,13 +37,14 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'OpenStack Helm Images'
+project = 'openstack-helm-images'
 copyright = '2018, OpenStack Developers'
 
 # openstackdocstheme options
 openstackdocs_repo_name = 'openstack/openstack-helm-images'
 openstackdocs_auto_name = False
 openstackdocs_use_storyboard = True
+openstackdocs_pdf_link = True
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -72,7 +73,7 @@ htmlhelp_basename = '%sdoc' % project
 # [howto/manual]).
 latex_documents = [
     ('index',
-     '%s.tex' % project,
+     'doc-%s.tex' % project,
      '%s Documentation' % project,
      'OpenStack Developers', 'manual'),
 ]
