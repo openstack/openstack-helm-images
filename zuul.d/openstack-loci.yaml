@@ -351,6 +351,15 @@
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
+        - &tacker_project
+          context: "."
+          repository: openstackhelm/tacker
+          build_args:
+            - "FROM='{{ base_repository }}'"
+            - "PROJECT='tacker'"
+            - "PROJECT_REF={{ branchname }}"
+            - "WHEELS='{{ wheels_location }}'"
+            - "KEEP_ALL_WHEELS=yes"
     files: &loci-files
       - ^openstack/loci/.*
       - zuul.d/openstack-loci.yaml
@@ -424,6 +433,7 @@
         - <<: *cyborg_project
         - <<: *masakari_project
         - <<: *manila_project
+        - <<: *tacker_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
@@ -480,6 +490,7 @@
         - <<: *masakari_project
         - <<: *masakari_monitors_project
         - <<: *manila_project
+        - <<: *tacker_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
@@ -534,6 +545,7 @@
         - <<: *masakari_project
         - <<: *masakari_monitors_project
         - <<: *manila_project
+        - <<: *tacker_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
@@ -588,6 +600,7 @@
         - <<: *masakari_project
         - <<: *masakari_monitors_project
         - <<: *manila_project
+        - <<: *tacker_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
@@ -642,6 +655,7 @@
         - <<: *masakari_project
         - <<: *masakari_monitors_project
         - <<: *manila_project
+        - <<: *tacker_project
 
 - job:
     name: openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal

@@ -269,7 +269,7 @@ else
     LOCI_ARG_FROM="${BASE_IMAGE}"
 fi
 
-BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic manila'}
+BUILD_PROJECTS=${BUILD_PROJECTS:-'requirements keystone heat barbican glance cinder monasca_api neutron neutron_sriov nova horizon senlin magnum ironic manila tacker'}
 projects=( ${BUILD_PROJECTS} )
 
 pushd ${LOCI_SRC_DIR}
