@@ -25,9 +25,8 @@
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
         - openstack-helm-images-compute-kit-xena-ubuntu_focal
         - openstack-helm-images-cinder-xena-ubuntu_focal
-        # TODO(gagehugo): Fix the yoga job failure and uncomment
-        # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
-        # - openstack-helm-images-cinder-yoga-ubuntu_focal
+        - openstack-helm-images-compute-kit-yoga-ubuntu_focal
+        - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     gate:
       jobs:
@@ -40,8 +39,8 @@
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
         - openstack-helm-images-compute-kit-xena-ubuntu_focal
         - openstack-helm-images-cinder-xena-ubuntu_focal
-        # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
-        # - openstack-helm-images-cinder-yoga-ubuntu_focal
+        - openstack-helm-images-compute-kit-yoga-ubuntu_focal
+        - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     periodic-weekly:
       jobs:
@@ -54,8 +53,8 @@
         - openstack-helm-images-cinder-wallaby-ubuntu_focal
         - openstack-helm-images-compute-kit-xena-ubuntu_focal
         - openstack-helm-images-cinder-xena-ubuntu_focal
-        # - openstack-helm-images-compute-kit-yoga-ubuntu_focal
-        # - openstack-helm-images-cinder-yoga-ubuntu_focal
+        - openstack-helm-images-compute-kit-yoga-ubuntu_focal
+        - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     templates:
       - publish-openstack-docs-pti
@@ -375,8 +374,8 @@
     dependencies:
       - name: openstack-helm-images-build-openvswitch
         soft: true
-      #- name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
-      #  soft: true
+      - name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
+        soft: true
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-build-libvirt
@@ -404,8 +403,8 @@
     parent: openstack-helm-cinder-yoga-ubuntu_focal
     match-on-config-updates: false
     dependencies:
-      #- name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
-      #  soft: true
+      - name: openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
+        soft: true
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
