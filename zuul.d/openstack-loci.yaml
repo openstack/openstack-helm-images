@@ -62,9 +62,9 @@
               - name: openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-zed-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-zed-ubuntu_focal:
-            dependencies: []
-            #   - name: openstack-helm-images-compute-kit-zed-ubuntu_focal
-            #   - name: openstack-helm-images-cinder-zed-ubuntu_focal
+            dependencies:
+              - name: openstack-helm-images-compute-kit-zed-ubuntu_focal
+              - name: openstack-helm-images-cinder-zed-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
             dependencies:
