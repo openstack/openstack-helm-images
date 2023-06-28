@@ -53,6 +53,12 @@
           tags:
             - latest-7_6_2
             - "7_6_2-{{ currentdate }}"
+        - context: elasticsearch-s3
+          repository: openstackhelm/elasticsearch-s3
+          dockerfile: Dockerfile.8_7_1
+          tags:
+            - latest-8_7_1
+            - "8_7_1-{{ currentdate }}"
     files: &elasticsearch-s3_files
       - elasticsearch-s3/.*
       - zuul.d/elasticsearch-s3.yaml

@@ -1,0 +1,9 @@
+FROM docker.io/elasticsearch:8.7.1
+
+USER root
+
+RUN  curl -sL https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64 -o /usr/local/bin/jq && \
+     chmod +x /usr/local/bin/jq && \
+     jq --version
+
+USER elasticsearch
