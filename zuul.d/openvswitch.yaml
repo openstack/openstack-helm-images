@@ -28,8 +28,8 @@
         - openstack-helm-images-upload-openvswitch
         - openstack-helm-images-promote-openvswitch:
             dependencies:
-              - name: openstack-helm-images-compute-kit-victoria-ubuntu_focal
-              - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-yoga-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-zed-ubuntu_focal
 
 - job:
     name: openstack-helm-images-build-openvswitch
@@ -38,24 +38,6 @@
     vars: &openvswitch_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        #- context: openvswitch
-        #  repository: openstackhelm/openvswitch
-        #  tags:
-        #    - latest-opensuse_15
-        #    - "opensuse_15-{{ currentdate }}"
-        #  dockerfile: Dockerfile.suse_15
-        #- context: openvswitch
-        #  repository: openstackhelm/openvswitch
-        #  tags:
-        #    - latest-opensuse_15-dpdk
-        #    - "opensuse_15-dpdk-{{ currentdate }}"
-        #  dockerfile: Dockerfile.suse_15-dpdk
-        - context: openvswitch
-          repository: openstackhelm/openvswitch
-          dockerfile: Dockerfile.debian
-          tags:
-            - latest-debian
-            - "debian-{{ currentdate }}"
         - context: openvswitch
           repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.ubuntu_bionic
