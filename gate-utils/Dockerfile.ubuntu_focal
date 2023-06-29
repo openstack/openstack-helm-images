@@ -1,0 +1,12 @@
+ARG FROM=ubuntu:focal
+FROM ${FROM}
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ipcalc \
+    && apt-get clean -y \
+    && rm -rf \
+        /var/cache/debconf/* \
+        /var/lib/apt/lists/* \
+        /var/log/* \
+        /tmp/* \
+        /var/tmp/*
