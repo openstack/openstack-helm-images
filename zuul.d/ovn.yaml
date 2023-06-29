@@ -26,7 +26,9 @@
     periodic-weekly:
       jobs:
         - openstack-helm-images-upload-ovn
-        - openstack-helm-images-promote-ovn
+        - openstack-helm-images-promote-ovn:
+            dependencies:
+              - name: openstack-helm-images-upload-ovn
 
 - job:
     name: openstack-helm-images-build-ovn
