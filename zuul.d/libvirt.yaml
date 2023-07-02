@@ -98,6 +98,21 @@
           build_args:
             - FROM=ubuntu:jammy
             - RELEASE=zed
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "antelope-jammy-{{ currentdate }}"
+            - "antelope-jammy"
+            - "antelope"
+            - "2023.1-jammy-{{ currentdate }}"
+            - "2023.1-jammy"
+            - "2023.1"
+          build_args:
+            - FROM=ubuntu:jammy
+            - RELEASE=antelope
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
