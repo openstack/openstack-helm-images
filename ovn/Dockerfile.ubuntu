@@ -1,4 +1,5 @@
-FROM docker.io/ubuntu:focal
+ARG FROM
+FROM ${FROM}
 
 RUN apt-get update && apt-get install -y \
       ovn-host \
