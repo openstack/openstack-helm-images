@@ -23,9 +23,6 @@
     promote:
       jobs:
         - openstack-helm-images-promote-gate-utils
-    periodic-weekly:
-      jobs:
-        - openstack-helm-images-build-gate-utils
 
 - job:
     name: openstack-helm-images-build-gate-utils
@@ -34,18 +31,12 @@
     vars: &gate-utils_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        #- context: gate-utils
-        #  repository: openstackhelm/gate-utils
-        #  tags:
-        #    - latest-opensuse_15
-        #    - "opensuse_15-{{ currentdate }}"
-        #  dockerfile: Dockerfile.suse_15
         - context: gate-utils
           repository: openstackhelm/gate-utils
-          dockerfile: Dockerfile.debian
+          dockerfile: Dockerfile.ubuntu_focal
           tags:
-            - latest-debian
-            - "debian-{{ currentdate }}"
+            - latest-ubuntu_focal
+            - "ubuntu_focal-{{ currentdate }}"
     files: &gate-utils_files
       - gate-utils/.*
       - zuul.d/gate-utils.yaml
