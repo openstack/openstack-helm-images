@@ -70,7 +70,8 @@
               - name: openstack-helm-images-cinder-zed-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-2023-1-ubuntu_focal:
-            dependencies: []
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_focal
               # - name: openstack-helm-images-compute-kit-2023-1-ubuntu_focal
               # - name: openstack-helm-images-cinder-2023-1-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
