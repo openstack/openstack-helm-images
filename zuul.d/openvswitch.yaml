@@ -74,6 +74,12 @@
           tags:
             - latest-ubuntu_focal
             - "ubuntu_focal-{{ currentdate }}"
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu_jammy
+          tags:
+            - latest-ubuntu_jammy
+            - "ubuntu_jammy-{{ currentdate }}"
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
