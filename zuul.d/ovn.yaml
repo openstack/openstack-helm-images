@@ -39,10 +39,20 @@
       docker_images:
         - context: ovn
           repository: openstackhelm/ovn
-          dockerfile: Dockerfile.ubuntu_focal
+          dockerfile: Dockerfile.ubuntu
           tags:
-            - latest-ubuntu_focal
+            - ubuntu_focal
             - "ubuntu_focal-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:focal
+        - context: ovn
+          repository: openstackhelm/ovn
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - ubuntu_jammy
+            - "ubuntu_jammy-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
     files: &ovn_files
       - ovn/.*
       - zuul.d/ovn.yaml
