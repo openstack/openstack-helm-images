@@ -21,8 +21,11 @@
         - openstack-helm-images-build-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-build-openstack-loci-zed-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-zed-ubuntu_jammy
         - openstack-helm-images-build-openstack-loci-2023-1-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-2023-1-ubuntu_jammy
         - openstack-helm-images-build-openstack-loci-master-ubuntu_focal
+        - openstack-helm-images-build-openstack-loci-master-ubuntu_jammy
     gate:
       jobs:
         - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
@@ -30,8 +33,11 @@
         - openstack-helm-images-upload-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-upload-openstack-loci-zed-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-zed-ubuntu_jammy
         - openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_jammy
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-loci-victoria-ubuntu_focal
@@ -39,8 +45,11 @@
         - openstack-helm-images-promote-openstack-loci-xena-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-yoga-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-zed-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-zed-ubuntu_jammy
         - openstack-helm-images-promote-openstack-loci-2023-1-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-2023-1-ubuntu_jammy
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_jammy
     periodic-weekly:
       jobs:
         - openstack-helm-images-upload-openstack-loci-victoria-ubuntu_focal
@@ -68,16 +77,28 @@
             dependencies:
               - name: openstack-helm-images-compute-kit-zed-ubuntu_focal
               - name: openstack-helm-images-cinder-zed-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-zed-ubuntu_jammy
+        - openstack-helm-images-promote-openstack-loci-zed-ubuntu_jammy:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-zed-ubuntu_jammy
         - openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-2023-1-ubuntu_focal:
             dependencies:
               - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_focal
               # - name: openstack-helm-images-compute-kit-2023-1-ubuntu_focal
               # - name: openstack-helm-images-cinder-2023-1-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
+        - openstack-helm-images-promote-openstack-loci-2023-1-ubuntu_jammy:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
         - openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
         - openstack-helm-images-promote-openstack-loci-master-ubuntu_focal:
             dependencies:
               - name: openstack-helm-images-upload-openstack-loci-master-ubuntu_focal
+        - openstack-helm-images-upload-openstack-loci-master-ubuntu_jammy
+        - openstack-helm-images-promote-openstack-loci-master-ubuntu_jammy:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-loci-master-ubuntu_jammy
 
 
 ################
@@ -378,7 +399,6 @@
           tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
-      - zuul.d/openstack-loci.yaml
 
 # The upload in openstack-helm-images-upload happens as post-run,
 # so we can inherit from this. The post run is not caring about context,
@@ -412,6 +432,7 @@
 # Real jobs #
 #############
 
+# Master - Focal
 - job:
     name: openstack-helm-images-build-openstack-loci-master-ubuntu_focal
     description: Build LOCI master focal images
@@ -465,10 +486,66 @@
     vars: *build_master_focal_images
     files: *loci-files
 
+# Master - Jammy
+- job:
+    name: openstack-helm-images-build-openstack-loci-master-ubuntu_jammy
+    description: Build LOCI master jammy images
+    parent: openstack-helm-images-build-openstack-loci-master
+    match-on-config-updates: true
+    vars: &build_master_jammy_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "master"
+      shortbranchname: "master"
+      distroname: "ubuntu_jammy"
+      from: "docker.io/ubuntu:22.04"
+      python3: "yes"
+      #172.17.0.1 is default docker0 ip.
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-reef/ jammy main"
+      ceph_key: "http://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        # Watcher depends on retired python-ceilometerclient not compatible with current master constraints
+        # - <<: *watcher_project
+        - <<: *cyborg_project
+        - <<: *masakari_project
+        - <<: *manila_project
+        - <<: *tacker_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-master-ubuntu_jammy
+    description: Build and upload LOCI master jammy images
+    parent: openstack-helm-images-upload-openstack-loci-master
+    vars: *build_master_jammy_images
+    files: *loci-files
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-master-ubuntu_jammy
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI master jammy images
+    vars: *build_master_jammy_images
+    files: *loci-files
+
 ##########
 # 2023.1 #
 ##########
 
+# 2023.1 - Focal
 - job:
     name: openstack-helm-images-build-openstack-loci-2023-1-ubuntu_focal
     description: Build LOCI 2023.1 focal images
@@ -520,10 +597,64 @@
     description: Promote previously published LOCI 2023.1 focal images
     vars: *build_2023_1_focal_images
 
+# 2023.1 - Jammy
+- job:
+    name: openstack-helm-images-build-openstack-loci-2023-1-ubuntu_jammy
+    description: Build LOCI 2023.1 jammy images
+    parent: openstack-helm-images-build-openstack-loci-master
+    match-on-config-updates: true
+    vars: &build_2023_1_jammy_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/2023.1"
+      shortbranchname: "2023.1"
+      distroname: "ubuntu_jammy"
+      from: "docker.io/ubuntu:22.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-reef/ jammy main"
+      ceph_key: "http://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        - <<: *watcher_project
+        - <<: *cyborg_project
+        - <<: *masakari_project
+        - <<: *masakari_monitors_project
+        - <<: *manila_project
+        - <<: *tacker_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI 2023.1 jammy images
+    vars: *build_2023_1_jammy_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-2023-1-ubuntu_jammy
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI 2023.1 jammy images
+    vars: *build_2023_1_jammy_images
+
 #######
 # ZED #
 #######
 
+# Zed - Focal
 - job:
     name: openstack-helm-images-build-openstack-loci-zed-ubuntu_focal
     description: Build LOCI zed focal images
@@ -574,6 +705,59 @@
     parent: openstack-helm-images-promote-openstack-loci-master
     description: Promote previously published LOCI zed focal images
     vars: *build_zed_focal_images
+
+# Zed - Jammy
+- job:
+    name: openstack-helm-images-build-openstack-loci-zed-ubuntu_jammy
+    description: Build LOCI zed jammy images
+    parent: openstack-helm-images-build-openstack-loci-master
+    match-on-config-updates: true
+    vars: &build_zed_jammy_images
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      branchname: "stable/zed"
+      shortbranchname: "zed"
+      distroname: "ubuntu_jammy"
+      from: "docker.io/ubuntu:22.04"
+      python3: "yes"
+      wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+      base_repository: "base"
+      ceph_repo: "deb https://download.ceph.com/debian-reef/ jammy main"
+      ceph_key: "http://download.ceph.com/keys/release.asc"
+      base_docker_image:
+        - <<: *base_image
+      prep_docker_images:
+        - <<: *prep_requirements_project
+      docker_images:
+        - <<: *requirements_project
+        - <<: *keystone_project
+        - <<: *glance_project
+        - <<: *cinder_project
+        - <<: *nova_project
+        - <<: *ironic_project
+        - <<: *neutron_project
+        - <<: *horizon_project
+        - <<: *heat_project
+        - <<: *barbican_project
+        - <<: *placement_project
+        - <<: *monasca_api_project
+        - <<: *watcher_project
+        - <<: *cyborg_project
+        - <<: *masakari_project
+        - <<: *masakari_monitors_project
+        - <<: *manila_project
+        - <<: *tacker_project
+
+- job:
+    name: openstack-helm-images-upload-openstack-loci-zed-ubuntu_jammy
+    parent: openstack-helm-images-upload-openstack-loci-master
+    description: Build and upload LOCI zed jammy images
+    vars: *build_zed_jammy_images
+
+- job:
+    name: openstack-helm-images-promote-openstack-loci-zed-ubuntu_jammy
+    parent: openstack-helm-images-promote-openstack-loci-master
+    description: Promote previously published LOCI zed jammy images
+    vars: *build_zed_jammy_images
 
 ########
 # YOGA #
