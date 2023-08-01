@@ -1,0 +1,4 @@
+ARG FROM=docker.io/opensearchproject/opensearch:2.9.0
+FROM ${FROM}
+
+RUN /usr/share/opensearch/bin/opensearch-plugin install --batch repository-s3

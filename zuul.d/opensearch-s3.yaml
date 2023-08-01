@@ -1,0 +1,60 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-build-opensearch-s3
+    gate:
+      jobs:
+        - openstack-helm-images-upload-opensearch-s3
+    promote:
+      jobs:
+        - openstack-helm-images-promote-opensearch-s3
+    periodic-weekly:
+      jobs:
+        - openstack-helm-images-upload-opensearch-s3
+        - openstack-helm-images-promote-opensearch-s3:
+            dependencies:
+              - name: openstack-helm-images-aio-logging
+
+- job:
+    name: openstack-helm-images-build-opensearch-s3
+    parent: openstack-helm-images-build
+    description: Build s3 compatible opensearch image
+    vars: &opensearch-s3_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - context: opensearch-s3
+          repository: openstackhelm/opensearch-s3
+          dockerfile: Dockerfile.2_9_0
+          tags:
+            - 2_9_0
+            - "2_9_0-{{ currentdate }}"
+    files: &opensearch-s3_files
+      - opensearch-s3/.*
+      - zuul.d/opensearch-s3.yaml
+
+- job:
+    name: openstack-helm-images-upload-opensearch-s3
+    parent: openstack-helm-images-upload
+    description: Build and upload s3 compatible opensearch images
+    vars: *opensearch-s3_vars
+    files: *opensearch-s3_files
+
+- job:
+    name: openstack-helm-images-promote-opensearch-s3
+    parent: openstack-helm-images-promote
+    description: Promote a previously published s3 compatible opensearch image to latest.
+    vars: *opensearch-s3_vars
+    files: *opensearch-s3_files
