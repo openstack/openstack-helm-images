@@ -399,6 +399,7 @@
           tags: *imagetag
     files: &loci-files
       - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
 
 # The upload in openstack-helm-images-upload happens as post-run,
 # so we can inherit from this. The post run is not caring about context,
