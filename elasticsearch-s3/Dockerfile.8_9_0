@@ -1,0 +1,14 @@
+ARG FROM=docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+FROM ${FROM}
+
+ARG JQ_PATH=/usr/bin/jq
+ARG JQ_VERSION=1.6
+ARG JQ_SHA512=c9e585368bcb89d4c5213a31866e9301f03fe27165afcb4a3cdf0ec1be43b0fb7439d71dd9607ccc002622915b40389ee79c67d4c3c54ff95257cb23643b0330
+
+USER root
+RUN set -x; curl -sSLo "${JQ_PATH}" https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64 && \
+    [ "$(sha512sum "${JQ_PATH}" | awk '{print $1}')" = "${JQ_SHA512}" ] || exit 1 && \
+    chmod +x "${JQ_PATH}"
+
+USER elasticsearch
+RUN  elasticsearch-plugin install --batch repository-s3
