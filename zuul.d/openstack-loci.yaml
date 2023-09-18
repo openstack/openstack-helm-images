@@ -343,6 +343,7 @@
             - "FROM='{{ base_repository }}'"
             - "PROJECT='cyborg'"
             - "PROJECT_REF={{ branchname }}"
+            - "DIST_PACKAGES='pciutils'"
             - "WHEELS='{{ wheels_location }}'"
             - "KEEP_ALL_WHEELS=yes"
           tags: *imagetag
