@@ -16,7 +16,7 @@
 - project:
     check:
       jobs:
-        - opendev-buildset-registry
+        - openstack-helm-images-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
@@ -34,7 +34,7 @@
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     gate:
       jobs:
-        - opendev-buildset-registry
+        - openstack-helm-images-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
@@ -52,7 +52,7 @@
         - openstack-helm-images-horizon-wallaby-ubuntu_focal
     periodic-weekly:
       jobs:
-        - opendev-buildset-registry
+        - openstack-helm-images-buildset-registry
         - openstack-helm-images-aio-monitoring
         - openstack-helm-images-aio-logging
         - openstack-helm-images-compute-kit-victoria-ubuntu_focal
@@ -100,6 +100,11 @@
           Zp1xo0hJ2T2/8FGY/+sgZtjXJ4SETyTTw0kzQy/Ias8h63YIsDi7cQ2Yx48rGtugxArTD
           Kkrob2q6wFLBIutk8NgfXUy0oLClufRmHidne4XB0VLHeykuxKjiujGm+O9AcQ=
 
+- job:
+    name: openstack-helm-images-buildset-registry
+    parent: opendev-buildset-registry
+    timeout: 7200
+
 # In docker_images:
 # `context` is the folder in osh-images
 # `repository` is the repo on dockerhub
@@ -112,7 +117,7 @@
     run: zuul.d/playbooks/build.yml
     match-on-config-updates: false
     dependencies:
-      - name: opendev-buildset-registry
+      - name: openstack-helm-images-buildset-registry
     abstract: true
     description: |
       This job is building a docker image for
@@ -135,7 +140,7 @@
       - zuul.d/playbooks/upload.yml
     match-on-config-updates: false
     dependencies:
-      - name: opendev-buildset-registry
+      - name: openstack-helm-images-buildset-registry
     abstract: true
     secrets:
       name: docker_credentials
