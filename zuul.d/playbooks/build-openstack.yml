@@ -1,0 +1,85 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- hosts: all[0]
+  gather_facts: true
+  vars_files:
+    - vars-openstack.yml
+  vars:
+    docker_images: "{{ openstack_docker_images | map('extract', openstack_docker_images_dict) | list }}"
+  pre_tasks:
+    - name: Use buildset registry
+      include_role:
+        name: use-buildset-registry
+  tasks:
+    - name: Export the right vars
+      shell: |
+        source /etc/ci/mirror_info.sh
+        echo ${NODEPOOL_OPENSUSE_MIRROR}/
+        echo ${NODEPOOL_PYPI_MIRROR}
+        echo ${NODEPOOL_MIRROR_HOST}
+      args:
+        executable: /bin/bash
+      changed_when: False
+      register: _zuul_mirrors
+    - name: Set fact with the exported variables
+      set_fact:
+        opensuse_package_mirror: "{{ _zuul_mirrors.stdout_lines[0] }}"
+        pip_index_url: "{{ _zuul_mirrors.stdout_lines[1] | default('https://pypi.python.org/simple/') }}"
+        pip_trusted_host: "{{ _zuul_mirrors.stdout_lines[2] | default('pypi.python.org') }}"
+
+    - name: Build base image
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "{{ zuul.project.src_dir }}"
+        docker_images: "{{ base_docker_images }}"
+
+    - name: Build base requirements image
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "src/opendev.org/openstack/loci"
+        docker_images: "{{ requirements_docker_images }}"
+
+    - name: Build webserver serving wheels
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "{{ zuul.project.src_dir }}"
+        docker_images:
+          - context: zuul.d/playbooks/
+            repository: openstackhelm/loci_wheels
+
+    - name: Allow access to wheels server
+      iptables:
+        action: insert
+        chain: INPUT
+        in_interface: docker0
+        jump: ACCEPT
+      become: yes
+
+    - name: Run http server containing wheels
+      command: docker run -d -p 0.0.0.0:8080:80 openstackhelm/loci_wheels:latest
+
+    - name: Build project images
+      include_role:
+        name: build-docker-image
+      vars:
+        zuul_work_dir: "src/opendev.org/openstack/loci"
+
+    - name: Return images to zuul
+      include_tasks: _return-image.yml
+      loop: "{{ docker_images }}"
+      loop_control:
+        loop_var: zj_image

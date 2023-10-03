@@ -1,0 +1,284 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+python3: "yes"
+#172.17.0.1 is default docker0 ip.
+wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
+base_repository: "base"
+
+base_docker_images:
+  - context: "zuul.d/playbooks/"
+    dockerfile: "Dockerfile_base"
+    repository: '{{ base_repository }}'
+    build_args:
+      - "FROM='{{ from }}'"
+      - "CEPH_REPO='{{ ceph_repo }}'"
+      - "CEPH_KEY='{{ ceph_key }}'"
+
+requirements_docker_images:
+  - context: "."
+    repository: openstackhelm/requirements
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='requirements'"
+      - "PROJECT_REF={{ branchname }}"
+      - "KEEP_ALL_WHEELS=yes"
+
+openstack_docker_images_dict:
+  requirements:
+    context: "."
+    repository: openstackhelm/requirements
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='requirements'"
+      - "PROJECT_REF={{ branchname }}"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: &imagetag
+      - "{{ shortbranchname }}-{{ distroname }}"
+      - "{{ shortbranchname }}-{{ distroname }}-{{ currentdate }}" # Frozen tag
+  keystone:
+    context: "."
+    repository: openstackhelm/keystone
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='keystone'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
+      - "PIP_PACKAGES='python-openstackclient'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  heat:
+    context: "."
+    repository: openstackhelm/heat
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='heat'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent apache'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "DIST_PACKAGES='curl'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  barbican:
+    context: "."
+    repository: openstackhelm/barbican
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='barbican'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+      - "DIST_PACKAGES='python3-dev gcc'"
+      - "PIP_ARGS='--only-binary :none:'"
+    tags: *imagetag
+  glance:
+    context: "."
+    repository: openstackhelm/glance
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='glance'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent ceph'"
+      - "PIP_PACKAGES='python-swiftclient'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  cinder:
+    context: "."
+    repository: openstackhelm/cinder
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='cinder'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent lvm ceph qemu apache'"
+      - "PIP_PACKAGES='python-swiftclient'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  neutron:
+    context: "."
+    repository: openstackhelm/neutron
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='neutron'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent linuxbridge openvswitch apache vpn'"
+      - "PIP_PACKAGES='tap-as-a-service'"
+      - "DIST_PACKAGES='jq ethtool lshw'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  neutron_sriov:
+    context: "."
+    repository: openstackhelm/neutron
+    build_args:
+      - "FROM=docker.io/ubuntu:18.04"
+      - "PROJECT='neutron'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent neutron linuxbridge openvswitch'"
+      - "PIP_PACKAGES='tap-as-a-service'"
+      - "DIST_PACKAGES='ethtool lshw'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags:
+      - "{{ shortbranchname }}-18.04-sriov"
+      - "{{ shortbranchname }}-18.04-sriov-{{ currentdate }}"
+  nova:
+    context: "."
+    repository: openstackhelm/nova
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='nova'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache migration'"
+      - "DIST_PACKAGES='net-tools openssh-server'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  horizon:
+    context: "."
+    repository: openstackhelm/horizon
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='horizon'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent apache'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  senlin:
+    context: "."
+    repository: openstackhelm/senlin
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='senlin'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  magnum:
+    context: "."
+    repository: openstackhelm/magnum
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='magnum'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  ironic:
+    context: "."
+    repository: openstackhelm/ironic
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='ironic'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent ipxe ipmi qemu tftp'"
+      - "DIST_PACKAGES='ethtool lshw iproute2'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  placement:
+    context: "."
+    repository: openstackhelm/placement
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='placement'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='apache'"
+      - "PIP_PACKAGES='httplib2'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  watcher:
+    context: "."
+    repository: openstackhelm/watcher
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='watcher'"
+      - "PROJECT_REF={{ branchname }}"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  monasca_api:
+    context: "."
+    repository: openstackhelm/monasca-api
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='monasca-api'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='monasca api'"
+      - "PIP_PACKAGES='influxdb cassandra-driver sqlalchemy'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  cyborg:
+    context: "."
+    repository: openstackhelm/cyborg
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='cyborg'"
+      - "PROJECT_REF={{ branchname }}"
+      - "DIST_PACKAGES='pciutils'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  masakari:
+    context: "."
+    repository: openstackhelm/masakari
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PYTHON3={{ python3 }}"
+      - "PROJECT='masakari'"
+      - "PROJECT_REF={{ branchname }}"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  masakari_monitors:
+    context: "."
+    repository: openstackhelm/masakari-monitors
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PYTHON3={{ python3 }}"
+      - "PROJECT='masakari-monitors'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PIP_PACKAGES='libvirt-python'"
+      - "DIST_PACKAGES='libvirt-daemon-system libvirt-clients tcpdump pacemaker-cli-utils'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  manila:
+    context: "."
+    repository: openstackhelm/manila
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='manila'"
+      - "PROJECT_REF={{ branchname }}"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+  tacker:
+    context: "."
+    repository: openstackhelm/tacker
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='tacker'"
+      - "PROJECT_REF={{ branchname }}"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag

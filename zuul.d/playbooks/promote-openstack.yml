@@ -1,0 +1,7 @@
+- hosts: localhost
+  vars_files:
+    - vars-openstack.yml
+  vars:
+    docker_images: "{{ openstack_docker_images | map('extract', openstack_docker_images_dict) | list }}"
+  roles:
+    - promote-docker-image
