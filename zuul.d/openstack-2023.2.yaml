@@ -65,6 +65,7 @@
     vars: *build_vars
     files: *openstack_files
 
+
 # - job:
 #     name: openstack-helm-images-compute-kit-2023-2-ubuntu_jammy
 #     parent: openstack-helm-compute-kit-2023-2-ubuntu_jammy
