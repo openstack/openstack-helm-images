@@ -53,13 +53,13 @@
         - &ceph_image
           dockerfile: Dockerfile.ubuntu_focal
           build_args:
-            - "CEPH_RELEASE='quincy'"
-            - "CEPH_RELEASE_TAG='17.2.6-1focal'"
-            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-quincy/'"
-            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-quincy/release.asc'"
+            - "CEPH_RELEASE='reef'"
+            - "CEPH_RELEASE_TAG='18.2.0-1focal'"
+            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-reef/'"
+            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-reef/release.asc'"
           tags:
             - latest-ubuntu_focal
-            - "ubuntu_focal_17.2.6-1-{{ currentdate }}"
+            - "ubuntu_focal_18.2.0-1-{{ currentdate }}"
     files: &ceph_files
       - ceph.*
       - zuul.d/ceph.*
