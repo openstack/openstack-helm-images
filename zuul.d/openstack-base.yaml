@@ -67,6 +67,9 @@
     abstract: true
     run:
       - zuul.d/playbooks/promote-openstack.yml
+    secrets:
+      name: docker_credentials
+      secret: openstack-helm-dockerhub
     vars: *base_vars
 
 - job:
