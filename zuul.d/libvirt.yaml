@@ -94,7 +94,6 @@
             - "zed-jammy-{{ currentdate }}"
             - "zed-jammy"
             - "zed"
-            - "latest"
           build_args:
             - FROM=ubuntu:jammy
             - RELEASE=zed
@@ -113,6 +112,22 @@
           build_args:
             - FROM=ubuntu:jammy
             - RELEASE=antelope
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "bobcat-ubuntu_jammy-{{ currentdate }}"
+            - "bobcat-ubuntu_jammy"
+            - "bobcat-ubuntu_jammy"
+            - "2023.2-ubuntu_jammy-{{ currentdate }}"
+            - "2023.2-ubuntu_jammy"
+            - "2023.2-ubuntu_jammy"
+            - "latest"
+          build_args:
+            - FROM=ubuntu:jammy
+            - RELEASE=bobcat
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
