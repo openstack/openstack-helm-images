@@ -120,9 +120,7 @@
           tags:
             - "bobcat-ubuntu_jammy-{{ currentdate }}"
             - "bobcat-ubuntu_jammy"
-            - "bobcat-ubuntu_jammy"
             - "2023.2-ubuntu_jammy-{{ currentdate }}"
-            - "2023.2-ubuntu_jammy"
             - "2023.2-ubuntu_jammy"
             - "latest"
           build_args:
