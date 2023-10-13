@@ -64,3 +64,13 @@ RUN <<EOF
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF
+
+ARG PROJECT=nova
+ARG UID=42424
+ARG GID=42424
+RUN set -ex ;\
+    groupadd -g ${GID} ${PROJECT} ;\
+    useradd -u ${UID} -g ${PROJECT} -M -d /var/lib/${PROJECT} -s /usr/sbin/nologin -c "${PROJECT} user" ${PROJECT} ;\
+    mkdir -p /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} ;\
+    chown ${PROJECT}:${PROJECT} /etc/${PROJECT} /var/log/${PROJECT} /var/lib/${PROJECT} /var/cache/${PROJECT} ;\
+    usermod -a -G kvm ${PROJECT}
