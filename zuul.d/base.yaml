@@ -31,7 +31,7 @@
         - openstack-helm-images-cinder-zed-ubuntu_focal
         # - openstack-helm-images-compute-kit-2023-1-ubuntu_focal
         # - openstack-helm-images-cinder-2023-1-ubuntu_focal
-        - openstack-helm-images-horizon-wallaby-ubuntu_focal
+        - openstack-helm-images-horizon-2023-1-ubuntu_jammy
     gate:
       jobs:
         - openstack-helm-images-buildset-registry
@@ -49,7 +49,7 @@
         - openstack-helm-images-cinder-zed-ubuntu_focal
         # - openstack-helm-images-compute-kit-2023-1-ubuntu_focal
         # - openstack-helm-images-cinder-2023-1-ubuntu_focal
-        - openstack-helm-images-horizon-wallaby-ubuntu_focal
+        - openstack-helm-images-horizon-2023-1-ubuntu_jammy
     periodic-weekly:
       jobs:
         - openstack-helm-images-buildset-registry
@@ -67,7 +67,7 @@
         - openstack-helm-images-cinder-zed-ubuntu_focal
         # - openstack-helm-images-compute-kit-2023-1-ubuntu_focal
         # - openstack-helm-images-cinder-2023-1-ubuntu_focal
-        - openstack-helm-images-horizon-wallaby-ubuntu_focal
+        - openstack-helm-images-horizon-2023-1-ubuntu_jammy
     templates:
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
@@ -216,17 +216,17 @@
       - zuul.d/osh-selenium.yaml
 
 - job:
-    name: openstack-helm-images-horizon-wallaby-ubuntu_focal
-    parent: openstack-helm-horizon-wallaby-ubuntu_focal
+    name: openstack-helm-images-horizon-2023-1-ubuntu_jammy
+    parent: openstack-helm-horizon-2023-1-ubuntu_jammy
     match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-osh-selenium
         soft: true
-      - name: openstack-helm-images-build-openstack-loci-wallaby-ubuntu_focal
+      - name: openstack-helm-images-build-openstack-loci-2023-1-ubuntu_jammy
         soft: true
       - name: openstack-helm-images-upload-osh-selenium
         soft: true
-      - name: openstack-helm-images-upload-openstack-loci-wallaby-ubuntu_focal
+      - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
         soft: true
     files:
       - osh-selenium/.*
