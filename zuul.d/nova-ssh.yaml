@@ -18,9 +18,6 @@
     gate:
       jobs:
         - openstack-helm-images-upload-nova-ssh
-        - openstack-helm-images-compute-kit-wallaby-nova-ssh:
-            dependencies:
-              - name: openstack-helm-images-upload-nova-ssh
     promote:
       jobs:
         - openstack-helm-images-promote-nova-ssh
@@ -62,14 +59,5 @@
     name: openstack-helm-images-promote-nova-ssh
     parent: openstack-helm-images-promote
     description: Promote a previously published nova-ssh image to latest.
-    vars: *nova_ssh_vars
-    files: *nova_ssh_files
-
-- job:
-    name: openstack-helm-images-compute-kit-wallaby-nova-ssh
-    parent: openstack-helm-compute-kit-wallaby-ubuntu_focal
-    dependencies:
-      - name: openstack-helm-images-upload-nova-ssh
-    description: Deploy wallaby compute kit with nova-ssh proposed image
     vars: *nova_ssh_vars
     files: *nova_ssh_files

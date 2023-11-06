@@ -28,8 +28,9 @@
         - openstack-helm-images-upload-libvirt
         - openstack-helm-images-promote-libvirt:
             dependencies:
-              - name: openstack-helm-images-compute-kit-victoria-ubuntu_focal
-              - name: openstack-helm-images-compute-kit-wallaby-ubuntu_focal
+              - name: openstack-helm-images-upload-libvirt
+              # - name: openstack-helm-images-compute-kit-2023-1-ubuntu_focal
+              # - name: openstack-helm-images-compute-kit-2023-2-ubuntu_jammy
 
 - job:
     name: openstack-helm-images-build-libvirt
@@ -38,30 +39,6 @@
     vars: &libvirt_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        - context: libvirt
-          repository: openstackhelm/libvirt
-          dockerfile: Dockerfile
-          arch:
-            - linux/amd64
-          tags:
-            - "wallaby-focal-{{ currentdate }}"
-            - "wallaby-focal"
-            - "wallaby"
-          build_args:
-            - FROM=ubuntu:focal
-            - RELEASE=wallaby
-        - context: libvirt
-          repository: openstackhelm/libvirt
-          dockerfile: Dockerfile
-          arch:
-            - linux/amd64
-          tags:
-            - "xena-focal-{{ currentdate }}"
-            - "xena-focal"
-            - "xena"
-          build_args:
-            - FROM=ubuntu:focal
-            - RELEASE=xena
         - context: libvirt
           repository: openstackhelm/libvirt
           dockerfile: Dockerfile
