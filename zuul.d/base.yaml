@@ -85,7 +85,7 @@
 - job:
     name: openstack-helm-images-buildset-registry
     parent: opendev-buildset-registry
-    timeout: 7200
+    timeout: 10800
 
 # In docker_images:
 # `context` is the folder in osh-images
