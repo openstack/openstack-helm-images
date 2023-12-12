@@ -47,6 +47,8 @@
           tags:
             - "yoga-focal-{{ currentdate }}"
             - "yoga-focal"
+            - "yoga-ubuntu_focal-{{ currentdate }}"
+            - "yoga-ubuntu_focal"
             - "yoga"
           build_args:
             - FROM=ubuntu:focal
@@ -59,6 +61,8 @@
           tags:
             - "yoga-jammy-{{ currentdate }}"
             - "yoga-jammy"
+            - "yoga-ubuntu_jammy-{{ currentdate }}"
+            - "yoga-ubuntu_jammy"
           build_args:
             - FROM=ubuntu:jammy
             - RELEASE=yoga
@@ -70,6 +74,8 @@
           tags:
             - "zed-jammy-{{ currentdate }}"
             - "zed-jammy"
+            - "zed-ubuntu_jammy-{{ currentdate }}"
+            - "zed-ubuntu_jammy"
             - "zed"
           build_args:
             - FROM=ubuntu:jammy
@@ -86,6 +92,10 @@
             - "2023.1-jammy-{{ currentdate }}"
             - "2023.1-jammy"
             - "2023.1"
+            - "antelope-ubuntu_jammy-{{ currentdate }}"
+            - "antelope-ubuntu_jammy"
+            - "2023.1-ubuntu_jammy-{{ currentdate }}"
+            - "2023.1-ubuntu_jammy"
           build_args:
             - FROM=ubuntu:jammy
             - RELEASE=antelope
