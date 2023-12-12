@@ -29,7 +29,7 @@
         - openstack-helm-images-promote-mariadb:
             dependencies:
               - name: openstack-helm-images-upload-mariadb
-              # - name: openstack-helm-images-compute-kit-2023-1-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-2023-1-ubuntu_focal
               # - name: openstack-helm-images-compute-kit-2023-2-ubuntu_jammy
 
 - job:
@@ -38,14 +38,23 @@
     description: Build mariadb images
     vars: &mariadb_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
-      release: "focal"
       docker_images:
         - context: mariadb
           repository: openstackhelm/mariadb
-          dockerfile: Dockerfile.ubuntu_{{ release }}
+          dockerfile: Dockerfile.ubuntu
+          build_args:
+            - FROM=docker.io/mariadb@sha256:aa38c70792b0330da98fbf20b7191f27f65ff2f55790e5a0b0ec2a02fcb3d03d
           tags:
-            - "latest-ubuntu_{{ release }}"
-            - "ubuntu_{{ release }}-{{ currentdate }}"
+            - "latest-ubuntu_focal"
+            - "ubuntu_focal-{{ currentdate }}"
+        - context: mariadb
+          repository: openstackhelm/mariadb
+          dockerfile: Dockerfile.ubuntu
+          build_args:
+            - FROM=mariadb:10.11.6-jammy
+          tags:
+            - "latest-ubuntu_jammy"
+            - "ubuntu_jammy-{{ currentdate }}"
     files: &mariadb_files
       - mariadb/.*
       - zuul.d/mariadb.yaml
