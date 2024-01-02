@@ -25,6 +25,8 @@
         - openstack-helm-images-cinder-zed-ubuntu_focal
         - openstack-helm-images-compute-kit-2023-1-ubuntu_focal
         - openstack-helm-images-cinder-2023-1-ubuntu_focal
+        - openstack-helm-images-compute-kit-2023-1-ubuntu_jammy
+        - openstack-helm-images-cinder-2023-1-ubuntu_jammy
         - openstack-helm-images-horizon-2023-1-ubuntu_jammy
     gate:
       jobs:
@@ -37,6 +39,8 @@
         - openstack-helm-images-cinder-zed-ubuntu_focal
         - openstack-helm-images-compute-kit-2023-1-ubuntu_focal
         - openstack-helm-images-cinder-2023-1-ubuntu_focal
+        - openstack-helm-images-compute-kit-2023-1-ubuntu_jammy
+        - openstack-helm-images-cinder-2023-1-ubuntu_jammy
         - openstack-helm-images-horizon-2023-1-ubuntu_jammy
     periodic-weekly:
       jobs:
@@ -49,6 +53,8 @@
         - openstack-helm-images-cinder-zed-ubuntu_focal
         - openstack-helm-images-compute-kit-2023-1-ubuntu_focal
         - openstack-helm-images-cinder-2023-1-ubuntu_focal
+        - openstack-helm-images-compute-kit-2023-1-ubuntu_jammy
+        - openstack-helm-images-cinder-2023-1-ubuntu_jammy
         - openstack-helm-images-horizon-2023-1-ubuntu_jammy
     templates:
       - publish-openstack-docs-pti
@@ -357,6 +363,56 @@
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_focal
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+    files:
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+
+- job:
+    name: openstack-helm-images-compute-kit-2023-1-ubuntu_jammy
+    parent: openstack-helm-compute-kit-2023-1-ubuntu_jammy
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-openstack-loci-2023-1-ubuntu_jammy
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+      - name: openstack-helm-images-upload-openvswitch
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
+        soft: true
+      - name: openstack-helm-images-upload-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-libvirt
+        soft: true
+    files:
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - ^openstack/loci/.*
+      - zuul.d/openstack-loci.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+
+- job:
+    name: openstack-helm-images-cinder-2023-1-ubuntu_jammy
+    parent: openstack-helm-cinder-2023-1-ubuntu_jammy
+    match-on-config-updates: false
+    dependencies:
+      - name: openstack-helm-images-build-openstack-loci-2023-1-ubuntu_jammy
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-upload-openstack-loci-2023-1-ubuntu_jammy
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
