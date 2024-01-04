@@ -41,6 +41,7 @@
         - placement
         - monasca_api
         - cyborg
+        - magnum
         - masakari
         - masakari_monitors
         - manila
