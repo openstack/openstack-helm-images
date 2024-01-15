@@ -1,0 +1,90 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    check:
+      jobs:
+        - openstack-helm-images-build-openstack-client
+    gate:
+      jobs:
+        - openstack-helm-images-upload-openstack-client
+    promote:
+      jobs:
+        - openstack-helm-images-promote-openstack-client
+    periodic-weekly:
+      jobs:
+        - openstack-helm-images-upload-openstack-client
+        - openstack-helm-images-promote-openstack-client:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-client
+
+- job:
+    name: openstack-helm-images-build-openstack-client
+    parent: openstack-helm-images-build
+    description: Build Openstack client images
+    vars: &openstack_client_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      docker_images:
+        - context: openstack_client
+          repository: openstackhelm/openstack-client
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - "2023.2"
+            - "2023.2-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
+            - OPENSTACK_RELEASE=2023.2
+        - context: openstack_client
+          repository: openstackhelm/openstack-client
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - "2023.1"
+            - "2023.1-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
+            - OPENSTACK_RELEASE=2023.1
+        - context: openstack_client
+          repository: openstackhelm/openstack-client
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - "zed"
+            - "zed-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
+            - OPENSTACK_RELEASE=zed
+        - context: openstack_client
+          repository: openstackhelm/openstack-client
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - "yoga"
+            - "yoga-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
+            - OPENSTACK_RELEASE=yoga
+    files: &openstack_client_files
+      - openstack_client/.*
+      - zuul.d/openstack_client.yaml
+
+- job:
+    name: openstack-helm-images-upload-openstack-client
+    parent: openstack-helm-images-upload
+    description: Build and upload Openstack client images
+    vars: *openstack_client_vars
+    files: *openstack_client_files
+
+- job:
+    name: openstack-helm-images-promote-openstack-client
+    parent: openstack-helm-images-promote
+    description: Promote a previously published Openstack client image to latest.
+    vars: *openstack_client_vars
+    files: *openstack_client_files

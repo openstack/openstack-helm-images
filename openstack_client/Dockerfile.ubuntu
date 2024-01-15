@@ -1,0 +1,14 @@
+ARG FROM=ubuntu:jammy
+FROM ${FROM}
+
+ARG OPENSTACK_RELEASE=2023.2
+ARG UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/${OPENSTACK_RELEASE}
+
+RUN apt-get update && apt-get install -y \
+      python3-pip \
+      && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --upgrade pip && \
+  pip3 install \
+  -c${UPPER_CONSTRAINTS_FILE} \
+  cmd2 python-openstackclient python-heatclient --ignore-installed
