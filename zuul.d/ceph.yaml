@@ -51,15 +51,15 @@
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - &ceph_image
-          dockerfile: Dockerfile.ubuntu_focal
+          dockerfile: Dockerfile.ubuntu_jammy
           build_args:
             - "CEPH_RELEASE='reef'"
-            - "CEPH_RELEASE_TAG='18.2.0-1focal'"
+            - "CEPH_RELEASE_TAG='18.2.1-1jammy'"
             - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-reef/'"
             - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-reef/release.asc'"
           tags:
-            - latest-ubuntu_focal
-            - "ubuntu_focal_18.2.0-1-{{ currentdate }}"
+            - latest-ubuntu_jammy
+            - "ubuntu_jammy_18.2.1-1-{{ currentdate }}"
     files: &ceph_files
       - ceph.*
       - zuul.d/ceph.*

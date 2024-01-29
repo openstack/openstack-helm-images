@@ -1,0 +1,43 @@
+ARG FROM=docker.io/ubuntu:jammy
+FROM ${FROM}
+
+ARG DISTRO_CODENAME='jammy'
+ARG KUBE_VERSION=v1.16.2
+
+ARG CEPH_RELEASE
+ARG CEPH_RELEASE_TAG
+ARG CEPH_REPO
+ARG CEPH_KEY
+
+ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
+RUN set -ex ;\
+    export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get dist-upgrade -y ;\
+    apt-get install --no-install-recommends -y apt-transport-https ca-certificates gnupg2 ;\
+    apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    rm -f /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    echo deb ${CEPH_REPO} ${DISTRO_CODENAME} main | tee /etc/apt/sources.list.d/ceph.list ;\
+    TMP_DIR=$(mktemp --directory) ;\
+    cd ${TMP_DIR} ;\
+    apt-get update ;\
+    apt-get dist-upgrade -y ;\
+    apt-get install --no-install-recommends -y \
+        ceph=${CEPH_RELEASE_TAG} \
+        curl \
+        python3 \
+        python3-ceph-common \
+        python3-openstackclient \
+        python3-pip \
+        python3-swiftclient \
+        s3cmd \
+        gdisk \
+        udev \
+        jq ;\
+    pip3 --no-cache-dir install --upgrade \
+      rgwadmin ;\
+    curl -sSL https://dl.k8s.io/${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz | tar -zxv --strip-components=1 ;\
+    mv ${TMP_DIR}/client/bin/kubectl /usr/bin/kubectl ;\
+    chmod +x /usr/bin/kubectl ;\
+    rm -rf ${TMP_DIR} ;\
+    rm -rf /var/lib/apt/lists/*

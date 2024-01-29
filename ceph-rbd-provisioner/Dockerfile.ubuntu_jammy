@@ -1,0 +1,30 @@
+ARG baseimg=docker.io/ubuntu:jammy
+FROM ${baseimg}
+
+ARG CEPH_RELEASE
+ARG CEPH_RELEASE_TAG
+ARG CEPH_REPO
+ARG CEPH_KEY
+
+ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
+RUN set -ex ;\
+    export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get install --no-install-recommends -y \
+        apt-transport-https \
+        ca-certificates \
+        gnupg2 ;\
+    apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    rm -f /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    echo "deb ${CEPH_REPO} jammy main" | tee /etc/apt/sources.list.d/ceph.list ;\
+    apt-get update ;\
+    apt-get dist-upgrade -y ;\
+    apt-get install --no-install-recommends -y \
+        ceph-common=${CEPH_RELEASE_TAG} ;\
+    rm -rf /var/lib/apt/lists/* ;\
+    rm -rf /usr/share/doc/ ;\
+    rm -rf /usr/share/man/ ;\
+    rm -rf /usr/share/locale/
+
+COPY --from=quay.io/external_storage/rbd-provisioner:v2.1.1-k8s1.11 /usr/local/bin/rbd-provisioner /usr/local/bin/rbd-provisioner
+ENTRYPOINT ["/usr/local/bin/rbd-provisioner"]

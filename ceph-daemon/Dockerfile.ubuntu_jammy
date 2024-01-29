@@ -1,0 +1,78 @@
+ARG FROM=docker.io/ubuntu:jammy
+FROM ${FROM}
+
+ARG KUBE_VERSION=1.16.2
+ARG CONFD_VERSION=0.16.0
+
+ARG CEPH_RELEASE
+ARG CEPH_RELEASE_TAG
+ARG CEPH_REPO
+ARG CEPH_KEY
+
+ADD ${CEPH_KEY} /etc/apt/ceph-${CEPH_RELEASE}.key
+RUN set -ex ;\
+    export DEBIAN_FRONTEND=noninteractive ;\
+    apt-get update ;\
+    apt-get dist-upgrade -y ;\
+    apt-get install -y apt-transport-https ca-certificates gnupg2 ;\
+    apt-key add /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    rm -f /etc/apt/ceph-${CEPH_RELEASE}.key ;\
+    echo "deb ${CEPH_REPO} jammy main" | tee /etc/apt/sources.list.d/ceph.list ;\
+    TMP_DIR=$(mktemp --directory) ;\
+    cd ${TMP_DIR} ;\
+    apt-get update ;\
+    apt-get dist-upgrade -y ;\
+    apt-get install --no-install-recommends -y \
+        ceph=${CEPH_RELEASE_TAG} \
+        ceph-common=${CEPH_RELEASE_TAG} \
+        radosgw=${CEPH_RELEASE_TAG} \
+        ceph-mds=${CEPH_RELEASE_TAG} \
+        ceph-fuse=${CEPH_RELEASE_TAG} \
+        ceph-volume=${CEPH_RELEASE_TAG} \
+        gdisk \
+        udev \
+        rbd-nbd=${CEPH_RELEASE_TAG} \
+        rbd-mirror=${CEPH_RELEASE_TAG} \
+        rbd-fuse=${CEPH_RELEASE_TAG} \
+        s3cmd \
+        smartmontools \
+        strace \
+        tcpdump \
+        sdparm \
+        xfsprogs \
+        rsync \
+        curl \
+        python3 \
+        python3-dev \
+        python3-bcrypt \
+        uuid-runtime \
+        jq \
+        alien \
+        lvm2 ;\
+    curl -sSL https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3 ;\
+    pip3 --no-cache-dir install --upgrade --ignore-installed PyYAML ;\
+    pip3 --no-cache-dir install --upgrade --ignore-installed \
+      six \
+      openssl-python \
+      pyopenssl \
+      python-openstackclient \
+      python-swiftclient ;\
+    curl -sSL https://dl.k8s.io/v${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz | tar -zxv --strip-components=1 ;\
+    mv ${TMP_DIR}/client/bin/kubectl /usr/local/bin/kubectl ;\
+    chmod +x /usr/local/bin/kubectl ;\
+    curl -sSL https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 -o /usr/local/bin/confd ;\
+    chmod +xr /usr/local/bin/confd ;\
+    curl -sSL https://downloads.dell.com/FOLDER05235308M/1/perccli_linux_NF8G9_A07_7.529.00.tar.gz | tar xfz - ;\
+    alien -i ${TMP_DIR}/perccli_7.5-007.0529_linux/Linux/perccli-007.0529.0000.0000-1.noarch.rpm ;\
+    mkdir -p /etc/confd/conf.d ;\
+    mkdir -p /etc/confd/templates ;\
+    rm -rf ${TMP_DIR} ;\
+    apt-get purge -y --auto-remove \
+        python3-dev \
+        gcc \
+        gcc-11 \
+        cpp-11 ;\
+    rm -rf /var/lib/apt/lists/* ;\
+    rm -rf /usr/share/doc/ ;\
+    rm -rf /usr/share/man/ ;\
+    rm -rf /usr/share/locale/
