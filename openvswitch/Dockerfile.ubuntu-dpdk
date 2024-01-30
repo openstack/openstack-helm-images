@@ -1,0 +1,28 @@
+ARG FROM=docker.io/ubuntu:jammy
+FROM ${FROM}
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN set -ex && \
+    apt-get update && \
+    apt-get -y upgrade && \
+    apt-get install --no-install-recommends -y \
+      iproute2 \
+      iptables \
+      pciutils \
+      jq \
+      tcpdump && \
+    apt-get install --install-recommends -y \
+      openvswitch-switch \
+      openvswitch-switch-dpdk \
+      libdpdk-dev \
+      ovn-central \
+      ovn-host \
+      ovn-controller-vtep && \
+    update-alternatives --set ovs-vswitchd /usr/lib/openvswitch-switch-dpdk/ovs-vswitchd-dpdk && \
+    rm -rf \
+      /var/cache/debconf/* \
+      /var/lib/apt/lists/* \
+      /var/log/* \
+      /tmp/* \
+      /var/tmp/*

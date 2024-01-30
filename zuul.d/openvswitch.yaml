@@ -40,28 +40,36 @@
       docker_images:
         - context: openvswitch
           repository: openstackhelm/openvswitch
-          dockerfile: Dockerfile.ubuntu_bionic
-          tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
-        - context: openvswitch
-          repository: openstackhelm/openvswitch
-          dockerfile: Dockerfile.ubuntu_bionic-dpdk
-          tags:
-            - latest-ubuntu_bionic-dpdk
-            - "ubuntu_bionic-dpdk-{{ currentdate }}"
-        - context: openvswitch
-          repository: openstackhelm/openvswitch
-          dockerfile: Dockerfile.ubuntu_focal
+          dockerfile: Dockerfile.ubuntu
           tags:
             - latest-ubuntu_focal
             - "ubuntu_focal-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:focal
         - context: openvswitch
           repository: openstackhelm/openvswitch
-          dockerfile: Dockerfile.ubuntu_jammy
+          dockerfile: Dockerfile.ubuntu-dpdk
+          tags:
+            - latest-ubuntu_focal-dpdk
+            - "ubuntu_focal-dpdk-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:focal
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu
           tags:
             - latest-ubuntu_jammy
             - "ubuntu_jammy-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu-dpdk
+          tags:
+            - latest-ubuntu_jammy-dpdk
+            - "ubuntu_jammy-dpdk-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml

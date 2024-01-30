@@ -1,0 +1,7 @@
+ARG FROM=docker.io/ubuntu:jammy
+FROM ${FROM}
+
+RUN set -ex && \
+    apt-get update && \
+    apt-get install -y openvswitch-switch && \
+    rm -rf /var/lib/apt/lists/*
