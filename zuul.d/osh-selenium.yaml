@@ -28,8 +28,8 @@
         - openstack-helm-images-upload-osh-selenium
         - openstack-helm-images-promote-osh-selenium:
             dependencies:
-              - name: openstack-helm-images-aio-monitoring
-              - name: openstack-helm-images-aio-logging
+              - name: openstack-helm-images-monitoring
+              - name: openstack-helm-images-logging
 
 - job:
     name: openstack-helm-images-build-osh-selenium

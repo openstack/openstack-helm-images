@@ -17,8 +17,8 @@
     check:
       jobs:
         - openstack-helm-images-buildset-registry
-        - openstack-helm-images-aio-monitoring
-        - openstack-helm-images-aio-logging
+        - openstack-helm-images-monitoring
+        - openstack-helm-images-logging
         - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-compute-kit-zed-ubuntu_focal
@@ -31,8 +31,8 @@
     gate:
       jobs:
         - openstack-helm-images-buildset-registry
-        - openstack-helm-images-aio-monitoring
-        - openstack-helm-images-aio-logging
+        - openstack-helm-images-monitoring
+        - openstack-helm-images-logging
         - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-compute-kit-zed-ubuntu_focal
@@ -45,8 +45,8 @@
     periodic-weekly:
       jobs:
         - openstack-helm-images-buildset-registry
-        - openstack-helm-images-aio-monitoring
-        - openstack-helm-images-aio-logging
+        - openstack-helm-images-monitoring
+        - openstack-helm-images-logging
         - openstack-helm-images-compute-kit-yoga-ubuntu_focal
         - openstack-helm-images-cinder-yoga-ubuntu_focal
         - openstack-helm-images-compute-kit-zed-ubuntu_focal
@@ -148,8 +148,8 @@
 # Image testing jobs inheriting from osh and osh-infra jobs running against
 # particular image or set of images.
 - job:
-    name: openstack-helm-images-aio-monitoring
-    parent: openstack-helm-infra-aio-monitoring
+    name: openstack-helm-images-monitoring
+    parent: openstack-helm-infra-monitoring
     match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-prometheus-openstack-exporter
@@ -179,8 +179,8 @@
       - zuul.d/nagios.yaml
 
 - job:
-    name: openstack-helm-images-aio-logging
-    parent: openstack-helm-infra-aio-logging
+    name: openstack-helm-images-logging
+    parent: openstack-helm-infra-logging
     match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-fluentd

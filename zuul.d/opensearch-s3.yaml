@@ -26,7 +26,7 @@
         - openstack-helm-images-upload-opensearch-s3
         - openstack-helm-images-promote-opensearch-s3:
             dependencies:
-              - name: openstack-helm-images-aio-logging
+              - name: openstack-helm-images-logging
 
 - job:
     name: openstack-helm-images-build-opensearch-s3

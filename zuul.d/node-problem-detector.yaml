@@ -26,7 +26,7 @@
         - openstack-helm-images-upload-node-problem-detector
         - openstack-helm-images-promote-node-problem-detector:
             dependencies:
-              - name: openstack-helm-images-aio-monitoring
+              - name: openstack-helm-images-monitoring
 
 - job:
     name: openstack-helm-images-build-node-problem-detector
