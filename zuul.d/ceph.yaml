@@ -54,9 +54,9 @@
           dockerfile: Dockerfile.ubuntu_jammy
           build_args:
             - "CEPH_RELEASE='reef'"
-            - "CEPH_RELEASE_TAG='18.2.1-1jammy'"
-            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-reef/'"
-            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-reef/release.asc'"
+            - "CEPH_RELEASE_TAG='18.2.1-1~jammy'"
+            - "CEPH_REPO='http://mirror.mirantis.com/acicd/ceph/debian-18.2.1.patch1/jammy'"
+            - "CEPH_KEY='http://mirror.mirantis.com/acicd/ceph/debian-18.2.1.patch1/jammy/release.asc'"
           tags:
             - latest-ubuntu_jammy
             - "ubuntu_jammy_18.2.1-1-{{ currentdate }}"
