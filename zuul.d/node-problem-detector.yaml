@@ -37,10 +37,10 @@
       docker_images:
         - context: node-problem-detector
           repository: openstackhelm/node-problem-detector
-          dockerfile: Dockerfile.ubuntu_focal
+          dockerfile: Dockerfile.ubuntu_jammy
           tags:
-            - latest-ubuntu_focal
-            - "ubuntu_focal-{{ currentdate }}"
+            - latest-ubuntu_jammy
+            - "ubuntu_jammy-{{ currentdate }}"
     files: &node-problem-detector_files
       - node-problem-detector/.*
       - zuul.d/node-problem-detector.yaml

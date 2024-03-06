@@ -1,4 +1,4 @@
-ARG FROM=docker.io/ubuntu:bionic
+ARG FROM=docker.io/ubuntu:jammy
 FROM ${FROM}
 
 ARG NPD_VERSION="v0.8.15"

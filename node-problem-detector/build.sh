@@ -6,7 +6,7 @@ cd ${SCRIPT_DIR}/..
 
 IMAGE="node-problem-detector"
 VERSION=${VERSION:-latest}
-DISTRO=${DISTRO:-ubuntu_focal}
+DISTRO=${DISTRO:-ubuntu_jammy}
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
 EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
 
