@@ -104,7 +104,7 @@ args = parser.parse_args()
 
 payload = {}
 max_retry = 5
-retry = 1
+retry = 0
 
 if args.type == 'host':
     payload['HostEvent'] = {
@@ -126,22 +126,24 @@ elif args.type == 'service':
     }
 
 while retry < max_retry:
+    retry += 1
     try:
         requests.post(
             args.primary_url,
             data=json.dumps(payload),
             timeout=args.timeout,
             verify=False)
+        break
     except Exception as e:
         if retry < max_retry:
             print('Request timeout, Retrying - {}'.format(retry))
-            retry += 1
             continue
         pass
 
 if args.secondary_url:
-    retry = 1
+    retry = 0
     while retry < max_retry:
+        retry += 1
         try:
             requests.post(
                 args.secondary_url,
@@ -152,7 +154,6 @@ if args.secondary_url:
         except Exception as e:
             if retry < max_retry:
                 print('Request timeout, Retrying - {}'.format(retry))
-                retry += 1
                 continue
             pass
 
