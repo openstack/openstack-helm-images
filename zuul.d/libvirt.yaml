@@ -113,6 +113,20 @@
           build_args:
             - FROM=ubuntu:jammy
             - RELEASE=bobcat
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "caracal-ubuntu_jammy-{{ currentdate }}"
+            - "caracal-ubuntu_jammy"
+            - "2024.1-ubuntu_jammy-{{ currentdate }}"
+            - "2024.1-ubuntu_jammy"
+            - "latest"
+          build_args:
+            - FROM=ubuntu:jammy
+            - RELEASE=caracal
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml

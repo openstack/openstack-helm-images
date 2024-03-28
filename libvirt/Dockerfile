@@ -25,7 +25,7 @@ RUN <<EOF /bin/bash
     if [[ "${RELEASE}" = "yoga" ]]; then
       # NOTE(mnaser): Yoga shipped with 22.04, so no need to add an extra repository.
       echo "" > /etc/apt/sources.list.d/cloudarchive.list
-    elif [[ "${RELEASE}" = "zed" || "${RELEASE}" = "antelope" || "${RELEASE}" = "bobcat" ]]; then
+    elif [[ "${RELEASE}" = "zed" || "${RELEASE}" = "antelope" || "${RELEASE}" = "bobcat" || "${RELEASE}" = "caracal" ]]; then
       echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu $(lsb_release -sc)-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
     else
       echo "${RELEASE} is not supported on $(lsb_release -sc)"
