@@ -42,6 +42,26 @@
     vars: &build_vars
       branchname: "stable/2023.2"
       shortbranchname: "2023.2"
+      openstack_docker_images:
+        - requirements
+        - keystone
+        - glance
+        - cinder
+        - designate
+        - nova
+        - ironic
+        - neutron
+        - horizon
+        - heat
+        - barbican
+        - placement
+        - monasca_api
+        - cyborg
+        - magnum
+        - masakari
+        - masakari_monitors
+        - manila
+        - tacker
     files: &openstack_files
       - ^openstack/loci/.*
       - zuul.d/openstack-2023.2.yaml

@@ -49,6 +49,7 @@
         - keystone
         - glance
         - cinder
+        - designate
         - nova
         - ironic
         - neutron

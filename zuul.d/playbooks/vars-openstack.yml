@@ -108,6 +108,17 @@ openstack_docker_images_dict:
       - "WHEELS='{{ wheels_location }}'"
       - "KEEP_ALL_WHEELS=yes"
     tags: *imagetag
+  designate:
+    context: "."
+    repository: openstackhelm/designate
+    build_args:
+      - "FROM='{{ base_repository }}'"
+      - "PROJECT='designate'"
+      - "PROJECT_REF={{ branchname }}"
+      - "PROFILES='fluent'"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
   neutron:
     context: "."
     repository: openstackhelm/neutron
