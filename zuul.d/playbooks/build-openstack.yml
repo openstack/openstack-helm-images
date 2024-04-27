@@ -18,26 +18,13 @@
   vars:
     docker_images: "{{ openstack_docker_images | map('extract', openstack_docker_images_dict) | list }}"
   pre_tasks:
+    - name: Ensure docker
+      include_role:
+        name: ensure-docker
     - name: Use buildset registry
       include_role:
         name: use-buildset-registry
   tasks:
-    - name: Export the right vars
-      shell: |
-        source /etc/ci/mirror_info.sh
-        echo ${NODEPOOL_OPENSUSE_MIRROR}/
-        echo ${NODEPOOL_PYPI_MIRROR}
-        echo ${NODEPOOL_MIRROR_HOST}
-      args:
-        executable: /bin/bash
-      changed_when: False
-      register: _zuul_mirrors
-    - name: Set fact with the exported variables
-      set_fact:
-        opensuse_package_mirror: "{{ _zuul_mirrors.stdout_lines[0] }}"
-        pip_index_url: "{{ _zuul_mirrors.stdout_lines[1] | default('https://pypi.python.org/simple/') }}"
-        pip_trusted_host: "{{ _zuul_mirrors.stdout_lines[2] | default('pypi.python.org') }}"
-
     - name: Build base image
       include_role:
         name: build-docker-image
@@ -45,21 +32,19 @@
         zuul_work_dir: "{{ zuul.project.src_dir }}"
         docker_images: "{{ base_docker_images }}"
 
-    - name: Build base requirements image
+    - name: Build requirements image
       include_role:
         name: build-docker-image
       vars:
         zuul_work_dir: "src/opendev.org/openstack/loci"
         docker_images: "{{ requirements_docker_images }}"
 
-    - name: Build webserver serving wheels
+    - name: Build serving requirements image
       include_role:
         name: build-docker-image
       vars:
         zuul_work_dir: "{{ zuul.project.src_dir }}"
-        docker_images:
-          - context: zuul.d/playbooks/
-            repository: openstackhelm/loci_wheels
+        docker_images: "{{ serve_requirements_docker_images }}"
 
     - name: Allow access to wheels server
       iptables:
@@ -70,7 +55,7 @@
       become: yes
 
     - name: Run http server containing wheels
-      command: docker run -d -p 0.0.0.0:8080:80 openstackhelm/loci_wheels:latest
+      command: docker run -d -p 0.0.0.0:8080:80 "{{ serve_requirements_repository }}:{{ shortbranchname }}-{{ distroname }}"
 
     - name: Build project images
       include_role:

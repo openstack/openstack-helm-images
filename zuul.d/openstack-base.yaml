@@ -13,14 +13,15 @@
 
 - job:
     name: openstack-helm-images-build-openstack
-    parent: openstack-helm-images-build
     abstract: true
     timeout: 7200
     required-projects:
       - openstack/loci
+    dependencies:
+      - name: openstack-helm-images-buildset-registry
     run:
       - zuul.d/playbooks/build-openstack.yml
-    vars: &base_vars
+    vars: &vars
       branchname: "master"
       shortbranchname: "master"
       distroname: ""
@@ -28,7 +29,6 @@
       ceph_repo: ""
       ceph_key: ""
       openstack_docker_images:
-        - requirements
         - keystone
         - glance
         - cinder
@@ -49,48 +49,23 @@
 
 - job:
     name: openstack-helm-images-upload-openstack
-    parent: openstack-helm-images-upload
+    parent: openstack-helm-images-build-openstack
     abstract: true
-    timeout: 7200
-    required-projects:
-      - openstack/loci
-    run:
-      - zuul.d/playbooks/build-openstack.yml
+    post-run:
       - zuul.d/playbooks/upload-openstack.yml
     secrets:
       name: docker_credentials
       secret: openstack-helm-dockerhub
-    vars: *base_vars
+    vars: *vars
 
 - job:
     name: openstack-helm-images-promote-openstack
-    parent: openstack-helm-images-promote
     abstract: true
     run:
       - zuul.d/playbooks/promote-openstack.yml
     secrets:
       name: docker_credentials
       secret: openstack-helm-dockerhub
-    vars: *base_vars
-
-- job:
-    name: openstack-helm-images-build-openstack-ubuntu_jammy
-    parent: openstack-helm-images-build-openstack
-    abstract: true
-    vars: &jammy_vars
-      distroname: "ubuntu_jammy"
-      from: "docker.io/ubuntu:22.04"
-      ceph_repo: "deb https://download.ceph.com/debian-reef/ jammy main"
-      ceph_key: "http://download.ceph.com/keys/release.asc"
-
-- job:
-    name: openstack-helm-images-upload-openstack-ubuntu_jammy
-    parent: openstack-helm-images-upload-openstack
-    abstract: true
-    vars: *jammy_vars
-
-- job:
-    name: openstack-helm-images-promote-openstack-ubuntu_jammy
-    parent: openstack-helm-images-promote-openstack
-    abstract: true
-    vars: *jammy_vars
+    vars: *vars
+    nodeset:
+      nodes: []

@@ -28,8 +28,7 @@
         - openstack-helm-images-upload-openvswitch
         - openstack-helm-images-promote-openvswitch:
             dependencies:
-              - name: openstack-helm-images-compute-kit-yoga-ubuntu_focal
-              - name: openstack-helm-images-compute-kit-zed-ubuntu_focal
+              - name: openstack-helm-images-compute-kit-2024-1-ubuntu_jammy
 
 - job:
     name: openstack-helm-images-build-openvswitch

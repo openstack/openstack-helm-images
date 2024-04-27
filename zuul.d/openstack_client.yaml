@@ -62,24 +62,6 @@
           build_args:
             - FROM=ubuntu:jammy
             - OPENSTACK_RELEASE=2023.1
-        - context: openstack_client
-          repository: openstackhelm/openstack-client
-          dockerfile: Dockerfile.ubuntu
-          tags:
-            - "zed"
-            - "zed-{{ currentdate }}"
-          build_args:
-            - FROM=ubuntu:jammy
-            - OPENSTACK_RELEASE=zed
-        - context: openstack_client
-          repository: openstackhelm/openstack-client
-          dockerfile: Dockerfile.ubuntu
-          tags:
-            - "yoga"
-            - "yoga-{{ currentdate }}"
-          build_args:
-            - FROM=ubuntu:jammy
-            - OPENSTACK_RELEASE=yoga
     files: &openstack_client_files
       - openstack_client/.*
       - zuul.d/openstack_client.yaml

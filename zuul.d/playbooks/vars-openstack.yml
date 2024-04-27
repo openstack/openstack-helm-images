@@ -16,6 +16,8 @@ python3: "yes"
 #172.17.0.1 is default docker0 ip.
 wheels_location: "http://172.17.0.1:8080/wheels.tar.gz"
 base_repository: "base"
+requirements_repository: "requirements"
+serve_requirements_repository: "serve_requirements"
 
 base_docker_images:
   - context: "zuul.d/playbooks/"
@@ -25,33 +27,33 @@ base_docker_images:
       - "FROM='{{ from }}'"
       - "CEPH_REPO='{{ ceph_repo }}'"
       - "CEPH_KEY='{{ ceph_key }}'"
+    tags: &imagetag
+      - "{{ shortbranchname }}-{{ distroname }}"
+      - "{{ shortbranchname }}-{{ distroname }}-{{ currentdate }}"
 
 requirements_docker_images:
   - context: "."
-    repository: openstackhelm/requirements
+    repository: "{{ requirements_repository }}"
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='requirements'"
       - "PROJECT_REF={{ branchname }}"
       - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
+
+serve_requirements_docker_images:
+  - context: "zuul.d/playbooks/"
+    repository: "{{ serve_requirements_repository }}"
+    build_args:
+      - "FROM='{{ requirements_repository }}:{{ shortbranchname }}-{{ distroname }}'"
+    tags: *imagetag
 
 openstack_docker_images_dict:
-  requirements:
-    context: "."
-    repository: openstackhelm/requirements
-    build_args:
-      - "FROM='{{ base_repository }}'"
-      - "PROJECT='requirements'"
-      - "PROJECT_REF={{ branchname }}"
-      - "KEEP_ALL_WHEELS=yes"
-    tags: &imagetag
-      - "{{ shortbranchname }}-{{ distroname }}"
-      - "{{ shortbranchname }}-{{ distroname }}-{{ currentdate }}" # Frozen tag
   keystone:
     context: "."
     repository: openstackhelm/keystone
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='keystone'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent apache ldap {{ shortbranchname }}'"
@@ -63,7 +65,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/heat
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='heat'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent apache'"
@@ -75,7 +77,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/barbican
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='barbican'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent'"
@@ -88,7 +90,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/glance
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='glance'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent ceph'"
@@ -100,7 +102,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/cinder
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='cinder'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent lvm ceph qemu apache'"
@@ -112,7 +114,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/designate
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='designate'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent'"
@@ -123,7 +125,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/neutron
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='neutron'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent linuxbridge openvswitch apache vpn'"
@@ -151,7 +153,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/nova
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='nova'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent ceph linuxbridge openvswitch configdrive qemu apache migration'"
@@ -163,7 +165,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/horizon
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='horizon'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent apache'"
@@ -174,7 +176,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/senlin
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='senlin'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent'"
@@ -185,7 +187,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/magnum
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='magnum'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent'"
@@ -196,7 +198,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/ironic
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='ironic'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent ipxe ipmi qemu tftp'"
@@ -208,7 +210,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/placement
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='placement'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='apache'"
@@ -220,7 +222,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/watcher
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='watcher'"
       - "PROJECT_REF={{ branchname }}"
       - "WHEELS='{{ wheels_location }}'"
@@ -230,7 +232,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/monasca-api
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='monasca-api'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='monasca api'"
@@ -242,7 +244,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/cyborg
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='cyborg'"
       - "PROJECT_REF={{ branchname }}"
       - "DIST_PACKAGES='pciutils'"
@@ -253,7 +255,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/masakari
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PYTHON3={{ python3 }}"
       - "PROJECT='masakari'"
       - "PROJECT_REF={{ branchname }}"
@@ -264,7 +266,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/masakari-monitors
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PYTHON3={{ python3 }}"
       - "PROJECT='masakari-monitors'"
       - "PROJECT_REF={{ branchname }}"
@@ -277,7 +279,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/manila
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='manila'"
       - "PROJECT_REF={{ branchname }}"
       - "WHEELS='{{ wheels_location }}'"
@@ -287,7 +289,7 @@ openstack_docker_images_dict:
     context: "."
     repository: openstackhelm/tacker
     build_args:
-      - "FROM='{{ base_repository }}'"
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='tacker'"
       - "PROJECT_REF={{ branchname }}"
       - "WHEELS='{{ wheels_location }}'"
