@@ -46,22 +46,23 @@
       ceph_repo: "deb https://download.ceph.com/debian-reef/ jammy main"
       ceph_key: "http://download.ceph.com/keys/release.asc"
       openstack_docker_images:
-        - keystone
-        - glance
-        - cinder
-        - designate
-        - nova
-        - ironic
-        - neutron
-        - horizon
-        - heat
         - barbican
-        - placement
+        - cinder
         - cyborg
+        - designate
+        - glance
+        - heat
+        - horizon
+        - ironic
+        - keystone
         - magnum
+        - manila
         - masakari
         - masakari_monitors
-        - manila
+        - neutron
+        - nova
+        - octavia
+        - placement
         - tacker
     files: &files_2024_1_ubuntu_jammy
       - zuul.d/openstack-2024.1-ubuntu_jammy.yaml

@@ -295,3 +295,13 @@ openstack_docker_images_dict:
       - "WHEELS='{{ wheels_location }}'"
       - "KEEP_ALL_WHEELS=yes"
     tags: *imagetag
+  octavia:
+    context: "."
+    repository: openstackhelm/octavia
+    build_args:
+      - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
+      - "PROJECT='octavia'"
+      - "PROJECT_REF={{ branchname }}"
+      - "WHEELS='{{ wheels_location }}'"
+      - "KEEP_ALL_WHEELS=yes"
+    tags: *imagetag
