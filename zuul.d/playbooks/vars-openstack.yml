@@ -94,7 +94,7 @@ openstack_docker_images_dict:
       - "PROJECT='glance'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent ceph'"
-      - "PIP_PACKAGES='python-swiftclient'"
+      - "PIP_PACKAGES='python-swiftclient os-brick'"
       - "WHEELS='{{ wheels_location }}'"
       - "KEEP_ALL_WHEELS=yes"
     tags: *imagetag
