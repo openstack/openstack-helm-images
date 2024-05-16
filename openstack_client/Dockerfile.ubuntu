@@ -11,4 +11,28 @@ RUN apt-get update && apt-get install -y \
 RUN pip3 install --upgrade pip && \
   pip3 install \
   -c${UPPER_CONSTRAINTS_FILE} \
-  cmd2 python-openstackclient python-heatclient --ignore-installed
+  cmd2 \
+  python-barbicanclient \
+  python-blazarclient \
+  python-cinderclient \
+  python-designateclient \
+  python-glanceclient \
+  python-heatclient \
+  python-ironicclient \
+  python-keystoneclient \
+  python-magnumclient \
+  python-manilaclient \
+  python-mistralclient \
+  python-monascaclient \
+  python-neutronclient \
+  python-novaclient \
+  python-octaviaclient \
+  python-openstackclient \
+  python-saharaclient \
+  python-swiftclient \
+  python-troveclient \
+  python-vitrageclient \
+  python-zaqarclient \
+  python-zunclient \
+  --ignore-installed
+
