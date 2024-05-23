@@ -31,6 +31,7 @@
 
 - job:
     name: openstack-helm-images-build-openstack-master-ubuntu_jammy
+    voting: false
     description: Build master Jammy images
     parent: openstack-helm-images-build-openstack
     vars: &vars_master_ubuntu_jammy
@@ -69,6 +70,7 @@
 
 - job:
     name: openstack-helm-images-upload-openstack-master-ubuntu_jammy
+    voting: false
     description: Build and upload master Jammy images
     parent: openstack-helm-images-upload-openstack
     vars: *vars_master_ubuntu_jammy
@@ -76,6 +78,7 @@
 
 - job:
     name: openstack-helm-images-promote-openstack-master-ubuntu_jammy
+    voting: false
     description: Promote previously published master Jammy images
     parent: openstack-helm-images-promote-openstack
     vars: *vars_master_ubuntu_jammy
