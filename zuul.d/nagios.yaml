@@ -37,16 +37,20 @@
       docker_images:
         - context: nagios
           repository: openstackhelm/nagios
-          dockerfile: Dockerfile.ubuntu_bionic
-          tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
-        - context: nagios
-          repository: openstackhelm/nagios
-          dockerfile: Dockerfile.ubuntu_focal
+          dockerfile: Dockerfile.ubuntu
+          build_args:
+            - "FROM=docker.io/ubuntu:focal"
           tags:
             - latest-ubuntu_focal
             - "ubuntu_focal-{{ currentdate }}"
+        - context: nagios
+          repository: openstackhelm/nagios
+          dockerfile: Dockerfile.ubuntu
+          build_args:
+            - "FROM=docker.io/ubuntu:jammy"
+          tags:
+            - latest-ubuntu_jammy
+            - "ubuntu_jammy-{{ currentdate }}"
     files: &nagios_files
       - nagios/.*
       - zuul.d/nagios.yaml
