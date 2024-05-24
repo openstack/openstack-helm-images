@@ -171,6 +171,7 @@ openstack_docker_images_dict:
       - "PROFILES='fluent apache'"
       - "WHEELS='{{ wheels_location }}'"
       - "KEEP_ALL_WHEELS=yes"
+      - "PIP_PACKAGES='pymemcache'"
     tags: *imagetag
   senlin:
     context: "."
