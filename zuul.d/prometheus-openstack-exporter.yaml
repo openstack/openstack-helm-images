@@ -37,10 +37,12 @@
       docker_images:
         - context: prometheus-openstack-exporter
           repository: openstackhelm/prometheus-openstack-exporter
-          dockerfile: Dockerfile.ubuntu_bionic
+          dockerfile: Dockerfile.ubuntu
+          build_args:
+            - "FROM=docker.io/ubuntu:jammy"
           tags:
-            - latest-ubuntu_bionic
-            - "ubuntu_bionic-{{ currentdate }}"
+            - latest-ubuntu_jammy
+            - "ubuntu_jammy-{{ currentdate }}"
     files: &prometheus-openstack-exporter_files
       - prometheus-openstack-exporter/.*
       - zuul.d/prometheus-openstack-exporter.yaml

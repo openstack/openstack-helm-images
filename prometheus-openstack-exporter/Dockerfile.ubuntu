@@ -1,0 +1,26 @@
+ARG FROM=docker.io/ubuntu:jammy
+FROM ${FROM}
+
+RUN set -ex \
+    && apt-get -y update \
+    && apt-get install --no-install-recommends -y \
+         curl \
+         python3 \
+         python3-pip \
+         python3-setuptools \
+    && pip3 install --upgrade pip \
+    && pip3 install --no-cache-dir \
+         python-dateutil \
+         requests \
+         simplejson \
+         pyyaml \
+         prometheus-client==0.0.21 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /usr/local/bin/exporter
+COPY exporter /usr/local/bin/exporter
+RUN chmod +x /usr/local/bin/exporter/main.py
+
+EXPOSE 9103
+
+CMD ["/usr/local/bin/exporter/main.py"]
