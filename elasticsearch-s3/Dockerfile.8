@@ -1,0 +1,12 @@
+ARG ELASTICSEARCH_VERSION
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+
+USER root
+
+RUN set -ex \
+    && apt update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends jq \
+    && rm -rf /var/lib/apt/lists/*
+
+USER elasticsearch

@@ -1,0 +1,17 @@
+ARG ELASTICSEARCH_VERSION
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+
+ARG ELASTICSEARCH_VERSION
+
+RUN set -ex \
+    && apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+         jq \
+         python3-pip \
+    && pip3 install --no-cache-dir --upgrade pip \
+    && pip3 install --no-cache-dir \
+        "elasticsearch<=${ELASTICSEARCH_VERSION}" \
+        "elasticsearch-dsl~=7.0" \
+    && bin/elasticsearch-plugin install --batch repository-s3 \
+    && rm -rf /var/lib/apt/lists/*

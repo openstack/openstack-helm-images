@@ -37,34 +37,21 @@
       docker_images:
         - context: elasticsearch-s3
           repository: openstackhelm/elasticsearch-s3
-          dockerfile: Dockerfile.5_6_4
+          dockerfile: Dockerfile.7
+          build_args:
+            - "ELASTICSEARCH_VERSION=7.17.21"
           tags:
-            - latest-5_6_4
-            - "5_6_4-{{ currentdate }}"
+            - latest-7.17.21
+            - "7.17.21-{{ currentdate }}"
+
         - context: elasticsearch-s3
           repository: openstackhelm/elasticsearch-s3
-          dockerfile: Dockerfile.7_1_0
+          dockerfile: Dockerfile.8
+          build_args:
+            - "ELASTICSEARCH_VERSION=8.13.4"
           tags:
-            - latest-7_1_0
-            - "7_1_0-{{ currentdate }}"
-        - context: elasticsearch-s3
-          repository: openstackhelm/elasticsearch-s3
-          dockerfile: Dockerfile.7_6_2
-          tags:
-            - latest-7_6_2
-            - "7_6_2-{{ currentdate }}"
-        - context: elasticsearch-s3
-          repository: openstackhelm/elasticsearch-s3
-          dockerfile: Dockerfile.8_7_1
-          tags:
-            - latest-8_7_1
-            - "8_7_1-{{ currentdate }}"
-        - context: elasticsearch-s3
-          repository: openstackhelm/elasticsearch-s3
-          dockerfile: Dockerfile.8_9_0
-          tags:
-            - latest-8_9_0
-            - "8_9_0-{{ currentdate }}"
+            - latest-8.13.4
+            - "8.13.4-{{ currentdate }}"
     files: &elasticsearch-s3_files
       - elasticsearch-s3/.*
       - zuul.d/elasticsearch-s3.yaml

@@ -1,8 +1,0 @@
-ARG FROM=docker.io/elasticsearch:5.6.4
-FROM ${FROM}
-
-RUN wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 \
-        && chmod +x ./jq \
-        && cp jq /usr/bin
-
-RUN bin/elasticsearch-plugin install --batch repository-s3
