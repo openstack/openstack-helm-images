@@ -128,7 +128,7 @@ openstack_docker_images_dict:
       - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='neutron'"
       - "PROJECT_REF={{ branchname }}"
-      - "PROFILES='fluent linuxbridge openvswitch apache vpn'"
+      - "PROFILES='fluent linuxbridge openvswitch apache vpn baremetal'"
       - "PIP_PACKAGES='tap-as-a-service'"
       - "DIST_PACKAGES='jq ethtool lshw'"
       - "WHEELS='{{ wheels_location }}'"
