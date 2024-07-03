@@ -1,11 +1,12 @@
-ARG FROM=docker.io/fluent/fluentd-kubernetes-daemonset:v1.11-debian-elasticsearch7-1
+ARG FROM=docker.io/fluent/fluentd-kubernetes-daemonset:v1.15-debian-elasticsearch7-1
 FROM ${FROM}
 
-RUN set -ex; \
-    apt-get update; \
-    apt-get install -y gcc make; \
-    gem install \
+RUN set -ex \
+ && apt-get update \
+ && apt-get install -y gcc make \
+ && gem install \
       fluent-plugin-kafka \
-      fluent-plugin-systemd:1.0.1 \
-      fluent-plugin-prometheus; \
-    apt-get purge -y gcc make
+      fluent-plugin-systemd:1.0.5 \
+      fluent-plugin-prometheus \
+ && apt-get purge -y --autoremove gcc make \
+ && rm -rf /var/lib/apt/lists/*
