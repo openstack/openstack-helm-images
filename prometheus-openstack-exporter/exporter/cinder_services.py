@@ -63,18 +63,25 @@ class CinderServiceStats(OSBase):
         labels = ['region', 'host', 'service', 'state']
         cinder_services_stats_cache = self.get_cache_data()
         for cinder_services_stat in cinder_services_stats_cache:
-            stat_gauge = Gauge(
-                self.gauge_name_sanitize(
-                    cinder_services_stat['stat_name']),
-                'Openstack Cinder Service statistic',
-                labels,
-                registry=registry)
-            label_values = [self.osclient.region,
-                            cinder_services_stat.get('host', ''),
-                            cinder_services_stat.get('service', ''),
-                            cinder_services_stat.get('state', '')]
-            stat_gauge.labels(
-                *
-                label_values).set(
-                cinder_services_stat['stat_value'])
+            try:
+                stat_gauge = Gauge(
+                    self.gauge_name_sanitize(
+                        cinder_services_stat['stat_name']),
+                    'Openstack Cinder Service statistic',
+                    labels,
+                    registry=registry)
+                label_values = [self.osclient.region,
+                                cinder_services_stat.get('host', ''),
+                                cinder_services_stat.get('service', ''),
+                                cinder_services_stat.get('state', '')]
+                stat_gauge.labels(
+                    *
+                    label_values).set(
+                    cinder_services_stat['stat_value'])
+            except ValueError:
+                logger.debug('Unchanged value for stat {} already present in '
+                             'cinder services registry for host {}; ignoring.'
+                             .format(services_stat['stat_name'],
+                                     services_stat['host']))
+
         return generate_latest(registry)
