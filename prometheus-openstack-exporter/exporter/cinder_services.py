@@ -81,7 +81,7 @@ class CinderServiceStats(OSBase):
             except ValueError:
                 logger.debug('Unchanged value for stat {} already present in '
                              'cinder services registry for host {}; ignoring.'
-                             .format(services_stat['stat_name'],
-                                     services_stat['host']))
+                             .format(cinder_services_stat['stat_name'],
+                                     cinder_services_stat['host']))
 
         return generate_latest(registry)
