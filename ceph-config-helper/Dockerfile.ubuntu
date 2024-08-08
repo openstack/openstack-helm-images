@@ -1,0 +1,39 @@
+ARG FROM=docker.io/ubuntu:jammy
+FROM ${FROM}
+
+ARG KUBE_VERSION=1.29.7
+
+ARG CEPH_RELEASE
+ARG CEPH_RELEASE_TAG
+ARG CEPH_REPO
+ARG CEPH_KEY
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN set -ex \
+    && apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install --no-install-recommends -y \
+         ca-certificates \
+         gnupg2 \
+         curl \
+    && curl -fsSL ${CEPH_KEY} | gpg --dearmor -o /etc/apt/keyrings/ceph.acs \
+    && DISTRO_VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d'=' -f2) \
+    && echo "deb [signed-by=/etc/apt/keyrings/ceph.acs] ${CEPH_REPO} ${DISTRO_VERSION} main" | tee /etc/apt/sources.list.d/ceph.list \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y \
+         ceph=${CEPH_RELEASE_TAG} \
+         python3 \
+         python3-pip \
+         python3-ceph-common \
+         python3-openstackclient \
+         python3-swiftclient \
+         s3cmd \
+         gdisk \
+         udev \
+         jq \
+    && curl -s https://bootstrap.pypa.io/pip/get-pip.py | python3 \
+    && pip3 install --upgrade --no-cache-dir rgwadmin \
+    && curl -sSL https://dl.k8s.io/v${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz \
+         | tar -zC /usr/local/bin --strip-components=3 --wildcards -x "*/*/*/kubectl" \
+    && rm -rf /var/lib/apt/lists/*

@@ -43,8 +43,9 @@
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
         - &ceph_image
-          dockerfile: Dockerfile.ubuntu_jammy
+          dockerfile: Dockerfile.ubuntu
           build_args:
+            - "FROM='ubuntu:jammy'"
             - "CEPH_RELEASE='reef'"
             - "CEPH_RELEASE_TAG='18.2.2-1~jammy'"
             - "CEPH_REPO='http://mirror.mirantis.com/acicd/ceph/debian-18.2.2.patch1/jammy'"
