@@ -30,6 +30,7 @@ RUN pip3 install --upgrade pip && \
   python-openstackclient \
   python-saharaclient \
   python-swiftclient \
+  python-tackerclient \
   python-troveclient \
   python-vitrageclient \
   python-zaqarclient \
