@@ -64,6 +64,7 @@
         - octavia
         - placement
         - tacker
+        - watcher
     files: &files_2024_1_ubuntu_jammy
       - zuul.d/openstack-2024.1-ubuntu_jammy.yaml
       - zuul.d/openstack-base.yaml

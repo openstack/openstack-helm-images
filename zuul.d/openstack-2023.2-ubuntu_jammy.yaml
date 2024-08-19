@@ -63,6 +63,7 @@
         - masakari_monitors
         - manila
         - tacker
+        - watcher
     files: &files_2023_2_ubuntu_jammy
       - zuul.d/openstack-2023.2-ubuntu_jammy.yaml
       - zuul.d/openstack-base.yaml

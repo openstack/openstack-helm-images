@@ -33,6 +33,7 @@ RUN pip3 install --upgrade pip && \
   python-tackerclient \
   python-troveclient \
   python-vitrageclient \
+  python-watcherclient \
   python-zaqarclient \
   python-zunclient \
   --ignore-installed
