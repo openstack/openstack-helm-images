@@ -15,7 +15,7 @@ This repository hosts the images built for the
 `OpenStack-Helm project <https://github.com/openstack/openstack-helm>`_.
 
 Documentation for this project can be found at:
-`<https://docs.openstack.org/openstack-helm/latest/>`_
+`<https://docs.openstack.org/openstack-helm-images/latest/>`_
 
 Release notes for the project can be found at:
 `<https://docs.openstack.org/releasenotes/openstack-helm-images/>`_
