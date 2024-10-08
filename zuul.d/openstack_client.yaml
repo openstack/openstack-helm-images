@@ -39,6 +39,15 @@
           repository: openstackhelm/openstack-client
           dockerfile: Dockerfile.ubuntu
           tags:
+            - "2024.2"
+            - "2024.2-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:jammy
+            - OPENSTACK_RELEASE=2024.2
+        - context: openstack_client
+          repository: openstackhelm/openstack-client
+          dockerfile: Dockerfile.ubuntu
+          tags:
             - "2024.1"
             - "2024.1-{{ currentdate }}"
           build_args:
