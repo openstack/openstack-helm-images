@@ -14,18 +14,15 @@ EOF
 ARG RELEASE
 RUN <<EOF /bin/bash
   set -xe
-  if [ "$(lsb_release -sc)" = "focal" ]; then
-    if [[ "${RELEASE}" = "wallaby" || "${RELEASE}" = "xena" || "${RELEASE}" = "yoga" ]]; then
+  if [ "$(lsb_release -sc)" = "jammy" ]; then
+    if [[ "${RELEASE}" = "antelope" || "${RELEASE}" = "bobcat" || "${RELEASE}" = "caracal" ]]; then
       echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu $(lsb_release -sc)-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
     else
       echo "${RELEASE} is not supported on $(lsb_release -sc)"
       exit 1
     fi
-  elif [ "$(lsb_release -sc)" = "jammy" ]; then
-    if [[ "${RELEASE}" = "yoga" ]]; then
-      # NOTE(mnaser): Yoga shipped with 22.04, so no need to add an extra repository.
-      echo "" > /etc/apt/sources.list.d/cloudarchive.list
-    elif [[ "${RELEASE}" = "zed" || "${RELEASE}" = "antelope" || "${RELEASE}" = "bobcat" || "${RELEASE}" = "caracal" ]]; then
+  elif [ "$(lsb_release -sc)" = "noble" ]; then
+    if [[ "${RELEASE}" = "dalmatian" ]]; then
       echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu $(lsb_release -sc)-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
     else
       echo "${RELEASE} is not supported on $(lsb_release -sc)"
@@ -58,9 +55,9 @@ RUN <<EOF
     ovmf \
     pm-utils \
     qemu-system \
-    qemu-block-extra \
-    qemu-efi \
-    qemu-kvm
+    qemu-block-extra
+  # There is no qemu-efi in Ubuntu Noble
+  apt-get install -y --no-install-recommends qemu-efi || true
   apt-get clean
   rm -rf /var/lib/apt/lists/*
 EOF
