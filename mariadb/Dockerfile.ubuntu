@@ -13,6 +13,7 @@ RUN set -ex ;\
       configparser \
       iso8601 \
       kubernetes \
+      pymysql \
       pykube-ng ;\
     apt clean -y ;\
     rm -rf \
