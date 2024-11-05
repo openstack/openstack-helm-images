@@ -3,6 +3,7 @@ FROM ${FROM}
 
 ARG KUBE_VERSION=1.29.7
 ARG CONFD_VERSION=0.16.0
+ARG TINI_VERSION=v0.19.0
 
 ARG CEPH_RELEASE
 ARG CEPH_RELEASE_TAG
@@ -70,4 +71,6 @@ RUN set -ex \
     && apt-get purge -y --auto-remove python3-dev gcc alien \
     && rm -rf /var/lib/apt/lists/* \
               /usr/share/{doc,man,locale} \
-              /tmp/*
+              /tmp/* \
+    && curl -sSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64 -o /usr/local/bin/tini \
+    && chmod +x /usr/local/bin/tini
