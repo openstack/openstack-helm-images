@@ -1,9 +1,31 @@
 ARG FROM
-FROM ${FROM}
 
+FROM golang:1.20 AS ovn-kubernetes
+ARG OVN_KUBERNETES_REF=5359e7d7f872058b6e5bf884c9f19d1922451f29
+ADD https://github.com/ovn-org/ovn-kubernetes.git#${OVN_KUBERNETES_REF} /src
+COPY patches/ovn-kubernetes /patches/ovn-kubernetes
+RUN git -C /src apply --verbose /patches/ovn-kubernetes/*
+RUN <<EOF bash -xe
+cd /src/go-controller
+go build -o /usr/bin/ovn-kube-util ./cmd/ovn-kube-util
+EOF
+
+FROM ${FROM} AS base
+ARG TARGETPLATFORM=linux/amd64
+ADD --chmod=755 https://dl.k8s.io/release/v1.29.3/bin/${TARGETPLATFORM}/kubectl /usr/local/bin/kubectl
+ADD --chmod=755 https://github.com/krallin/tini/releases/download/v0.19.0/tini /tini
 RUN apt-get update && apt-get install -y \
       ovn-host \
       ovn-central \
+      openvswitch-switch \
+      firewalld \
+      hostname \
+      procps \
       dnsutils \
       iproute2 \
+      python3-netifaces \
+      iptables \
       && rm -rf /var/lib/apt/lists/*
+COPY --from=ovn-kubernetes --link /src/dist/images/ovndb-raft-functions.sh /root/ovndb-raft-functions.sh
+COPY --from=ovn-kubernetes --link /src/dist/images/ovnkube.sh /root/ovnkube.sh
+COPY --from=ovn-kubernetes --link /usr/bin/ovn-kube-util /usr/bin/ovn-kube-util
