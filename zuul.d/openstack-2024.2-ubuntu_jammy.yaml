@@ -15,24 +15,23 @@
     check:
       jobs:
         - openstack-helm-images-build-openstack-2024-2-ubuntu_jammy
-        # - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-        # - openstack-helm-images-cinder-2024-2-ubuntu_jammy
+        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
+        - openstack-helm-images-cinder-2024-2-ubuntu_jammy
     gate:
       jobs:
         - openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-2024-2-ubuntu_jammy
-    periodic-weekly:
+    periodic:
       jobs:
         - openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
         - openstack-helm-images-promote-openstack-2024-2-ubuntu_jammy:
             dependencies:
-              - openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
-              # - name: openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-              # - name: openstack-helm-images-cinder-2024-2-ubuntu_jammy
-        # - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-        # - openstack-helm-images-cinder-2024-2-ubuntu_jammy
+              - name: openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
+              - name: openstack-helm-images-cinder-2024-2-ubuntu_jammy
+        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
+        - openstack-helm-images-cinder-2024-2-ubuntu_jammy
 
 - job:
     name: openstack-helm-images-build-openstack-2024-2-ubuntu_jammy

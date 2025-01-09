@@ -29,6 +29,7 @@
         - openstack-helm-images-promote-mariadb:
             dependencies:
               - name: openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
+        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
 
 - job:
     name: openstack-helm-images-build-mariadb
