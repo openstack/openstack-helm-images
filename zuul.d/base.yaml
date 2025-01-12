@@ -29,6 +29,9 @@
         - openstack-helm-images-buildset-registry
         - openstack-helm-images-monitoring
         - openstack-helm-images-logging
+    periodic:
+      jobs:
+        - openstack-helm-images-buildset-registry
     templates:
       - publish-openstack-docs-pti
       - release-notes-jobs-python3

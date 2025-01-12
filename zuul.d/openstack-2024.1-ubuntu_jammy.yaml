@@ -24,7 +24,7 @@
     promote:
       jobs:
         - openstack-helm-images-promote-openstack-2024-1-ubuntu_jammy
-    periodic-weekly:
+    periodic:
       jobs:
         - openstack-helm-images-upload-openstack-2024-1-ubuntu_jammy
         - openstack-helm-images-promote-openstack-2024-1-ubuntu_jammy:
