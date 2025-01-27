@@ -9,4 +9,6 @@ RUN chmod +x /tini
 RUN set -ex && \
     apt-get update && \
     apt-get install -y openvswitch-switch && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    useradd -u 42424 openvswitch && \
+    chown -R openvswitch:openvswitch /var/lib/openvswitch /etc/openvswitch

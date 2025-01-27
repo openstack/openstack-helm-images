@@ -30,4 +30,6 @@ RUN set -ex && \
       /var/lib/apt/lists/* \
       /var/log/* \
       /tmp/* \
-      /var/tmp/*
+      /var/tmp/* && \
+    useradd -u 42424 openvswitch && \
+    chown -R openvswitch:openvswitch /var/lib/openvswitch /etc/openvswitch
