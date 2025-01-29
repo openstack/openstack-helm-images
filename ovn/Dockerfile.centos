@@ -16,6 +16,7 @@ ARG TARGETPLATFORM
 ADD --chmod=755 https://dl.k8s.io/release/v1.29.3/bin/${TARGETPLATFORM}/kubectl /usr/local/bin/kubectl
 ARG OVN_SERIES=24.03
 ARG OVN_VERSION=${OVN_SERIES}.1-44
+RUN useradd -u 42424 openvswitch
 RUN <<EOF sh -xe
 dnf -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs install \
     centos-release-nfv-openvswitch.noarch
@@ -25,14 +26,14 @@ dnf -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs install \
     openvswitch${OVS_SERIES}-test-${OVS_VERSION}.el9s \
     python3-netifaces \
     tcpdump
-dnf -y clean all 
+dnf -y clean all
 rm -rf /var/cache/dnf
 EOF
 
 RUN <<EOF sh -xe
 dnf -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs install \
     firewalld-filesystem hostname ovn${OVN_SERIES}-${OVN_VERSION}.el9s procps-ng
-dnf -y clean all 
+dnf -y clean all
 rm -rf /var/cache/dnf
 EOF
 ARG OVN_COMPONENT
@@ -40,7 +41,7 @@ RUN <<EOF sh -xe
 dnf -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs install \
     ovn${OVN_SERIES}-central-${OVN_VERSION}.el9s \
     ovn${OVN_SERIES}-host-${OVN_VERSION}.el9s
-dnf -y clean all 
+dnf -y clean all
 rm -rf /var/cache/dnf
 EOF
 COPY --from=ovn-kubernetes --link /src/dist/images/ovndb-raft-functions.sh /root/ovndb-raft-functions.sh

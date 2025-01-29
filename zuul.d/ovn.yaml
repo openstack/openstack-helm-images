@@ -17,6 +17,7 @@
     check:
       jobs:
         - openstack-helm-images-build-ovn
+        - openstack-helm-images-compute-kit-ovn-2024-1-ubuntu_jammy
     gate:
       jobs:
         - openstack-helm-images-upload-ovn
@@ -77,3 +78,12 @@
     description: Promote a previously published ovn image to latest.
     vars: *ovn_vars
     files: *ovn_files
+
+- job:
+    name: openstack-helm-images-compute-kit-ovn-2024-1-ubuntu_jammy
+    parent: openstack-helm-compute-kit-ovn-2024-1-ubuntu_jammy
+    voting: false
+    files: *ovn_files
+    dependencies:
+      - name: openstack-helm-images-build-ovn
+        soft: true
