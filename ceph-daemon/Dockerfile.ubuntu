@@ -53,8 +53,6 @@ RUN set -ex \
          PyYAML \
          setuptools==70.3.0 \
     && pip3 install --no-cache-dir --upgrade \
-         six \
-         pyopenssl \
          openssl-python \
          python-swiftclient \
          python-openstackclient \
