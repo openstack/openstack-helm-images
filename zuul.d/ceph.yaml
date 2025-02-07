@@ -47,7 +47,7 @@
           build_args:
             - "FROM='ubuntu:jammy'"
             - "CEPH_RELEASE='squid'"
-            - "CEPH_RELEASE_TAG='19.2.0-1jammy'"
+            - "CEPH_RELEASE_TAG='19.2.1-1jammy'"
             - "CEPH_REPO='http://download.ceph.com/debian-squid'"
             - "CEPH_KEY='http://download.ceph.com/keys/release.asc'"
           tags:
