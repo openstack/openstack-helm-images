@@ -52,7 +52,7 @@
             - "CEPH_KEY='http://download.ceph.com/keys/release.asc'"
           tags:
             - latest-ubuntu_jammy
-            - "ubuntu_jammy_19.2.0-1-{{ currentdate }}"
+            - "ubuntu_jammy_19.2.1-1-{{ currentdate }}"
     files: &ceph_files
       - ceph.*
       - zuul.d/ceph.*
