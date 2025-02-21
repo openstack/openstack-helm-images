@@ -40,6 +40,7 @@ RUN set -ex \
          rsync \
          xz-utils \
          iperf \
+         ceph-mgr-cephadm- \
     && curl -sSL https://bootstrap.pypa.io/pip/get-pip.py | python3 \
     && pip3 install --upgrade --no-cache-dir oslo.rootwrap \
     && curl -sSL https://dl.k8s.io/v${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz \
