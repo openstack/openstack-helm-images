@@ -94,7 +94,7 @@ openstack_docker_images_dict:
       - "PROJECT='glance'"
       - "PROJECT_REF={{ branchname }}"
       - "PROFILES='fluent ceph qemu-utils'"
-      - "PIP_PACKAGES='python-swiftclient os-brick'"
+      - "PIP_PACKAGES='python-swiftclient os-brick python-cinderclient oslo-rootwrap'"
       - "WHEELS='{{ wheels_location }}'"
       - "KEEP_ALL_WHEELS=yes"
     tags: *imagetag
