@@ -93,7 +93,7 @@ openstack_docker_images_dict:
       - "FROM='{{ base_repository }}:{{ shortbranchname }}-{{ distroname }}'"
       - "PROJECT='glance'"
       - "PROJECT_REF={{ branchname }}"
-      - "PROFILES='fluent ceph'"
+      - "PROFILES='fluent ceph qemu-utils'"
       - "PIP_PACKAGES='python-swiftclient os-brick'"
       - "WHEELS='{{ wheels_location }}'"
       - "KEEP_ALL_WHEELS=yes"
