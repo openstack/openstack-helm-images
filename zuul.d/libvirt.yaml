@@ -77,6 +77,19 @@
           build_args:
             - FROM=ubuntu:noble
             - RELEASE=dalmatian
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "epoxy-ubuntu_noble-{{ currentdate }}"
+            - "epoxy-ubuntu_noble"
+            - "2025.1-ubuntu_noble-{{ currentdate }}"
+            - "2025.1-ubuntu_noble"
+          build_args:
+            - FROM=ubuntu:noble
+            - RELEASE=epoxy
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
