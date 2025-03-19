@@ -122,11 +122,11 @@
       pass-to-parent: true
     timeout: 3600
 
-# Image testing jobs inheriting from osh and osh-infra jobs running against
+# Image testing jobs inheriting from osh jobs running against
 # particular image or set of images.
 - job:
     name: openstack-helm-images-monitoring
-    parent: openstack-helm-infra-monitoring
+    parent: openstack-helm-monitoring
     match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-prometheus-openstack-exporter
@@ -157,7 +157,7 @@
 
 - job:
     name: openstack-helm-images-logging
-    parent: openstack-helm-infra-logging
+    parent: openstack-helm-logging
     match-on-config-updates: false
     dependencies:
       - name: openstack-helm-images-build-fluentd
