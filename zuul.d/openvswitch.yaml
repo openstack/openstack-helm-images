@@ -64,12 +64,28 @@
             - FROM=ubuntu:jammy
         - context: openvswitch
           repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - latest-ubuntu_noble
+            - "ubuntu_jammy-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:noble
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
           dockerfile: Dockerfile.ubuntu-dpdk
           tags:
             - latest-ubuntu_jammy-dpdk
             - "ubuntu_jammy-dpdk-{{ currentdate }}"
           build_args:
             - FROM=ubuntu:jammy
+        - context: openvswitch
+          repository: openstackhelm/openvswitch
+          dockerfile: Dockerfile.ubuntu-dpdk
+          tags:
+            - latest-ubuntu_noble-dpdk
+            - "ubuntu_noble-dpdk-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:noble
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
