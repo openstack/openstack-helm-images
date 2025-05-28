@@ -41,11 +41,6 @@
       - libvirt/.*
       - zuul.d/libvirt.yaml
       - zuul.d/openstack-2025.1-ubuntu_jammy.yaml
-      - zuul.d/openstack-base.yaml
-      - zuul.d/playbooks/build-openstack.yml
-      - zuul.d/playbooks/vars-openstack.yml
-      - zuul.d/playbooks/Dockerfile_base
-      - zuul.d/playbooks/Dockerfile
 
 - job:
     name: openstack-helm-images-cinder-2025-1-ubuntu_jammy
@@ -60,8 +55,3 @@
       - mariadb/.*
       - zuul.d/mariadb.yaml
       - zuul.d/openstack-2025.1-ubuntu_jammy.yaml
-      - zuul.d/openstack-base.yaml
-      - zuul.d/playbooks/build-openstack.yml
-      - zuul.d/playbooks/vars-openstack.yml
-      - zuul.d/playbooks/Dockerfile_base
-      - zuul.d/playbooks/Dockerfile

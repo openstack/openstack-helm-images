@@ -14,77 +14,8 @@
 - project:
     check:
       jobs:
-        - openstack-helm-images-build-openstack-2024-2-ubuntu_jammy
         - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
         - openstack-helm-images-cinder-2024-2-ubuntu_jammy
-    gate:
-      jobs:
-        - openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
-    promote:
-      jobs:
-        - openstack-helm-images-promote-openstack-2024-2-ubuntu_jammy
-    periodic:
-      jobs:
-        - openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
-        - openstack-helm-images-promote-openstack-2024-2-ubuntu_jammy:
-            dependencies:
-              - name: openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-              - name: openstack-helm-images-cinder-2024-2-ubuntu_jammy
-        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-        - openstack-helm-images-cinder-2024-2-ubuntu_jammy
-
-- job:
-    name: openstack-helm-images-build-openstack-2024-2-ubuntu_jammy
-    description: Build 2024.2 Jammy images
-    parent: openstack-helm-images-build-openstack
-    vars: &vars_2024_2_ubuntu_jammy
-      branchname: "stable/2024.2"
-      shortbranchname: "2024.2"
-      distroname: "ubuntu_jammy"
-      from: "docker.io/ubuntu:22.04"
-      ceph_repo: "deb https://download.ceph.com/debian-reef/ jammy main"
-      ceph_key: "http://download.ceph.com/keys/release.asc"
-      openstack_docker_images:
-        - barbican
-        - cinder
-        - cyborg
-        - designate
-        - glance
-        - heat
-        - horizon
-        - ironic
-        - keystone
-        - magnum
-        - manila
-        - masakari
-        - masakari_monitors
-        - neutron
-        - nova
-        - octavia
-        - placement
-        - tacker
-        - watcher
-    files: &files_2024_2_ubuntu_jammy
-      - zuul.d/openstack-2024.2-ubuntu_jammy.yaml
-      - zuul.d/openstack-base.yaml
-      - zuul.d/playbooks/build-openstack.yml
-      - zuul.d/playbooks/vars-openstack.yml
-      - zuul.d/playbooks/Dockerfile_base
-      - zuul.d/playbooks/Dockerfile
-
-- job:
-    name: openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
-    description: Build and upload 2024.2 Jammy images
-    parent: openstack-helm-images-upload-openstack
-    vars: *vars_2024_2_ubuntu_jammy
-    files: *files_2024_2_ubuntu_jammy
-
-- job:
-    name: openstack-helm-images-promote-openstack-2024-2-ubuntu_jammy
-    description: Promote previously published 2024.2 Jammy images
-    parent: openstack-helm-images-promote-openstack
-    vars: *vars_2024_2_ubuntu_jammy
-    files: *files_2024_2_ubuntu_jammy
 
 - job:
     name: openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
@@ -92,15 +23,11 @@
     dependencies:
       - name: openstack-helm-images-build-openvswitch
         soft: true
-      - name: openstack-helm-images-build-openstack-2024-2-ubuntu_jammy
-        soft: true
       - name: openstack-helm-images-build-mariadb
         soft: true
       - name: openstack-helm-images-build-libvirt
         soft: true
       - name: openstack-helm-images-upload-openvswitch
-        soft: true
-      - name: openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
@@ -114,22 +41,13 @@
       - libvirt/.*
       - zuul.d/libvirt.yaml
       - zuul.d/openstack-2024.2-ubuntu_jammy.yaml
-      - zuul.d/openstack-base.yaml
-      - zuul.d/playbooks/build-openstack.yml
-      - zuul.d/playbooks/vars-openstack.yml
-      - zuul.d/playbooks/Dockerfile_base
-      - zuul.d/playbooks/Dockerfile
 
 - job:
     name: openstack-helm-images-cinder-2024-2-ubuntu_jammy
     parent: openstack-helm-cinder-2024-2-ubuntu_jammy
     nodeset: openstack-helm-5nodes-ubuntu_jammy
     dependencies:
-      - name: openstack-helm-images-build-openstack-2024-2-ubuntu_jammy
-        soft: true
       - name: openstack-helm-images-build-mariadb
-        soft: true
-      - name: openstack-helm-images-upload-openstack-2024-2-ubuntu_jammy
         soft: true
       - name: openstack-helm-images-upload-mariadb
         soft: true
@@ -137,8 +55,3 @@
       - mariadb/.*
       - zuul.d/mariadb.yaml
       - zuul.d/openstack-2024.2-ubuntu_jammy.yaml
-      - zuul.d/openstack-base.yaml
-      - zuul.d/playbooks/build-openstack.yml
-      - zuul.d/playbooks/vars-openstack.yml
-      - zuul.d/playbooks/Dockerfile_base
-      - zuul.d/playbooks/Dockerfile
