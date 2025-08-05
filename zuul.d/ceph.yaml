@@ -47,12 +47,12 @@
           build_args:
             - "FROM='ubuntu:jammy'"
             - "CEPH_RELEASE='squid'"
-            - "CEPH_RELEASE_TAG='19.2.2-1~jammy'"
-            - "CEPH_REPO='http://mirror.mirantis.com/acicd/ceph-19.2.2.patch1/jammy'"
-            - "CEPH_KEY='http://mirror.mirantis.com/acicd/ceph-19.2.2.patch1/jammy/release.asc'"
+            - "CEPH_RELEASE_TAG='19.2.3-1jammy'"
+            - "CEPH_REPO='http://download.ceph.com/debian-squid'"
+            - "CEPH_KEY='http://download.ceph.com/keys/release.asc'"
           tags:
             - latest-ubuntu_jammy
-            - "ubuntu_jammy_19.2.2-1-{{ currentdate }}"
+            - "ubuntu_jammy_19.2.3-1-{{ currentdate }}"
     files: &ceph_files
       - ceph.*
       - zuul.d/ceph.*
