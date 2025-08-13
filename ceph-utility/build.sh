@@ -7,7 +7,7 @@ cd ${SCRIPT_DIR}/..
 IMAGE="ceph-utility"
 VERSION=${VERSION:-latest}
 DISTRO=${DISTRO:-ubuntu}
-DISTRO_VERSION=${DISTRO_VERSION:-focal}
+DISTRO_VERSION=${DISTRO_VERSION:-jammy}
 REGISTRY_URI=${REGISTRY_URI:-"openstackhelm/"}
 EXTRA_TAG_INFO=${EXTRA_TAG_INFO:-""}
 docker build --file=${IMAGE}/Dockerfile.${DISTRO} \

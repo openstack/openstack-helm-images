@@ -1,7 +1,7 @@
 ARG FROM=docker.io/ubuntu:jammy
 FROM ${FROM}
 
-ARG KUBE_VERSION=1.29.7
+ARG KUBE_VERSION=1.33.3
 
 ARG CEPH_RELEASE
 ARG CEPH_RELEASE_TAG
@@ -16,7 +16,7 @@ RUN set -ex \
     && apt-get update && apt-get upgrade -y \
     && apt-get install -y \
          ca-certificates \
-         gnupg \
+         gnupg2 \
          curl \
     && curl -fsSL ${CEPH_KEY} | gpg --dearmor -o /etc/apt/keyrings/ceph.acs \
     && DISTRO_VERSION=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d'=' -f2) \
