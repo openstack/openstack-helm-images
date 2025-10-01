@@ -28,8 +28,8 @@
         - openstack-helm-images-upload-libvirt
         - openstack-helm-images-promote-libvirt:
             dependencies:
-              - name: openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
+              - name: openstack-helm-images-compute-kit-2025-1-ubuntu_jammy
+        - openstack-helm-images-compute-kit-2025-1-ubuntu_jammy
 
 - job:
     name: openstack-helm-images-build-libvirt
@@ -38,19 +38,6 @@
     vars: &libvirt_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       docker_images:
-        - context: libvirt
-          repository: openstackhelm/libvirt
-          dockerfile: Dockerfile
-          arch:
-            - linux/amd64
-          tags:
-            - "bobcat-ubuntu_jammy-{{ currentdate }}"
-            - "bobcat-ubuntu_jammy"
-            - "2023.2-ubuntu_jammy-{{ currentdate }}"
-            - "2023.2-ubuntu_jammy"
-          build_args:
-            - FROM=ubuntu:jammy
-            - RELEASE=bobcat
         - context: libvirt
           repository: openstackhelm/libvirt
           dockerfile: Dockerfile
@@ -90,6 +77,19 @@
           build_args:
             - FROM=ubuntu:noble
             - RELEASE=epoxy
+        - context: libvirt
+          repository: openstackhelm/libvirt
+          dockerfile: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "flamingo-ubuntu_noble-{{ currentdate }}"
+            - "flamingo-ubuntu_noble"
+            - "2025.2-ubuntu_noble-{{ currentdate }}"
+            - "2025.2-ubuntu_noble"
+          build_args:
+            - FROM=ubuntu:noble
+            - RELEASE=flamingo
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml

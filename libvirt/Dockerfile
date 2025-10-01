@@ -22,7 +22,7 @@ RUN <<EOF /bin/bash
       exit 1
     fi
   elif [ "$(lsb_release -sc)" = "noble" ]; then
-    if [[ "${RELEASE}" = "dalmatian" || "${RELEASE}" = "epoxy" ]]; then
+    if [[ "${RELEASE}" = "dalmatian" || "${RELEASE}" = "epoxy" || "${RELEASE}" = "flamingo" ]]; then
       echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu $(lsb_release -sc)-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
     else
       echo "${RELEASE} is not supported on $(lsb_release -sc)"
