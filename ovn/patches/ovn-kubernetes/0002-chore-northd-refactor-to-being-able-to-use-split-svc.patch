@@ -11,10 +11,11 @@ diff --git a/dist/images/ovnkube.sh b/dist/images/ovnkube.sh
 index 720b3e14d..1d3059cf8 100755
 --- a/dist/images/ovnkube.sh
 +++ b/dist/images/ovnkube.sh
-@@ -200,6 +200,8 @@ metrics_exporter_port=${OVN_METRICS_EXPORTER_PORT:-9310}
+@@ -200,6 +200,9 @@ metrics_exporter_port=${OVN_METRICS_EXPORTER_PORT:-9310}
  
  ovn_kubernetes_namespace=${OVN_KUBERNETES_NAMESPACE:-ovn-kubernetes}
  ovn_kubernetes_statefulset=${OVN_KUBERNETES_STATEFULSET:-ovnkube-db}
++ovn_kubernetes_cluster_domain=${OVN_KUBERNETES_CLUSTER_DOMAIN:-cluster.local}
 +ovn_kubernetes_nb_statefulset=${OVN_KUBERNETES_NB_STATEFULSET:-ovnkube-db}
 +ovn_kubernetes_sb_statefulset=${OVN_KUBERNETES_SB_STATEFULSET:-ovnkube-db}
  
@@ -83,7 +84,7 @@ index 720b3e14d..1d3059cf8 100755
      if [ -n "$ovn_nbdb_str" ]; then
        ovn_nbdb_str=${ovn_nbdb_str}","
 +    fi
-+    host="${ovn_kubernetes_nb_statefulset}-${index}.${ovn_kubernetes_nb_statefulset}.${ovn_kubernetes_namespace}.svc.cluster.local"
++    host="${ovn_kubernetes_nb_statefulset}-${index}.${ovn_kubernetes_nb_statefulset}.${ovn_kubernetes_namespace}.svc.${ovn_kubernetes_cluster_domain}"
 +    ovn_nbdb_str=${ovn_nbdb_str}${transport}://${host}:${ovn_nb_port}
 +    index=$((index + 1))
 +  done
@@ -97,7 +98,7 @@ index 720b3e14d..1d3059cf8 100755
 -    ip=$(bracketify $i)
 -    ovn_nbdb_str=${ovn_nbdb_str}${transport}://${ip}:${ovn_nb_port}
 -    ovn_sbdb_str=${ovn_sbdb_str}${transport}://${ip}:${ovn_sb_port}
-+    host="${ovn_kubernetes_sb_statefulset}-${index}.${ovn_kubernetes_sb_statefulset}.${ovn_kubernetes_namespace}.svc.cluster.local"
++    host="${ovn_kubernetes_sb_statefulset}-${index}.${ovn_kubernetes_sb_statefulset}.${ovn_kubernetes_namespace}.svc.${ovn_kubernetes_cluster_domain}"
 +    ovn_sbdb_str=${ovn_sbdb_str}${transport}://${host}:${ovn_sb_port}
 +    index=$((index + 1))
    done
