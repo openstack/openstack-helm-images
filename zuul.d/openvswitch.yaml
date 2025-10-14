@@ -67,7 +67,7 @@
           dockerfile: Dockerfile.ubuntu
           tags:
             - latest-ubuntu_noble
-            - "ubuntu_jammy-{{ currentdate }}"
+            - "ubuntu_noble-{{ currentdate }}"
           build_args:
             - FROM=ubuntu:noble
         - context: openvswitch
