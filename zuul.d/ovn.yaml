@@ -56,6 +56,14 @@
             - FROM=ubuntu:jammy
         - context: ovn
           repository: openstackhelm/ovn
+          dockerfile: Dockerfile.ubuntu
+          tags:
+            - ubuntu_noble
+            - "ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - FROM=ubuntu:noble
+        - context: ovn
+          repository: openstackhelm/ovn
           dockerfile: Dockerfile.centos
           tags:
             - centos_stream9
