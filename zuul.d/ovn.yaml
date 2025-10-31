@@ -17,7 +17,7 @@
     check:
       jobs:
         - openstack-helm-images-build-ovn
-        - openstack-helm-images-compute-kit-ovn-2024-1-ubuntu_jammy
+        - openstack-helm-images-compute-kit-ovn-2025-1-ubuntu_jammy
     gate:
       jobs:
         - openstack-helm-images-upload-ovn
@@ -42,14 +42,6 @@
           repository: openstackhelm/ovn
           dockerfile: Dockerfile.ubuntu
           tags:
-            - ubuntu_focal
-            - "ubuntu_focal-{{ currentdate }}"
-          build_args:
-            - FROM=ubuntu:focal
-        - context: ovn
-          repository: openstackhelm/ovn
-          dockerfile: Dockerfile.ubuntu
-          tags:
             - ubuntu_jammy
             - "ubuntu_jammy-{{ currentdate }}"
           build_args:
@@ -62,12 +54,6 @@
             - "ubuntu_noble-{{ currentdate }}"
           build_args:
             - FROM=ubuntu:noble
-        - context: ovn
-          repository: openstackhelm/ovn
-          dockerfile: Dockerfile.centos
-          tags:
-            - centos_stream9
-            - "centos_stream9-{{ currentdate }}"
       docker_use_buildkit: true
     files: &ovn_files
       - ovn/.*
@@ -88,8 +74,8 @@
     files: *ovn_files
 
 - job:
-    name: openstack-helm-images-compute-kit-ovn-2024-1-ubuntu_jammy
-    parent: openstack-helm-compute-kit-ovn-2024-1-ubuntu_jammy
+    name: openstack-helm-images-compute-kit-ovn-2025-1-ubuntu_jammy
+    parent: openstack-helm-compute-kit-ovn-2025-1-ubuntu_jammy
     voting: false
     files: *ovn_files
     dependencies:
