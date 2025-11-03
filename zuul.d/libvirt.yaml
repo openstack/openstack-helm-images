@@ -44,19 +44,6 @@
           arch:
             - linux/amd64
           tags:
-            - "caracal-ubuntu_jammy-{{ currentdate }}"
-            - "caracal-ubuntu_jammy"
-            - "2024.1-ubuntu_jammy-{{ currentdate }}"
-            - "2024.1-ubuntu_jammy"
-          build_args:
-            - FROM=ubuntu:jammy
-            - RELEASE=caracal
-        - context: libvirt
-          repository: openstackhelm/libvirt
-          dockerfile: Dockerfile
-          arch:
-            - linux/amd64
-          tags:
             - "dalmatian-ubuntu_noble-{{ currentdate }}"
             - "dalmatian-ubuntu_noble"
             - "2024.2-ubuntu_noble-{{ currentdate }}"
