@@ -5,20 +5,22 @@ ceph-daemon container image
 This container builds a small image with ceph service, kubectl and
 some other utilities for use in the ceph charts.
 
-Manual build
-============
-
-Ubuntu Xenial
--------------
-
-Here are the instructions for building Xenial image:
-
-.. literalinclude:: ../../ceph-daemon/build.sh
-    :lines: 7-12
-    :language: shell
-
-Alternatively, this step can be performed by running the script directly:
+If you need to build the image, you can use ``Dockerfile.ubuntu`` with
+the ``FROM`` build argument set to your source image.  For example:
 
 .. code-block:: shell
 
-  ./ceph-daemon/build.sh
+   docker buildx build \
+     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
+     -f ceph-daemon/Dockerfile.ubuntu \
+     ceph-daemon/
+
+You can also use ``buildx`` to build the image for multiple architectures:
+
+.. code-block:: shell
+
+   docker buildx build \
+     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
+     -f ceph-daemon/Dockerfile.ubuntu \
+     --platform linux/amd64,linux/arm64 \
+     ceph-daemon/

@@ -22,9 +22,6 @@ Code and parameters
 
 OpenStack-Helm-Images can build multiple OpenStack images based on LOCI.
 
-By default, OpenStack-Helm-Image has one `build.sh` script, in the
-`openstack/loci/` folder.
-
 For convenience, default overrides per OpenStack branch are provided in
 the same folder:
 `build-newton.sh` builds an OpenStack newton image, `build-ocata.sh` builds

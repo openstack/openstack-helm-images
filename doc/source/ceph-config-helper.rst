@@ -3,34 +3,25 @@ ceph-config-helper container image
 ==================================
 
 This container builds a small image with kubectl and some other
-utilites for use in the ceph charts or interact with a ceph
+utilities for use in the ceph charts or interact with a ceph
 deployment.
 
-Manual build
-============
-
-Ubuntu Xenial
--------------
-
-Here are the instructions for building Xenial image:
-
-.. literalinclude:: ../../ceph-config-helper/build.sh
-    :lines: 7-12
-    :language: shell
-
-Alternatively, this step can be performed by running the script directly:
+If you need to build the image, you can use ``Dockerfile.ubuntu`` with
+the ``FROM`` build argument set to your source image.  For example:
 
 .. code-block:: shell
 
-  ./ceph-config-helper/build.sh
+   docker buildx build \
+     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
+     -f ceph-config-helper/Dockerfile.ubuntu \
+     ceph-config-helper/
 
-
-openSUSE Leap 15
-----------------
-
-To build an openSUSE leap 15 image, you can export varibles before
-running the build script:
+You can also use ``buildx`` to build the image for multiple architectures:
 
 .. code-block:: shell
 
-   DISTRO=suse_15 ./ceph-config-helper/build.sh
+   docker buildx build \
+     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
+     -f ceph-config-helper/Dockerfile.ubuntu \
+     --platform linux/amd64,linux/arm64 \
+     ceph-config-helper/
