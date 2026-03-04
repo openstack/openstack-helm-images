@@ -1,17 +1,24 @@
-ARG FROM=docker.io/ubuntu:jammy
-FROM ${FROM}
+ARG FROM=quay.io/airshipit/ubuntu:jammy
+FROM --platform=${BUILDPLATFORM} ${FROM}
+
+ARG TARGETOS
+ARG TARGETARCH
+
+ARG VENV=/opt/nagios_venv
+ENV PATH=${VENV}/bin:$PATH
+
+ENV APACHE_FRONTEND_PORT=8000
+ENV APACHE_FRONTEND_SECURE_PORT=8443
+ENV KUBE_VERSION=1.34.5
+ENV ES_VERSION=8.19.3
+ENV ES_DSL_VERSION=8.18.0
+
+ENV NAGIOSADMIN_EMAIL=nagios@localhost
+ENV NAGIOS_HOME=/opt/nagios
+ENV NAGIOS_PLUGIN_DIR=/usr/lib/nagios/plugins
+ENV VERSION=4.5.11
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV APACHE_FRONTEND_PORT 8000
-ENV APACHE_FRONTEND_SECURE_PORT 8443
-ENV KUBE_VERSION=1.29.5
-ENV ES_DSL_VERSION=8.13.1
-ENV ES_VERSION=8.13.2
-
-ENV NAGIOSADMIN_EMAIL nagios@localhost
-ENV NAGIOS_HOME /opt/nagios
-ENV NAGIOS_PLUGIN_DIR /usr/lib/nagios/plugins
-ENV VERSION=4.5.0
 
 RUN set -ex \
     && apt-get update \
@@ -32,8 +39,10 @@ RUN set -ex \
          snmp-mibs-downloader \
     && apt-get install -y --no-install-recommends \
          python3-pip \
+         python3-venv \
          python3-requests \
          monitoring-plugins \
+    && python3 -m venv ${VENV} \
     && pip3 install --upgrade --no-cache-dir pip \
     && pip3 install --upgrade --no-cache-dir \
          requests \
@@ -41,9 +50,9 @@ RUN set -ex \
          kubernetes \
          elasticsearch==${ES_VERSION} \
          elasticsearch-dsl==${ES_DSL_VERSION} \
-    && curl --silent -L https://dl.k8s.io/v${KUBE_VERSION}/kubernetes-client-linux-amd64.tar.gz \
+    && curl --silent -L https://dl.k8s.io/v${KUBE_VERSION}/kubernetes-client-${TARGETOS}-${TARGETARCH}.tar.gz \
        | tar -zC /usr/bin --strip-components=3 --wildcards -x "*/*/*/kubectl" \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g 3000 nagios \
     && useradd -u 3000 -g nagios -d ${NAGIOS_HOME} -s /bin/bash -c 'Nagios Admin' nagios \

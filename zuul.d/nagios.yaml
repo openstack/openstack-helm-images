@@ -52,6 +52,18 @@
             - linux/amd64
             - linux/arm64
           build_args:
+            - "FROM=quay.io/airshipit/ubuntu:noble"
+          tags:
+            - latest-ubuntu_noble
+            - "noble-{{ currentdate }}"
+        - context: nagios
+          registry: quay.io
+          repository: quay.io/airshipit/nagios
+          container_filename: Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          build_args:
             - "FROM=quay.io/airshipit/ubuntu:jammy"
           tags:
             - latest-ubuntu_jammy

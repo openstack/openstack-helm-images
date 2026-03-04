@@ -22,7 +22,7 @@ from __future__ import print_function
 import sys
 
 import argparse
-import datetime
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pprint import pprint
@@ -164,8 +164,8 @@ def main():
     setup_argparse(parser)
     args = parser.parse_args()
 
-    lt_time = datetime.datetime.utcnow()
-    gte_time = lt_time - datetime.timedelta(minutes=(int(args.range)))
+    lt_time = datetime.now(timezone.utc)
+    gte_time = lt_time - timedelta(minutes=(int(args.range)))
 
     data = {
         "inline": {
