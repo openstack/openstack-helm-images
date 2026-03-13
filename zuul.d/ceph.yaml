@@ -1,6 +1,4 @@
 ---
-# Copyright 2019, SUSE LINUX GmbH.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,42 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    check:
-      jobs:
-        - openstack-helm-images-build-ceph-config-helper
-        - openstack-helm-images-build-ceph-daemon
-        - openstack-helm-images-build-ceph-utility
-    gate:
-      jobs:
-        - openstack-helm-images-build-ceph-config-helper
-        - openstack-helm-images-build-ceph-daemon
-        - openstack-helm-images-build-ceph-utility
-        - openstack-helm-images-upload-ceph-config-helper
-        - openstack-helm-images-upload-ceph-daemon
-        - openstack-helm-images-upload-ceph-utility
-    promote:
-      jobs:
-        - openstack-helm-images-promote-ceph-config-helper
-        - openstack-helm-images-promote-ceph-daemon
-        - openstack-helm-images-promote-ceph-utility
-    periodic:
-      jobs:
-        - openstack-helm-images-build-ceph-config-helper
-        - openstack-helm-images-build-ceph-daemon
-        - openstack-helm-images-build-ceph-utility
-        - openstack-helm-images-upload-ceph-config-helper
-        - openstack-helm-images-upload-ceph-daemon
-        - openstack-helm-images-upload-ceph-utility
-        - openstack-helm-images-promote-ceph-config-helper:
-            dependencies:
-              - name: openstack-helm-images-upload-ceph-config-helper
-        - openstack-helm-images-promote-ceph-daemon:
-            dependencies:
-              - name: openstack-helm-images-upload-ceph-daemon
-        - openstack-helm-images-promote-ceph-utility:
-            dependencies:
-              - name: openstack-helm-images-upload-ceph-utility
 
 - job:
     name: openstack-helm-images-build-ceph-common

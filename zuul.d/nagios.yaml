@@ -11,30 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    check:
-      jobs:
-        - openstack-helm-images-build-nagios
-        - openstack-helm-images-monitoring
-    gate:
-      jobs:
-        - openstack-helm-images-build-nagios
-        - openstack-helm-images-upload-nagios
-    promote:
-      jobs:
-        - openstack-helm-images-promote-nagios
-    periodic:
-      jobs:
-        - openstack-helm-images-build-nagios
-        - openstack-helm-images-upload-nagios:
-            dependencies:
-              - name: openstack-helm-images-buildset-registry
-              - name: openstack-helm-images-build-nagios
-              - name: openstack-helm-images-monitoring
-        - openstack-helm-images-promote-nagios:
-            dependencies:
-              - name: openstack-helm-images-upload-nagios
-        - openstack-helm-images-monitoring
 
 - job:
     name: openstack-helm-images-build-nagios

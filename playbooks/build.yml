@@ -6,6 +6,10 @@
     container_command: docker
 
   tasks:
+    - name: Print container images
+      debug:
+        var: container_images
+
     - name: Build images
       include_role:
         name: build-container-image

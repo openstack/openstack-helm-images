@@ -39,6 +39,7 @@
         --label "org.zuul-ci.change={{ zuul.change }}"
       {% endif -%}
       --label "org.zuul-ci.change_url={{ zuul.change_url }}"
+      --progress=plain
 
 - name: Build and push images for all arches
   command: "{{ docker_buildx_command }} {% if _multiarch %}--platform={{ zj_image.arch | join(',') }}{% endif %} --push"

@@ -11,29 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    check:
-      jobs:
-        - openstack-helm-images-build-fluentd
-    gate:
-      jobs:
-        - openstack-helm-images-build-fluentd
-        - openstack-helm-images-upload-fluentd
-    promote:
-      jobs:
-        - openstack-helm-images-promote-fluentd
-    periodic:
-      jobs:
-        - openstack-helm-images-build-fluentd
-        - openstack-helm-images-upload-fluentd:
-            dependencies:
-              - name: openstack-helm-images-buildset-registry
-              - name: openstack-helm-images-build-fluentd
-              - name: openstack-helm-images-logging
-        - openstack-helm-images-promote-fluentd:
-            dependencies:
-              - name: openstack-helm-images-upload-fluentd
-        - openstack-helm-images-logging
 
 - job:
     name: openstack-helm-images-build-fluentd

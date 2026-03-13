@@ -1,0 +1,566 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- project:
+    vars:
+      helm_version: "3.18.1"
+
+    templates:
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+
+    check:
+      jobs:
+        # Base jobs
+        - openstack-helm-images-buildset-registry
+
+        # Build base OpenStack images
+        - openstack-helm-images-build-base
+        - openstack-helm-images-build-venv-builder
+
+        # Build OpenStack images
+        - openstack-helm-images-build-barbican
+        - openstack-helm-images-build-blazar
+        - openstack-helm-images-build-cinder
+        - openstack-helm-images-build-cloudkitty
+        - openstack-helm-images-build-cyborg
+        - openstack-helm-images-build-designate
+        - openstack-helm-images-build-freezer
+        - openstack-helm-images-build-freezer-api
+        - openstack-helm-images-build-glance
+        - openstack-helm-images-build-heat
+        - openstack-helm-images-build-horizon
+        - openstack-helm-images-build-ironic
+        - openstack-helm-images-build-keystone
+        - openstack-helm-images-build-magnum
+        - openstack-helm-images-build-manila
+        - openstack-helm-images-build-masakari
+        - openstack-helm-images-build-masakari-monitors
+        - openstack-helm-images-build-neutron
+        - openstack-helm-images-build-nova
+        - openstack-helm-images-build-octavia
+        - openstack-helm-images-build-openstack-client
+        - openstack-helm-images-build-placement
+        - openstack-helm-images-build-skyline
+        - openstack-helm-images-build-swift
+        - openstack-helm-images-build-tacker
+        - openstack-helm-images-build-trove
+        - openstack-helm-images-build-watcher
+        - openstack-helm-images-build-zaqar
+
+        # Build Infra images
+        - openstack-helm-images-build-ceph-config-helper
+        - openstack-helm-images-build-ceph-daemon
+        - openstack-helm-images-build-ceph-utility
+        - openstack-helm-images-build-fluentd
+        - openstack-helm-images-build-libvirt
+        - openstack-helm-images-build-mariadb
+        - openstack-helm-images-build-nagios
+        - openstack-helm-images-build-node-problem-detector
+        - openstack-helm-images-build-openvswitch
+        - openstack-helm-images-build-osh-selenium
+        - openstack-helm-images-build-ovn
+        - openstack-helm-images-build-tempest
+
+        # Test jobs
+        - openstack-helm-images-monitoring
+        - openstack-helm-images-logging
+        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
+        - openstack-helm-images-cinder-2024-2-ubuntu_jammy
+        - openstack-helm-images-compute-kit-2025-1-ubuntu_noble
+        - openstack-helm-images-cinder-2025-1-ubuntu_noble
+        - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-cinder-2025-2-ubuntu_noble
+        - openstack-helm-images-compute-kit-ovn-2025-2-ubuntu_noble
+
+    gate:
+      jobs:
+        - openstack-helm-images-buildset-registry
+
+        # Build base OpenStack images
+        - openstack-helm-images-build-base
+        - openstack-helm-images-upload-base
+        - openstack-helm-images-build-venv-builder
+        - openstack-helm-images-upload-venv-builder
+
+        # Build and upload OpenStack images
+        - openstack-helm-images-build-barbican
+        - openstack-helm-images-upload-barbican
+        - openstack-helm-images-build-blazar
+        - openstack-helm-images-upload-blazar
+        - openstack-helm-images-build-cinder
+        - openstack-helm-images-upload-cinder
+        - openstack-helm-images-build-cloudkitty
+        - openstack-helm-images-upload-cloudkitty
+        - openstack-helm-images-build-cyborg
+        - openstack-helm-images-upload-cyborg
+        - openstack-helm-images-build-designate
+        - openstack-helm-images-upload-designate
+        - openstack-helm-images-build-freezer
+        - openstack-helm-images-upload-freezer
+        - openstack-helm-images-build-freezer-api
+        - openstack-helm-images-upload-freezer-api
+        - openstack-helm-images-build-glance
+        - openstack-helm-images-upload-glance
+        - openstack-helm-images-build-heat
+        - openstack-helm-images-upload-heat
+        - openstack-helm-images-build-horizon
+        - openstack-helm-images-upload-horizon
+        - openstack-helm-images-build-ironic
+        - openstack-helm-images-upload-ironic
+        - openstack-helm-images-build-keystone
+        - openstack-helm-images-upload-keystone
+        - openstack-helm-images-build-magnum
+        - openstack-helm-images-upload-magnum
+        - openstack-helm-images-build-manila
+        - openstack-helm-images-upload-manila
+        - openstack-helm-images-build-masakari
+        - openstack-helm-images-upload-masakari
+        - openstack-helm-images-build-masakari-monitors
+        - openstack-helm-images-upload-masakari-monitors
+        - openstack-helm-images-build-neutron
+        - openstack-helm-images-upload-neutron
+        - openstack-helm-images-build-nova
+        - openstack-helm-images-upload-nova
+        - openstack-helm-images-build-octavia
+        - openstack-helm-images-upload-octavia
+        - openstack-helm-images-build-openstack-client
+        - openstack-helm-images-upload-openstack-client
+        - openstack-helm-images-build-placement
+        - openstack-helm-images-upload-placement
+        - openstack-helm-images-build-skyline
+        - openstack-helm-images-upload-skyline
+        - openstack-helm-images-build-swift
+        - openstack-helm-images-upload-swift
+        - openstack-helm-images-build-tacker
+        - openstack-helm-images-upload-tacker
+        - openstack-helm-images-build-trove
+        - openstack-helm-images-upload-trove
+        - openstack-helm-images-build-watcher
+        - openstack-helm-images-upload-watcher
+        - openstack-helm-images-build-zaqar
+        - openstack-helm-images-upload-zaqar
+
+        # Build and upload infra images
+        - openstack-helm-images-build-ceph-config-helper
+        - openstack-helm-images-build-ceph-daemon
+        - openstack-helm-images-build-ceph-utility
+        - openstack-helm-images-upload-ceph-config-helper
+        - openstack-helm-images-upload-ceph-daemon
+        - openstack-helm-images-upload-ceph-utility
+        - openstack-helm-images-build-fluentd
+        - openstack-helm-images-upload-fluentd
+        - openstack-helm-images-build-libvirt
+        - openstack-helm-images-upload-libvirt
+        - openstack-helm-images-build-mariadb
+        - openstack-helm-images-upload-mariadb
+        - openstack-helm-images-build-nagios
+        - openstack-helm-images-upload-nagios
+        - openstack-helm-images-build-node-problem-detector
+        - openstack-helm-images-upload-node-problem-detector
+        - openstack-helm-images-build-openvswitch
+        - openstack-helm-images-upload-openvswitch
+        - openstack-helm-images-build-osh-selenium
+        - openstack-helm-images-upload-osh-selenium
+        - openstack-helm-images-build-ovn
+        - openstack-helm-images-upload-ovn
+        - openstack-helm-images-build-tempest
+        - openstack-helm-images-upload-tempest
+
+    # ============================================================================
+    # Promote Pipeline
+    # ============================================================================
+    promote:
+      jobs:
+        # Promote base OpenStack images
+        - openstack-helm-images-promote-base
+        - openstack-helm-images-promote-venv-builder
+
+        # Promote OpenStack images
+        - openstack-helm-images-promote-barbican
+        - openstack-helm-images-promote-blazar
+        - openstack-helm-images-promote-cinder
+        - openstack-helm-images-promote-cloudkitty
+        - openstack-helm-images-promote-cyborg
+        - openstack-helm-images-promote-designate
+        - openstack-helm-images-promote-freezer
+        - openstack-helm-images-promote-freezer-api
+        - openstack-helm-images-promote-glance
+        - openstack-helm-images-promote-heat
+        - openstack-helm-images-promote-horizon
+        - openstack-helm-images-promote-ironic
+        - openstack-helm-images-promote-keystone
+        - openstack-helm-images-promote-magnum
+        - openstack-helm-images-promote-manila
+        - openstack-helm-images-promote-masakari
+        - openstack-helm-images-promote-masakari-monitors
+        - openstack-helm-images-promote-neutron
+        - openstack-helm-images-promote-nova
+        - openstack-helm-images-promote-octavia
+        - openstack-helm-images-promote-openstack-client
+        - openstack-helm-images-promote-placement
+        - openstack-helm-images-promote-skyline
+        - openstack-helm-images-promote-swift
+        - openstack-helm-images-promote-tacker
+        - openstack-helm-images-promote-trove
+        - openstack-helm-images-promote-watcher
+        - openstack-helm-images-promote-zaqar
+
+        # Promote Infra images
+        - openstack-helm-images-promote-ceph-config-helper
+        - openstack-helm-images-promote-ceph-daemon
+        - openstack-helm-images-promote-ceph-utility
+        - openstack-helm-images-promote-fluentd
+        - openstack-helm-images-promote-libvirt
+        - openstack-helm-images-promote-mariadb
+        - openstack-helm-images-promote-nagios
+        - openstack-helm-images-promote-node-problem-detector
+        - openstack-helm-images-promote-openvswitch
+        - openstack-helm-images-promote-osh-selenium
+        - openstack-helm-images-promote-ovn
+        - openstack-helm-images-promote-tempest
+
+    periodic:
+      jobs:
+        - openstack-helm-images-buildset-registry
+
+        # Test jobs
+        - openstack-helm-images-logging
+        - openstack-helm-images-monitoring
+        - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-compute-kit-ovn-2025-2-ubuntu_noble
+        - openstack-helm-images-cinder-2025-2-ubuntu_noble
+
+        # Ceph
+        - openstack-helm-images-build-ceph-config-helper
+        - openstack-helm-images-build-ceph-daemon
+        - openstack-helm-images-build-ceph-utility
+        - openstack-helm-images-upload-ceph-config-helper
+        - openstack-helm-images-upload-ceph-daemon
+        - openstack-helm-images-upload-ceph-utility
+        - openstack-helm-images-promote-ceph-config-helper:
+            dependencies:
+              - name: openstack-helm-images-upload-ceph-config-helper
+        - openstack-helm-images-promote-ceph-daemon:
+            dependencies:
+              - name: openstack-helm-images-upload-ceph-daemon
+        - openstack-helm-images-promote-ceph-utility:
+            dependencies:
+              - name: openstack-helm-images-upload-ceph-utility
+
+        # Fluentd
+        - openstack-helm-images-build-fluentd
+        - openstack-helm-images-upload-fluentd:
+            dependencies:
+              - name: openstack-helm-images-build-fluentd
+              - name: openstack-helm-images-logging
+        - openstack-helm-images-promote-fluentd:
+            dependencies:
+              - name: openstack-helm-images-upload-fluentd
+
+        # Libvirt
+        - openstack-helm-images-build-libvirt
+        - openstack-helm-images-upload-libvirt:
+            dependencies:
+              - name: openstack-helm-images-build-libvirt
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-libvirt:
+            dependencies:
+              - name: openstack-helm-images-upload-libvirt
+
+        # MariaDB
+        - openstack-helm-images-build-mariadb
+        - openstack-helm-images-upload-mariadb:
+            dependencies:
+              - name: openstack-helm-images-build-mariadb
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-mariadb:
+            dependencies:
+              - name: openstack-helm-images-upload-mariadb
+
+        # Nagios
+        - openstack-helm-images-build-nagios
+        - openstack-helm-images-upload-nagios:
+            dependencies:
+              - name: openstack-helm-images-build-nagios
+              - name: openstack-helm-images-monitoring
+        - openstack-helm-images-promote-nagios:
+            dependencies:
+              - name: openstack-helm-images-upload-nagios
+
+        # Node Problem Detector
+        - openstack-helm-images-build-node-problem-detector
+        - openstack-helm-images-upload-node-problem-detector:
+            dependencies:
+              - name: openstack-helm-images-build-node-problem-detector
+              - name: openstack-helm-images-monitoring
+        - openstack-helm-images-promote-node-problem-detector:
+            dependencies:
+              - name: openstack-helm-images-upload-node-problem-detector
+
+        # OpenvSwitch
+        - openstack-helm-images-build-openvswitch
+        - openstack-helm-images-upload-openvswitch:
+            dependencies:
+              - name: openstack-helm-images-build-openvswitch
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-openvswitch:
+            dependencies:
+              - name: openstack-helm-images-upload-openvswitch
+
+        # OSH Selenium
+        - openstack-helm-images-build-osh-selenium
+        - openstack-helm-images-upload-osh-selenium:
+            dependencies:
+              - name: openstack-helm-images-build-osh-selenium
+              - name: openstack-helm-images-monitoring
+              - name: openstack-helm-images-logging
+        - openstack-helm-images-promote-osh-selenium:
+            dependencies:
+              - name: openstack-helm-images-upload-osh-selenium
+
+        # OVN
+        - openstack-helm-images-build-ovn
+        - openstack-helm-images-upload-ovn:
+            dependencies:
+              - name: openstack-helm-images-build-ovn
+              - name: openstack-helm-images-compute-kit-ovn-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-ovn:
+            dependencies:
+              - name: openstack-helm-images-upload-ovn
+
+        # Tempest
+        - openstack-helm-images-build-tempest
+        - openstack-helm-images-upload-tempest:
+            dependencies:
+              - name: openstack-helm-images-build-tempest
+        - openstack-helm-images-promote-tempest:
+            dependencies:
+              - name: openstack-helm-images-upload-tempest
+
+        # Glance
+        - openstack-helm-images-build-glance
+        - openstack-helm-images-upload-glance:
+            dependencies:
+              - name: openstack-helm-images-build-glance
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-glance:
+            dependencies:
+              - name: openstack-helm-images-upload-glance
+
+        # Keystone
+        - openstack-helm-images-build-keystone
+        - openstack-helm-images-upload-keystone:
+            dependencies:
+              - name: openstack-helm-images-build-keystone
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-keystone:
+            dependencies:
+              - name: openstack-helm-images-upload-keystone
+
+        # Heat
+        - openstack-helm-images-build-heat
+        - openstack-helm-images-upload-heat:
+            dependencies:
+              - name: openstack-helm-images-build-heat
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-heat:
+            dependencies:
+              - name: openstack-helm-images-upload-heat
+
+        # Nova
+        - openstack-helm-images-build-nova
+        - openstack-helm-images-upload-nova:
+            dependencies:
+              - name: openstack-helm-images-build-nova
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-nova:
+            dependencies:
+              - name: openstack-helm-images-upload-nova
+
+        # Neutron
+        - openstack-helm-images-build-neutron
+        - openstack-helm-images-upload-neutron:
+            dependencies:
+              - name: openstack-helm-images-build-neutron
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-neutron:
+            dependencies:
+              - name: openstack-helm-images-upload-neutron
+
+        # Placement
+        - openstack-helm-images-build-placement
+        - openstack-helm-images-upload-placement:
+            dependencies:
+              - name: openstack-helm-images-build-placement
+              - name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-placement:
+            dependencies:
+              - name: openstack-helm-images-upload-placement
+
+        # Cinder
+        - openstack-helm-images-build-cinder
+        - openstack-helm-images-upload-cinder:
+            dependencies:
+              - name: openstack-helm-images-build-cinder
+              - name: openstack-helm-images-cinder-2025-2-ubuntu_noble
+        - openstack-helm-images-promote-cinder:
+            dependencies:
+              - name: openstack-helm-images-upload-cinder
+
+        # Barbican
+        - openstack-helm-images-build-barbican
+        - openstack-helm-images-upload-barbican
+        - openstack-helm-images-promote-barbican:
+            dependencies:
+              - name: openstack-helm-images-upload-barbican
+
+        # Blazar
+        - openstack-helm-images-build-blazar
+        - openstack-helm-images-upload-blazar
+        - openstack-helm-images-promote-blazar:
+            dependencies:
+              - name: openstack-helm-images-upload-blazar
+
+        # Cloudkitty
+        - openstack-helm-images-build-cloudkitty
+        - openstack-helm-images-upload-cloudkitty
+        - openstack-helm-images-promote-cloudkitty:
+            dependencies:
+              - name: openstack-helm-images-upload-cloudkitty
+
+        # Cyborg
+        - openstack-helm-images-build-cyborg
+        - openstack-helm-images-upload-cyborg
+        - openstack-helm-images-promote-cyborg:
+            dependencies:
+              - name: openstack-helm-images-upload-cyborg
+
+        # Designate
+        - openstack-helm-images-build-designate
+        - openstack-helm-images-upload-designate
+        - openstack-helm-images-promote-designate:
+            dependencies:
+              - name: openstack-helm-images-upload-designate
+
+        # Freezer
+        - openstack-helm-images-build-freezer
+        - openstack-helm-images-upload-freezer
+        - openstack-helm-images-promote-freezer:
+            dependencies:
+              - name: openstack-helm-images-upload-freezer
+
+        # Freezer API
+        - openstack-helm-images-build-freezer-api
+        - openstack-helm-images-upload-freezer-api
+        - openstack-helm-images-promote-freezer-api:
+            dependencies:
+              - name: openstack-helm-images-upload-freezer-api
+
+        # Horizon
+        - openstack-helm-images-build-horizon
+        - openstack-helm-images-upload-horizon
+        - openstack-helm-images-promote-horizon:
+            dependencies:
+              - name: openstack-helm-images-upload-horizon
+
+        # Ironic
+        - openstack-helm-images-build-ironic
+        - openstack-helm-images-upload-ironic
+        - openstack-helm-images-promote-ironic:
+            dependencies:
+              - name: openstack-helm-images-upload-ironic
+
+        # Magnum
+        - openstack-helm-images-build-magnum
+        - openstack-helm-images-upload-magnum
+        - openstack-helm-images-promote-magnum:
+            dependencies:
+              - name: openstack-helm-images-upload-magnum
+
+        # Manila
+        - openstack-helm-images-build-manila
+        - openstack-helm-images-upload-manila
+        - openstack-helm-images-promote-manila:
+            dependencies:
+              - name: openstack-helm-images-upload-manila
+
+        # Masakari
+        - openstack-helm-images-build-masakari
+        - openstack-helm-images-upload-masakari
+        - openstack-helm-images-promote-masakari:
+            dependencies:
+              - name: openstack-helm-images-upload-masakari
+
+        # Masakari Monitors
+        - openstack-helm-images-build-masakari-monitors
+        - openstack-helm-images-upload-masakari-monitors
+        - openstack-helm-images-promote-masakari-monitors:
+            dependencies:
+              - name: openstack-helm-images-upload-masakari-monitors
+
+        # Octavia
+        - openstack-helm-images-build-octavia
+        - openstack-helm-images-upload-octavia
+        - openstack-helm-images-promote-octavia:
+            dependencies:
+              - name: openstack-helm-images-upload-octavia
+
+        # OpenStack Client
+        - openstack-helm-images-build-openstack-client
+        - openstack-helm-images-upload-openstack-client
+        - openstack-helm-images-promote-openstack-client:
+            dependencies:
+              - name: openstack-helm-images-upload-openstack-client
+
+        # Skyline
+        - openstack-helm-images-build-skyline
+        - openstack-helm-images-upload-skyline
+        - openstack-helm-images-promote-skyline:
+            dependencies:
+              - name: openstack-helm-images-upload-skyline
+
+        # Swift
+        - openstack-helm-images-build-swift
+        - openstack-helm-images-upload-swift
+        - openstack-helm-images-promote-swift:
+            dependencies:
+              - name: openstack-helm-images-upload-swift
+
+        # Tacker
+        - openstack-helm-images-build-tacker
+        - openstack-helm-images-upload-tacker
+        - openstack-helm-images-promote-tacker:
+            dependencies:
+              - name: openstack-helm-images-upload-tacker
+
+        # Trove
+        - openstack-helm-images-build-trove
+        - openstack-helm-images-upload-trove
+        - openstack-helm-images-promote-trove:
+            dependencies:
+              - name: openstack-helm-images-upload-trove
+
+        # Watcher
+        - openstack-helm-images-build-watcher
+        - openstack-helm-images-upload-watcher
+        - openstack-helm-images-promote-watcher:
+            dependencies:
+              - name: openstack-helm-images-upload-watcher
+
+        # Zaqar
+        - openstack-helm-images-build-zaqar
+        - openstack-helm-images-upload-zaqar
+        - openstack-helm-images-promote-zaqar:
+            dependencies:
+              - name: openstack-helm-images-upload-zaqar

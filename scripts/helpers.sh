@@ -1,0 +1,292 @@
+#!/bin/bash
+
+# Defaults
+export LC_CTYPE=C.UTF-8
+# export APT_MIRROR_HOST_DEFAULT="mirrors.mit.edu"
+export APT_MIRROR_HOST_DEFAULT=""
+export CASS_DRIVER_BUILD_CONCURRENCY=8
+export UWSGI_PROFILE_OVERRIDE=ssl=true
+export CPUCOUNT=1
+export ALLOW_UNAUTHENTICATED=false
+
+# Common helper functions shared by build scripts.
+
+get_bindep_packages() {
+    # Resolve bindep packages for a project/profile set.
+    # Args:
+    #   $1: project name
+    #   $2...: PROFILES list (space-separated)
+    source /etc/lsb-release
+
+    local project="$1"
+    shift
+    local profiles=("$@")
+
+    local packages=()
+    for file in /opt/bindep*; do
+        packages+=($(bindep -f "$file" -b -l newline "${project}" "${profiles[@]}" "${DISTRIB_CODENAME}" || :))
+    done
+
+    echo "${packages[@]}"
+}
+
+install_system_packages() {
+    # Install distribution packages provided as arguments.
+    # Args:
+    #   $@ packages to install
+    local packages=("$@")
+    export DEBIAN_FRONTEND=noninteractive
+    if [[ ${#packages[@]} -gt 0 ]]; then
+        apt-get update && \
+        apt-get upgrade -y && \
+        apt-get install -y --no-install-recommends "${packages[@]}"
+    fi
+}
+
+install_python3() {
+    install_system_packages \
+        python3 \
+        python3-venv
+
+    if [[ -n $(apt-cache search ^python3-distutils$ 2>/dev/null) ]]; then
+        apt-get install -y --no-install-recommends python3-distutils
+    fi
+
+    apt-get install -y --no-install-recommends \
+        libpython3.$(python3 -c 'import sys; print(sys.version_info.minor);')
+}
+
+configure_apt_sources() {
+    # Configure apt sources for Ubuntu based on the release version.
+    # Args:
+    #   $1: apt mirror_host (can be empty)
+    #   $2: driver (http or https, default: https)
+    local apt_mirror_host="${1:-${APT_MIRROR_HOST_DEFAULT}}"
+    local driver="${2:-https}"
+
+    # Handle unquoted call: configure_apt_sources ${APT_MIRROR_HOST} http
+    # When APT_MIRROR_HOST is empty, "http" or "https" ends up as $1.
+    if [[ "${apt_mirror_host}" == "http" || "${apt_mirror_host}" == "https" ]]; then
+        driver="${apt_mirror_host}"
+        apt_mirror_host="${APT_MIRROR_HOST_DEFAULT}"
+    fi
+
+    if [[ -z "${apt_mirror_host}" ]]; then
+        return
+    fi
+
+    source /etc/os-release
+    local ver=${VERSION_ID/./}
+    local codename="${VERSION_CODENAME}"
+    local arch="${TARGETARCH:-}"
+
+    if [[ -z "${arch}" ]]; then
+        arch="$(dpkg --print-architecture 2>/dev/null || true)"
+    fi
+
+    local trusted_prefix=""
+    local trusted_flag=""
+    if [[ -n "${apt_mirror_host}" ]]; then
+        trusted_prefix="[trusted=yes] "
+        trusted_flag="yes"
+    fi
+
+    case "${arch}" in
+    "arm64"|"aarch64")
+        apt_mirror="${driver}://${apt_mirror_host:-ports.ubuntu.com}/ubuntu-ports/"
+        ;;
+    "amd64"|"x86_64")
+        apt_mirror="${driver}://${apt_mirror_host:-archive.ubuntu.com}/ubuntu/"
+        ;;
+    *)
+        echo "Unsupported architecture: ${arch}"
+        exit 1
+        ;;
+    esac
+
+    if [ "$ver" -ge "2404" ]; then  # Ubuntu 24.04 and newer
+        mkdir -p /etc/apt/sources.list.d
+        if [[ -f /etc/apt/sources.list.d/ubuntu.sources && ! -f /etc/apt/sources.list.d/ubuntu.sources.orig ]]; then
+            mv /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.orig
+        fi
+        cat > /etc/apt/sources.list.d/ubuntu.sources <<EOF
+Types: deb
+URIs: ${apt_mirror}
+Suites: ${codename} ${codename}-updates ${codename}-backports ${codename}-security
+Components: main universe
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+EOF
+        if [[ -n "${trusted_flag}" ]]; then
+            echo "Trusted: ${trusted_flag}" >> /etc/apt/sources.list.d/ubuntu.sources
+        fi
+        cat /etc/apt/sources.list.d/ubuntu.sources
+    else
+        if [[ -f /etc/apt/sources.list.d/ubuntu.sources && ! -f /etc/apt/sources.list.d/ubuntu.sources.orig ]]; then
+            mv /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.orig
+        fi
+        if [[ -f /etc/apt/sources.list && ! -f /etc/apt/sources.list.orig ]]; then
+            mv /etc/apt/sources.list /etc/apt/sources.list.orig
+        fi
+        cat > /etc/apt/sources.list <<EOF
+deb ${trusted_prefix}${apt_mirror} ${codename} main universe
+deb ${trusted_prefix}${apt_mirror} ${codename}-updates main universe
+deb ${trusted_prefix}${apt_mirror} ${codename}-security main universe
+deb ${trusted_prefix}${apt_mirror} ${codename}-backports main universe
+EOF
+        cat /etc/apt/sources.list
+    fi
+
+    if [[ -f /etc/apt/apt.conf.d/allow-unauthenticated ]]; then
+        mv /etc/apt/apt.conf.d/allow-unauthenticated /etc/apt/apt.conf.d/allow-unauthenticated.orig
+    fi
+    cat <<EOF >> /etc/apt/apt.conf.d/allow-unauthenticated
+APT::Get::AllowUnauthenticated "${ALLOW_UNAUTHENTICATED}";
+Acquire::AllowInsecureRepositories "${ALLOW_UNAUTHENTICATED}";
+Acquire::AllowDowngradeToInsecureRepositories "${ALLOW_UNAUTHENTICATED}";
+EOF
+    cat /etc/apt/apt.conf.d/allow-unauthenticated
+}
+
+revert_apt_sources() {
+    # Restore original apt sources files if backups exist.
+    if [[ -f /etc/apt/sources.list.d/ubuntu.sources.orig ]]; then
+        mv /etc/apt/sources.list.d/ubuntu.sources{.orig,}
+    fi
+    if [[ -f /etc/apt/sources.list.orig ]]; then
+        mv /etc/apt/sources.list{.orig,}
+    fi
+    if [[ -f /etc/apt/apt.conf.d/allow-unauthenticated.orig ]]; then
+        mv /etc/apt/apt.conf.d/allow-unauthenticated{.orig,}
+    fi
+}
+
+cleanup() {
+    apt-get update
+    apt-get purge -y --auto-remove \
+        git \
+        patch \
+        python3-virtualenv \
+        virtualenv || true
+
+    rm -rf /var/lib/apt/lists/*
+
+    # Allow python to use system site packages when missing from the venv
+    sed -i 's/\(include-system-site-packages\).*/\1 = true/g' /var/lib/openstack/pyvenv.cfg
+    rm -rf /tmp/* /root/.cache/pip /etc/machine-id
+    find /usr/ /var/ \( -name "*.pyc" -o -name "__pycache__" \) -delete
+    # Remove sources added to image
+    rm -rf /opt/*
+}
+
+collect_info() {
+    # Gather pip and project metadata into INFO_DIR.
+    local INFO_DIR="/etc/image_info"
+    mkdir -p "${INFO_DIR}"
+    local pip_info="${INFO_DIR}/pip.txt"
+    local project_info="${INFO_DIR}/project.txt"
+
+    pip freeze > "${pip_info}"
+
+    cat > "${project_info}" <<EOF
+PROJECT=${PROJECT}
+PROJECT_REPO=${PROJECT_REPO}
+PROJECT_REF=${PROJECT_REF}
+EOF
+    pushd "${SOURCES_DIR}/${PROJECT}"
+    echo "========"
+    git log -1 >> "${project_info}"
+    popd
+}
+
+configure_packages() {
+    # Optionally copy default config files from venv/etc into /etc/PROJECT.
+    local copy_default_config_files="${1:-${COPY_DEFAULT_CONFIG_FILES:-no}}"
+    if [[ "${copy_default_config_files}" == "yes" ]]; then
+        mkdir -p "/etc/${PROJECT}/"
+        cp -r "/var/lib/openstack/etc/${PROJECT}"/* "/etc/${PROJECT}/" || true
+    fi
+}
+
+clone_project() {
+    # Clone the project defined by provided parameters into /tmp and checkout the ref.
+    # Args:
+    #   $1: project name
+    #   $2: project repo
+    #   $3: project ref
+    local project_name="$1"
+    local project_repo="$2"
+    local project_ref="$3"
+
+    if [[ ! -d "${SOURCES_DIR}/${project_name}" ]]; then
+        git clone "${project_repo}" "${SOURCES_DIR}/${project_name}"
+        pushd "${SOURCES_DIR}/${project_name}"
+        git fetch "${project_repo}" "${project_ref}"
+        git checkout FETCH_HEAD
+        popd
+    fi
+}
+
+create_user() {
+    # Create the system user/group for the project.
+    # Args:
+    #   $1: GID
+    #   $2: UID
+    #   $3: PROJECT name
+    local gid="$1"
+    local uid="$2"
+    local project="$3"
+
+    groupadd -g "${gid}" "${project}"
+    if [[ "${project}" == "nova" ]]; then
+        # NOTE: bash needed for nova to support instance migration
+        useradd -u "${uid}" -g "${project}" -M -d "/var/lib/${project}" -s /bin/bash -c "${project} user" "${project}"
+    else
+        useradd -u "${uid}" -g "${project}" -M -d "/var/lib/${project}" -s /usr/sbin/nologin -c "${project} user" "${project}"
+    fi
+
+    mkdir -p "/etc/${project}" "/var/log/${project}" "/var/lib/${project}" "/var/cache/${project}"
+    chown "${project}:${project}" "/etc/${project}" "/var/log/${project}" "/var/lib/${project}" "/var/cache/${project}"
+}
+
+get_pydep_packages() {
+    # Resolve pydep packages for a project/profile set.
+    # Args:
+    #   $1: project name
+    #   $2...: PROFILES list (space-separated)
+    local project="$1"
+    shift
+    local profiles=("$@")
+
+    local packages=()
+    for file in /opt/pydep*; do
+        packages+=($(bindep -f "$file" -b -l newline "${project}" "${profiles[@]}" || :))
+    done
+
+    echo "${packages[@]}"
+}
+
+install_pip_packages() {
+    # Install distribution packages provided as arguments.
+    # Args:
+    #   $@ packages to install
+    local packages=("$@")
+    if [[ ${#packages[@]} -gt 0 ]]; then
+        uv pip install --build-constraint /upper-constraints.txt -c /global-requirements.txt -c /upper-constraints.txt \
+            ${UV_PIP_ARGS} "${packages[@]}"
+    fi
+}
+
+setup_venv() {
+    # Create and prime a virtualenv with optional toolchain constraints.
+    # Uses PIP_VERSION_CONSTRAINT, SETUPTOOL_CONSTRAINT, WHEEL_CONSTRAINT if set.
+    local venv_path="${1:-/var/lib/openstack}"
+
+    python3 -m venv "${venv_path}"
+    # shellcheck source=/dev/null
+    source "${venv_path}/bin/activate"
+
+    pip install --upgrade "pip${PIP_VERSION_CONSTRAINT}"
+    pip install --upgrade "setuptools${SETUPTOOL_CONSTRAINT}"
+    pip install --upgrade "wheel${WHEEL_CONSTRAINT}"
+    pip install --upgrade bindep pkginfo uv
+}

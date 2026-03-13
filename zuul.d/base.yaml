@@ -1,6 +1,4 @@
 ---
-# Copyright 2019, SUSE LINUX GmbH.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,31 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    vars:
-      helm_version: "3.18.1"
-
-    check:
-      jobs:
-        - openstack-helm-images-buildset-registry
-        - openstack-helm-images-monitoring
-        - openstack-helm-images-logging
-    gate:
-      jobs:
-        - openstack-helm-images-buildset-registry
-        - openstack-helm-images-monitoring
-        - openstack-helm-images-logging
-    periodic-weekly:
-      jobs:
-        - openstack-helm-images-buildset-registry
-        - openstack-helm-images-monitoring
-        - openstack-helm-images-logging
-    periodic:
-      jobs:
-        - openstack-helm-images-buildset-registry
-    templates:
-      - publish-openstack-docs-pti
-      - release-notes-jobs-python3
 
 - job:
     name: openstack-helm-images-buildset-registry
@@ -53,6 +26,7 @@
 # `dockerfile`. Explicit.
 - job:
     name: openstack-helm-images-build
+    nodeset: openstack-helm-images-ubuntu-noble
     abstract: true
     match-on-config-updates: false
     roles:
@@ -69,7 +43,7 @@
       - ^.*\.(example|md|rst)$
       - ^doc/.*
       - ^releasenotes/.*
-    timeout: 3600
+    timeout: 10800
 
 # The child upload jobs must have dependencies
 # on the buildset regitsty jobs and on build jobs
@@ -110,39 +84,62 @@
       name: container_registry_credentials
       secret: openstack-helm-images_registry_credentials
 
-# Image testing jobs inheriting from osh jobs running against
-# particular image or set of images.
 - job:
-    name: openstack-helm-images-monitoring
-    parent: openstack-helm-monitoring
-    match-on-config-updates: false
-    dependencies:
-      - name: openstack-helm-images-build-osh-selenium
-        soft: true
-      - name: openstack-helm-images-build-node-problem-detector
-        soft: true
-      - name: openstack-helm-images-build-nagios
-        soft: true
-    files:
-      - osh-selenium/.*
-      - zuul.d/osh-selenium.yaml
-      - node-problem-detector/.*
-      - zuul.d/node-problem-detector.yaml
-      - nagios/.*
-      - zuul.d/nagios.yaml
+    name: openstack-helm-images-build-base
+    parent: openstack-helm-images-build
+    vars: &base_vars
+      set_base_registry_prefix: true
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      container_images:
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/base
+          container_filename: base/Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "2024.2-ubuntu_jammy"
+            - "2024.2-ubuntu_jammy-{{ currentdate }}"
+          build_args:
+            - "FROM='public.ecr.aws/ubuntu/ubuntu:jammy'"
+            - "CEPH_REPO='deb https://download.ceph.com/debian-reef/ jammy main'"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/base
+          container_filename: base/Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "2025.1-ubuntu_noble"
+            - "2025.1-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/base
+          container_filename: base/Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "2025.2-ubuntu_noble"
+            - "2025.2-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
 
 - job:
-    name: openstack-helm-images-logging
-    parent: openstack-helm-logging
-    match-on-config-updates: false
+    name: openstack-helm-images-upload-base
+    parent: openstack-helm-images-upload
+    description: Build and upload base images
     dependencies:
-      - name: openstack-helm-images-build-fluentd
-        soft: true
-      - name: openstack-helm-images-build-osh-selenium
-        soft: true
-    files:
-      - fluentd/.*
-      - zuul.d/fluentd.yaml
-      - zuul.d/elasticsearch-s3.yaml
-      - osh-selenium/.*
-      - zuul.d/osh-selenium.yaml
+      - name: openstack-helm-images-buildset-registry
+      - name: openstack-helm-images-build-base
+    vars: *base_vars
+
+- job:
+    name: openstack-helm-images-promote-base
+    parent: openstack-helm-images-promote
+    description: Promote a previously published base image to latest.
+    vars: *base_vars
