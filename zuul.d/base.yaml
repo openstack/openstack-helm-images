@@ -117,8 +117,6 @@
     parent: openstack-helm-monitoring
     match-on-config-updates: false
     dependencies:
-      - name: openstack-helm-images-build-prometheus-openstack-exporter
-        soft: true
       - name: openstack-helm-images-build-osh-selenium
         soft: true
       - name: openstack-helm-images-build-node-problem-detector
@@ -126,8 +124,6 @@
       - name: openstack-helm-images-build-nagios
         soft: true
     files:
-      - prometheus-openstack-exporter/.*
-      - zuul.d/prometheus-openstack-exporter.yaml
       - osh-selenium/.*
       - zuul.d/osh-selenium.yaml
       - node-problem-detector/.*
