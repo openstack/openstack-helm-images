@@ -12,7 +12,33 @@ ARG TARGETPLATFORM
 ARG PROJECT="python-openstackclient"
 ARG PROJECT_REF="stable/2025.2"
 ARG PROJECT_REPO="https://github.com/openstack/${PROJECT}"
-ARG PIP_PACKAGES="cmd2 python-barbicanclient python-blazarclient python-cinderclient python-cloudkittyclient python-cyborgclient python-designateclient python-freezerclient python-glanceclient python-heatclient python-ironicclient python-keystoneclient python-magnumclient python-manilaclient python-mistralclient python-neutronclient python-novaclient python-octaviaclient python-swiftclient python-tackerclient python-troveclient python-vitrageclient python-watcherclient python-zaqarclient python-zunclient sqlalchemy"
+ARG PIP_PACKAGES="cmd2 \
+osc-placement \
+python-barbicanclient \
+python-blazarclient \
+python-cinderclient \
+python-cloudkittyclient \
+python-cyborgclient \
+python-designateclient \
+python-freezerclient \
+python-glanceclient \
+python-heatclient \
+python-ironicclient \
+python-keystoneclient \
+python-magnumclient \
+python-manilaclient \
+python-mistralclient \
+python-neutronclient \
+python-novaclient \
+python-octaviaclient \
+python-swiftclient \
+python-tackerclient \
+python-troveclient \
+python-vitrageclient \
+python-watcherclient \
+python-zaqarclient \
+python-zunclient \
+sqlalchemy"
 ARG PROFILES=""
 
 # Not fully compatible with pip options. Only use those that are supported by `uv pip`.
