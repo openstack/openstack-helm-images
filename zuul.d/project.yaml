@@ -31,6 +31,7 @@
         # Build OpenStack images
         - openstack-helm-images-build-barbican
         - openstack-helm-images-build-blazar
+        - openstack-helm-images-build-ceilometer
         - openstack-helm-images-build-cinder
         - openstack-helm-images-build-cloudkitty
         - openstack-helm-images-build-cyborg
@@ -46,6 +47,7 @@
         - openstack-helm-images-build-manila
         - openstack-helm-images-build-masakari
         - openstack-helm-images-build-masakari-monitors
+        - openstack-helm-images-build-mistral
         - openstack-helm-images-build-neutron
         - openstack-helm-images-build-nova
         - openstack-helm-images-build-octavia
@@ -98,6 +100,8 @@
         - openstack-helm-images-upload-barbican
         - openstack-helm-images-build-blazar
         - openstack-helm-images-upload-blazar
+        - openstack-helm-images-build-ceilometer
+        - openstack-helm-images-upload-ceilometer
         - openstack-helm-images-build-cinder
         - openstack-helm-images-upload-cinder
         - openstack-helm-images-build-cloudkitty
@@ -128,6 +132,8 @@
         - openstack-helm-images-upload-masakari
         - openstack-helm-images-build-masakari-monitors
         - openstack-helm-images-upload-masakari-monitors
+        - openstack-helm-images-build-mistral
+        - openstack-helm-images-upload-mistral
         - openstack-helm-images-build-neutron
         - openstack-helm-images-upload-neutron
         - openstack-helm-images-build-nova
@@ -189,6 +195,7 @@
         # Promote OpenStack images
         - openstack-helm-images-promote-barbican
         - openstack-helm-images-promote-blazar
+        - openstack-helm-images-promote-ceilometer
         - openstack-helm-images-promote-cinder
         - openstack-helm-images-promote-cloudkitty
         - openstack-helm-images-promote-cyborg
@@ -204,6 +211,7 @@
         - openstack-helm-images-promote-manila
         - openstack-helm-images-promote-masakari
         - openstack-helm-images-promote-masakari-monitors
+        - openstack-helm-images-promote-mistral
         - openstack-helm-images-promote-neutron
         - openstack-helm-images-promote-nova
         - openstack-helm-images-promote-octavia
@@ -434,6 +442,13 @@
             dependencies:
               - name: openstack-helm-images-upload-blazar
 
+        # Ceilometer
+        - openstack-helm-images-build-ceilometer
+        - openstack-helm-images-upload-ceilometer
+        - openstack-helm-images-promote-ceilometer:
+            dependencies:
+              - name: openstack-helm-images-upload-ceilometer
+
         # Cloudkitty
         - openstack-helm-images-build-cloudkitty
         - openstack-helm-images-upload-cloudkitty
@@ -510,6 +525,13 @@
         - openstack-helm-images-promote-masakari-monitors:
             dependencies:
               - name: openstack-helm-images-upload-masakari-monitors
+
+        # Mistral
+        - openstack-helm-images-build-mistral
+        - openstack-helm-images-upload-mistral
+        - openstack-helm-images-promote-mistral:
+            dependencies:
+              - name: openstack-helm-images-upload-mistral
 
         # Octavia
         - openstack-helm-images-build-octavia
