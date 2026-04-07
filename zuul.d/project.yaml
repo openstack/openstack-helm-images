@@ -75,13 +75,13 @@
         # Test jobs
         - openstack-helm-images-monitoring
         - openstack-helm-images-logging
-        - openstack-helm-images-compute-kit-2024-2-ubuntu_jammy
-        - openstack-helm-images-cinder-2024-2-ubuntu_jammy
         - openstack-helm-images-compute-kit-2025-1-ubuntu_noble
         - openstack-helm-images-cinder-2025-1-ubuntu_noble
         - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
         - openstack-helm-images-cinder-2025-2-ubuntu_noble
         - openstack-helm-images-compute-kit-ovn-2025-2-ubuntu_noble
+        # - openstack-helm-images-compute-kit-2026-1-ubuntu_noble
+        # - openstack-helm-images-cinder-2026-1-ubuntu_noble
 
     gate:
       jobs:
@@ -240,6 +240,8 @@
         - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
         - openstack-helm-images-compute-kit-ovn-2025-2-ubuntu_noble
         - openstack-helm-images-cinder-2025-2-ubuntu_noble
+        # - openstack-helm-images-compute-kit-2026-1-ubuntu_noble
+        # - openstack-helm-images-cinder-2026-1-ubuntu_noble
 
         # Ceph
         - openstack-helm-images-build-ceph-config-helper

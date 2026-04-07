@@ -26,19 +26,6 @@
             - linux/amd64
             - linux/arm64
           tags:
-            - "2024.2-ubuntu_jammy"
-            - "2024.2-ubuntu_jammy-{{ currentdate }}"
-          build_args:
-            - "FROM='public.ecr.aws/ubuntu/ubuntu:jammy'"
-            - "REQUIREMENTS_REF=stable/2024.2"
-        - context: .
-          registry: quay.io
-          repository: quay.io/airshipit/venv_builder
-          container_filename: venv_builder/Dockerfile
-          arch:
-            - linux/amd64
-            - linux/arm64
-          tags:
             - "2025.1-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -57,6 +44,19 @@
           build_args:
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
             - "REQUIREMENTS_REF=stable/2025.2"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/venv_builder
+          container_filename: venv_builder/Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "2026.1-ubuntu_noble"
+            - "2026.1-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
+            - "REQUIREMENTS_REF=stable/2026.1"
 
 - job:
     name: openstack-helm-images-upload-venv-builder

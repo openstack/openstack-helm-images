@@ -99,19 +99,6 @@
             - linux/amd64
             - linux/arm64
           tags:
-            - "2024.2-ubuntu_jammy"
-            - "2024.2-ubuntu_jammy-{{ currentdate }}"
-          build_args:
-            - "FROM='public.ecr.aws/ubuntu/ubuntu:jammy'"
-            - "CEPH_REPO='deb https://download.ceph.com/debian-reef/ jammy main'"
-        - context: .
-          registry: quay.io
-          repository: quay.io/airshipit/base
-          container_filename: base/Dockerfile
-          arch:
-            - linux/amd64
-            - linux/arm64
-          tags:
             - "2025.1-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -126,6 +113,18 @@
           tags:
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/base
+          container_filename: base/Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "2026.1-ubuntu_noble"
+            - "2026.1-ubuntu_noble-{{ currentdate }}"
           build_args:
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
 

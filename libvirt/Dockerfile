@@ -15,7 +15,7 @@ ARG RELEASE
 RUN <<EOF /bin/bash
   set -xe
   if [ "$(lsb_release -sc)" = "noble" ]; then
-    if [[ "${RELEASE}" = "dalmatian" || "${RELEASE}" = "epoxy" || "${RELEASE}" = "flamingo" ]]; then
+    if [[ "${RELEASE}" = "dalmatian" || "${RELEASE}" = "epoxy" || "${RELEASE}" = "flamingo" || "${RELEASE}" = "gazpacho" ]]; then
       echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu $(lsb_release -sc)-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
     else
       echo "${RELEASE} is not supported on $(lsb_release -sc)"

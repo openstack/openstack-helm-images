@@ -28,21 +28,6 @@
             - linux/amd64
             - linux/arm64
           tags:
-            - "dalmatian-ubuntu_noble-{{ currentdate }}"
-            - "dalmatian-ubuntu_noble"
-            - "2024.2-ubuntu_noble-{{ currentdate }}"
-            - "2024.2-ubuntu_noble"
-          build_args:
-            - FROM=quay.io/airshipit/ubuntu:noble
-            - RELEASE=dalmatian
-        - context: libvirt
-          registry: quay.io
-          repository: quay.io/airshipit/libvirt
-          container_filename: Dockerfile
-          arch:
-            - linux/amd64
-            - linux/arm64
-          tags:
             - "epoxy-ubuntu_noble-{{ currentdate }}"
             - "epoxy-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
@@ -65,6 +50,21 @@
           build_args:
             - FROM=quay.io/airshipit/ubuntu:noble
             - RELEASE=flamingo
+        - context: libvirt
+          registry: quay.io
+          repository: quay.io/airshipit/libvirt
+          container_filename: Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "gazpacho-ubuntu_noble-{{ currentdate }}"
+            - "gazpacho-ubuntu_noble"
+            - "2026.1-ubuntu_noble-{{ currentdate }}"
+            - "2026.1-ubuntu_noble"
+          build_args:
+            - FROM=quay.io/airshipit/ubuntu:noble
+            - RELEASE=gazpacho
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml

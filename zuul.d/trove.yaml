@@ -33,20 +33,6 @@
             - linux/amd64
             - linux/arm64
           tags:
-            - "2024.2-ubuntu_jammy"
-            - "2024.2-ubuntu_jammy-{{ currentdate }}"
-          build_args:
-            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2024.2-ubuntu_jammy"
-            - "BASE_RUNTIME=quay.io/airshipit/base:2024.2-ubuntu_jammy"
-            - "PROJECT_REF=stable/2024.2"
-        - context: .
-          registry: quay.io
-          repository: quay.io/airshipit/trove
-          container_filename: trove/Dockerfile
-          arch:
-            - linux/amd64
-            - linux/arm64
-          tags:
             - "2025.1-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -67,6 +53,20 @@
             - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.2-ubuntu_noble"
             - "BASE_RUNTIME=quay.io/airshipit/base:2025.2-ubuntu_noble"
             - "PROJECT_REF=stable/2025.2"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/trove
+          container_filename: trove/Dockerfile
+          arch:
+            - linux/amd64
+            - linux/arm64
+          tags:
+            - "2026.1-ubuntu_noble"
+            - "2026.1-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.1-ubuntu_noble"
+            - "BASE_RUNTIME=quay.io/airshipit/base:2026.1-ubuntu_noble"
+            - "PROJECT_REF=stable/2026.1"
     files: &trove_files
       - trove/.*
       - zuul.d/trove.yaml
