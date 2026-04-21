@@ -70,6 +70,7 @@
     files: &neutron_files
       - neutron/.*
       - zuul.d/neutron.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

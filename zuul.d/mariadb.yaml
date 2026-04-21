@@ -47,6 +47,7 @@
     files: &mariadb_files
       - mariadb/.*
       - zuul.d/mariadb.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

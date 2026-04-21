@@ -71,6 +71,7 @@
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

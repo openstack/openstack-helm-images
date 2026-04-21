@@ -70,6 +70,7 @@
     files: &cinder_files
       - cinder/.*
       - zuul.d/cinder.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

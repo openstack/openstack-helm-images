@@ -70,6 +70,7 @@
     files: &heat_files
       - heat/.*
       - zuul.d/heat.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 
