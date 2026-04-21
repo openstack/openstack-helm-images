@@ -5,63 +5,79 @@ FROM ${BASE_VENV_BUILDER} AS build
 
 ENV PATH=/var/lib/openstack/bin:$PATH
 
-# APT mirror to use for package installs
-ARG APT_MIRROR_HOST=""
-ARG TARGETARCH
-ARG TARGETPLATFORM
-
-ARG PROJECT="nova"
-ARG PROJECT_REF="stable/2025.2"
-ARG PROJECT_REPO="https://github.com/openstack/${PROJECT}"
-ARG PIP_PACKAGES="libvirt-python"
+ARG NOVA_REPO=https://opendev.org/openstack/nova
+ARG NOVA_REF=stable/2026.1
 ARG PROFILES="fluent ceph linuxbridge openvswitch configdrive qemu apache migration"
 
-# Not fully compatible with pip options. Only use those that are supported by `uv pip`.
-ARG UV_PIP_ARGS=""
+# Use bindep to determine packages needed for this profile set
+COPY bindep.txt pydep.txt /opt/
+RUN mkdir -p /etc/image_info && \
+    uvx bindep -f /opt/bindep.txt -b -l newline nova ${PROFILES} > /etc/image_info/bindep_runtime.txt && \
+    uvx bindep -f /opt/bindep.txt -b -l newline nova build ${PROFILES} > /etc/image_info/bindep_build.txt && \
+    uvx bindep -f /opt/pydep.txt -b -l newline nova ${PROFILES} > /etc/image_info/python_packages.txt
 
-# Directory to use for source code checkouts and builds
-ARG SOURCES_DIR="/tmp"
+RUN if [ -s /etc/image_info/bindep_build.txt ]; then \
+        apt-get update \
+        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_build.txt \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
 
-# These are needed when virtualenv is created.
-ARG PIP_VERSION_CONSTRAINT=""
-# As of setuptools 82.0.0 (released 2026-02-08), pkg_resources was removed from setuptools.
-ARG SETUPTOOL_CONSTRAINT="<81"
-ARG WHEEL_CONSTRAINT=""
-
-COPY scripts /opt/scripts
-COPY pydep.txt /opt/
-
-RUN /opt/scripts/build_venv.sh && rm -rf /opt/scripts
+RUN sed -i '/^nova===/d' /upper-constraints.txt \
+    && git clone --filter=blob:none -b ${NOVA_REF} ${NOVA_REPO} /tmp/nova \
+    && uv pip install \
+         --build-constraint /upper-constraints.txt \
+         -c /upper-constraints.txt \
+         /tmp/nova \
+         -r /etc/image_info/python_packages.txt \
+    && git -C /tmp/nova log --oneline -1 > /etc/image_info/project.txt \
+    && rm -rf /tmp/nova \
+    && uv pip freeze > /etc/image_info/pip.txt
 
 FROM ${BASE_RUNTIME} AS runtime
 
-ARG PROJECT="nova"
-ARG DIST_PACKAGES="net-tools openssh-server iproute2 libvirt0 libosinfo-bin"
-ARG UID=42424
-ARG GID=42424
-ARG PROFILES="fluent ceph linuxbridge openvswitch configdrive qemu apache migration"
-
 ENV PATH=/var/lib/openstack/bin:$PATH
-
-# APT mirror to use for package installs
-ARG APT_MIRROR_HOST=""
-ARG TARGETARCH
-ARG TARGETPLATFORM
 
 ARG NOVNC_REPO=https://github.com/novnc/novnc
 ARG NOVNC_REF=v1.0.0
 ARG SPICE_REPO=https://gitlab.freedesktop.org/spice/spice-html5.git
 ARG SPICE_REF=spice-html5-0.1.6
 
-# User/group that swtpm binary runs as.
 ARG NOVA_TSS_USER=tss
 ARG NOVA_TSS_UID=42434
 ARG NOVA_TSS_GID=42434
 
 COPY --from=build --link /var/lib/openstack /var/lib/openstack
-COPY --from=build /global-requirements.txt /upper-constraints.txt /
 COPY --from=build /etc/image_info /etc/image_info
-COPY scripts /opt/scripts
-COPY nova/01_install_console.sh nova/02_add_tss_user.sh /opt/scripts/project_scripts/
-COPY bindep.txt /opt/
-RUN /opt/scripts/build_runtime.sh && rm -rf /opt/scripts
+
+# Install packages determined by bindep in build stage
+RUN if [ -s /etc/image_info/bindep_runtime.txt ]; then \
+        apt-get update \
+        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_runtime.txt \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+RUN find /var/lib/openstack \( -name "*.pyc" -o -name "__pycache__" \) -delete \
+    && rm -rf /tmp/* /root/.cache /etc/machine-id
+
+# Install noVNC and SPICE HTML5 console clients
+RUN mkdir /usr/share/novnc \
+    && git clone -b ${NOVNC_REF} --depth 1 ${NOVNC_REPO} /usr/share/novnc \
+    && rm -rf /usr/share/novnc/.git* \
+    && if [ ! -f /usr/share/novnc/vnc_auto.html ]; then \
+           ln -s vnc_lite.html /usr/share/novnc/vnc_auto.html; \
+       fi \
+    && mkdir /usr/share/spice-html5 \
+    && git clone -b ${SPICE_REF} --depth 1 ${SPICE_REPO} /usr/share/spice-html5 \
+    && rm -rf /usr/share/spice-html5/.git*
+
+RUN groupadd -g 42424 nova \
+    && useradd -u 42424 -g 42424 -M -d /var/lib/nova \
+               -s /bin/bash -c "nova user" nova \
+    && mkdir -p /etc/nova /var/log/nova /var/lib/nova /var/cache/nova \
+    && chown nova:nova \
+         /etc/nova /var/log/nova /var/lib/nova /var/cache/nova
+
+# Create TSS user/group for emulated TPM (swtpm)
+RUN groupadd -g ${NOVA_TSS_GID} ${NOVA_TSS_USER} \
+    && useradd -u ${NOVA_TSS_UID} -g ${NOVA_TSS_USER} \
+               -s /usr/sbin/nologin -c "${NOVA_TSS_USER} user" ${NOVA_TSS_USER}

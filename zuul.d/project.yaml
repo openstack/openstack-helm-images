@@ -13,7 +13,7 @@
 
 - project:
     vars:
-      helm_version: "3.18.1"
+      helm_version: "4.1.1"
 
     templates:
       - publish-openstack-docs-pti

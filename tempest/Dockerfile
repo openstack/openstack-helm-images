@@ -1,32 +1,57 @@
 # syntax=docker/dockerfile:1
-ARG FROM=quay.io/airshipit/ubuntu:noble
-FROM ${FROM}
+ARG BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.2-ubuntu_noble
+ARG BASE_RUNTIME=quay.io/airshipit/base:2025.2-ubuntu_noble
+FROM ${BASE_VENV_BUILDER} AS build
 
 ENV PATH=/var/lib/openstack/bin:$PATH
-ENV LANG=C.UTF-8
 
-RUN <<EOF
-#!/bin/bash
-set -ex
-export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get upgrade -y
-apt-get install netbase -y
-apt-get install --no-install-recommends -y \
-    python3-dev \
-    python3-venv \
-    build-essential \
-    python3-pip \
-    libssl-dev \
-    git \
-    lsb-release
-python3 -m venv /var/lib/openstack
-source /var/lib/openstack/bin/activate
-pip3 install -U pip setuptools wheel
-pip3 install tempest \
-  barbican-tempest-plugin \
-  cinder-tempest-plugin \
-  heat-tempest-plugin \
-  keystone-tempest-plugin \
-  neutron-tempest-plugin
-EOF
+ARG TEMPEST_REPO=https://opendev.org/openstack/tempest
+ARG TEMPEST_REF=master
+ARG PROFILES=""
+
+# Use bindep to determine packages needed for this profile set
+COPY bindep.txt pydep.txt /opt/
+RUN mkdir -p /etc/image_info && \
+    uvx bindep -f /opt/bindep.txt -b -l newline tempest ${PROFILES} > /etc/image_info/bindep_runtime.txt && \
+    uvx bindep -f /opt/bindep.txt -b -l newline tempest build ${PROFILES} > /etc/image_info/bindep_build.txt && \
+    uvx bindep -f /opt/pydep.txt -b -l newline tempest ${PROFILES} > /etc/image_info/python_packages.txt
+
+RUN if [ -s /etc/image_info/bindep_build.txt ]; then \
+        apt-get update \
+        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_build.txt \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+RUN sed -i '/^tempest===/d' /upper-constraints.txt \
+    && git clone --filter=blob:none -b ${TEMPEST_REF} ${TEMPEST_REPO} /tmp/tempest \
+    && uv pip install \
+         --no-build-isolation \
+         --build-constraint /upper-constraints.txt \
+         -c /upper-constraints.txt \
+         /tmp/tempest \
+         barbican-tempest-plugin \
+         cinder-tempest-plugin \
+         heat-tempest-plugin \
+         keystone-tempest-plugin \
+         neutron-tempest-plugin \
+    && git -C /tmp/tempest log --oneline -1 > /etc/image_info/project.txt \
+    && rm -rf /tmp/tempest \
+    && uv pip freeze > /etc/image_info/pip.txt
+
+FROM ${BASE_RUNTIME} AS runtime
+
+ENV PATH=/var/lib/openstack/bin:$PATH
+
+COPY --from=build --link /var/lib/openstack /var/lib/openstack
+COPY --from=build /etc/image_info /etc/image_info
+COPY --from=build /upper-constraints.txt /
+
+# Install packages determined by bindep in build stage
+RUN if [ -s /etc/image_info/bindep_runtime.txt ]; then \
+        apt-get update \
+        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_runtime.txt \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+RUN find /var/lib/openstack \( -name "*.pyc" -o -name "__pycache__" \) -delete \
+    && rm -rf /tmp/* /root/.cache /etc/machine-id

@@ -38,7 +38,7 @@
           build_args:
             - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.1-ubuntu_noble"
             - "BASE_RUNTIME=quay.io/airshipit/base:2025.1-ubuntu_noble"
-            - "PROJECT_REF=stable/2025.1"
+            - "MISTRAL_REF=stable/2025.1"
         - context: .
           registry: quay.io
           repository: quay.io/airshipit/mistral
@@ -52,7 +52,7 @@
           build_args:
             - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.2-ubuntu_noble"
             - "BASE_RUNTIME=quay.io/airshipit/base:2025.2-ubuntu_noble"
-            - "PROJECT_REF=stable/2025.2"
+            - "MISTRAL_REF=stable/2025.2"
         - context: .
           registry: quay.io
           repository: quay.io/airshipit/mistral
@@ -66,7 +66,7 @@
           build_args:
             - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.1-ubuntu_noble"
             - "BASE_RUNTIME=quay.io/airshipit/base:2026.1-ubuntu_noble"
-            - "PROJECT_REF=stable/2026.1"
+            - "MISTRAL_REF=stable/2026.1"
     files: &mistral_files
       - mistral/.*
       - zuul.d/mistral.yaml

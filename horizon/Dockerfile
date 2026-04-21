@@ -5,55 +5,65 @@ FROM ${BASE_VENV_BUILDER} AS build
 
 ENV PATH=/var/lib/openstack/bin:$PATH
 
-# APT mirror to use for package installs
-ARG APT_MIRROR_HOST=""
-ARG TARGETARCH
-ARG TARGETPLATFORM
-
-ARG PROJECT="horizon"
-ARG PROJECT_REF="stable/2025.2"
-ARG PROJECT_REPO="https://github.com/openstack/${PROJECT}"
-ARG PIP_PACKAGES="pymemcache"
+ARG HORIZON_REPO=https://opendev.org/openstack/horizon
+ARG HORIZON_REF=stable/2026.1
 ARG PROFILES="fluent apache"
 
-# Not fully compatible with pip options. Only use those that are supported by `uv pip`.
-ARG UV_PIP_ARGS=""
+# Use bindep to determine packages needed for this profile set
+COPY bindep.txt pydep.txt /opt/
+RUN mkdir -p /etc/image_info && \
+    uvx bindep -f /opt/bindep.txt -b -l newline horizon ${PROFILES} > /etc/image_info/bindep_runtime.txt && \
+    uvx bindep -f /opt/bindep.txt -b -l newline horizon build ${PROFILES} > /etc/image_info/bindep_build.txt && \
+    uvx bindep -f /opt/pydep.txt -b -l newline horizon ${PROFILES} > /etc/image_info/python_packages.txt
 
-# Directory to use for source code checkouts and builds
-ARG SOURCES_DIR="/tmp"
+RUN if [ -s /etc/image_info/bindep_build.txt ]; then \
+        apt-get update \
+        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_build.txt \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
 
-# These are needed when virtualenv is created.
-ARG PIP_VERSION_CONSTRAINT=""
-# As of setuptools 82.0.0 (released 2026-02-08), pkg_resources was removed from setuptools.
-ARG SETUPTOOL_CONSTRAINT="<81"
-ARG WHEEL_CONSTRAINT=""
-
-COPY scripts /opt/scripts
-COPY pydep.txt /opt/
-
-RUN /opt/scripts/build_venv.sh && rm -rf /opt/scripts
+RUN sed -i '/^horizon===/d' /upper-constraints.txt \
+    && git clone --filter=blob:none -b ${HORIZON_REF} ${HORIZON_REPO} /tmp/horizon \
+    && uv pip install \
+         --build-constraint /upper-constraints.txt \
+         -c /upper-constraints.txt \
+         /tmp/horizon \
+         -r /etc/image_info/python_packages.txt \
+    && git -C /tmp/horizon log --oneline -1 > /etc/image_info/project.txt \
+    && rm -rf /tmp/horizon \
+    && uv pip freeze > /etc/image_info/pip.txt
 
 FROM ${BASE_RUNTIME} AS runtime
 
-ARG PROJECT="horizon"
-ARG DIST_PACKAGES="gettext"
-ARG UID=42424
-ARG GID=42424
-ARG PROFILES="fluent apache"
-
 ENV PATH=/var/lib/openstack/bin:$PATH
 
-# APT mirror to use for package installs
-ARG APT_MIRROR_HOST=""
-ARG TARGETARCH
-ARG TARGETPLATFORM
 
-ARG HORIZON_EXTRA_PANELS
+ARG HORIZON_EXTRA_PANELS="heat_dashboard octavia_dashboard designatedashboard \
+    tf_dashboard bgpvpn_dashboard masakaridashboard manila_ui \
+    neutron_vpnaas_dashboard watcher_dashboard"
 
 COPY --from=build --link /var/lib/openstack /var/lib/openstack
-COPY --from=build /global-requirements.txt /upper-constraints.txt /
 COPY --from=build /etc/image_info /etc/image_info
-COPY scripts /opt/scripts
-COPY horizon/configure_horizon.sh /opt/scripts/project_scripts/
-COPY bindep.txt /opt/
-RUN /opt/scripts/build_runtime.sh && rm -rf /opt/scripts
+COPY --from=build /upper-constraints.txt /
+
+# Install packages determined by bindep in build stage
+RUN if [ -s /etc/image_info/bindep_runtime.txt ]; then \
+        apt-get update \
+        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_runtime.txt \
+        && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+RUN sed -i 's/include-system-site-packages = false/include-system-site-packages = true/' \
+      /var/lib/openstack/pyvenv.cfg \
+    && find /var/lib/openstack \( -name "*.pyc" -o -name "__pycache__" \) -delete \
+    && rm -rf /tmp/* /root/.cache /etc/machine-id
+
+RUN groupadd -g 42424 horizon \
+    && useradd -u 42424 -g 42424 -M -d /var/lib/horizon \
+               -s /usr/sbin/nologin -c "horizon user" horizon \
+    && mkdir -p /etc/horizon /var/log/horizon /var/lib/horizon /var/cache/horizon \
+    && chown horizon:horizon \
+         /etc/horizon /var/log/horizon /var/lib/horizon /var/cache/horizon
+
+COPY horizon/configure_horizon.sh /tmp/
+RUN /tmp/configure_horizon.sh && rm /tmp/configure_horizon.sh

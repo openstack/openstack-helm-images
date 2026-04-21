@@ -2,6 +2,8 @@
 ARG FROM=quay.io/airshipit/ubuntu:noble
 FROM ${FROM}
 
+ARG TARGETARCH=amd64
+
 ARG NPD_VERSION="v0.8.16"
 ARG NPD_SRC_URL="https://github.com/kubernetes/node-problem-detector/releases/download/${NPD_VERSION}"
 
@@ -10,7 +12,7 @@ RUN apt-get update ;\
     apt-get install --no-install-recommends -y wget ca-certificates ;\
     #Create a Temp dir to download and extract the package
     TMP_DIR=$(mktemp --directory) ;\
-    wget -q ${NPD_SRC_URL}/node-problem-detector-${NPD_VERSION}-linux_amd64.tar.gz -O ${TMP_DIR}/node-problem-detector-${NPD_VERSION}.tar.gz ;\
+    wget -q ${NPD_SRC_URL}/node-problem-detector-${NPD_VERSION}-linux_${TARGETARCH}.tar.gz -O ${TMP_DIR}/node-problem-detector-${NPD_VERSION}.tar.gz ;\
     mkdir -p /opt/node-problem-detector/ ;\
     tar zxf ${TMP_DIR}/node-problem-detector-${NPD_VERSION}.tar.gz -C /opt/node-problem-detector ;\
     #Cleanup the directories

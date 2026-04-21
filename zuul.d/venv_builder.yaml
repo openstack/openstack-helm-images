@@ -57,6 +57,7 @@
           build_args:
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
             - "REQUIREMENTS_REF=stable/2026.1"
+            - "SETUPTOOLS_CONSTRAINT=''"
 
 - job:
     name: openstack-helm-images-upload-venv-builder

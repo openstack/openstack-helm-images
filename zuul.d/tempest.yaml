@@ -20,17 +20,17 @@
     vars: &tempest_vars
       currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
       container_images:
-        - context: tempest
+        - context: .
           registry: quay.io
           repository: quay.io/airshipit/tempest
-          container_filename: Dockerfile
+          container_filename: tempest/Dockerfile
           arch:
             - linux/amd64
             - linux/arm64
           build_args:
             - "FROM='quay.io/airshipit/ubuntu:noble'"
           tags:
-            - latest-ubuntu_noble
+            - "latest-ubuntu_noble"
             - "ubuntu_noble-{{ currentdate }}"
     files: &tempest_files
       - tempest/.*
