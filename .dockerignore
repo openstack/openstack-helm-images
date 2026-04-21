@@ -1,0 +1,11 @@
+.git/
+doc/
+releasenotes/
+zuul.d/
+playbooks/
+roles/
+*.md
+*.rst
+tox.ini
+setup.cfg
+setup.py
