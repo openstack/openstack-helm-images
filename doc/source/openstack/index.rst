@@ -61,6 +61,7 @@ The pages below show per-image commands. Override ``PROJECT_REF``,
 
    barbican
    blazar
+   ceilometer
    cinder
    cloudkitty
    cyborg
@@ -74,6 +75,7 @@ The pages below show per-image commands. Override ``PROJECT_REF``,
    keystone
    magnum
    manila
+   mistral
    masakari
    masakari-monitors
    neutron
