@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.2-ubuntu_noble
 ARG BASE_RUNTIME=quay.io/airshipit/base:2025.2-ubuntu_noble
 FROM ${BASE_VENV_BUILDER} AS build

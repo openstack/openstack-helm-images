@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # This Dockerfile uses the helper scripts from the root directory of the
 # openstack-helm-images repository.
 # Usage:
