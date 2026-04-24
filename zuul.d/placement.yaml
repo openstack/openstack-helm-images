@@ -70,6 +70,7 @@
     files: &placement_files
       - placement/.*
       - zuul.d/placement.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

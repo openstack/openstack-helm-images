@@ -70,6 +70,7 @@
     files: &glance_files
       - glance/.*
       - zuul.d/glance.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

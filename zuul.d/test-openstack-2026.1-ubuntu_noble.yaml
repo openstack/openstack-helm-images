@@ -11,61 +11,91 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: Uncomment these jobs once the parent jobs are enabled in the openstack-helm repository.
-# - job:
-#     name: openstack-helm-images-compute-kit-2026-1-ubuntu_noble
-#     parent: openstack-helm-compute-kit-2026-1-ubuntu_noble
-#     dependencies:
-#       - name: openstack-helm-images-build-glance
-#         soft: true
-#       - name: openstack-helm-images-build-heat
-#         soft: true
-#       - name: openstack-helm-images-build-keystone
-#         soft: true
-#       - name: openstack-helm-images-build-neutron
-#         soft: true
-#       - name: openstack-helm-images-build-nova
-#         soft: true
-#       - name: openstack-helm-images-build-placement
-#         soft: true
-#       - name: openstack-helm-images-build-openvswitch
-#         soft: true
-#       - name: openstack-helm-images-build-mariadb
-#         soft: true
-#       - name: openstack-helm-images-build-libvirt
-#         soft: true
-#     files:
-#       - glance/.*
-#       - zuul.d/glance.yaml
-#       - heat/.*
-#       - zuul.d/heat.yaml
-#       - keystone/.*
-#       - zuul.d/keystone.yaml
-#       - neutron/.*
-#       - zuul.d/neutron.yaml
-#       - nova/.*
-#       - zuul.d/nova.yaml
-#       - placement/.*
-#       - zuul.d/placement.yaml
-#       - openvswitch/.*
-#       - zuul.d/openvswitch.yaml
-#       - mariadb/.*
-#       - zuul.d/mariadb.yaml
-#       - libvirt/.*
-#       - zuul.d/libvirt.yaml
-#       - zuul.d/openstack-2026.1-ubuntu_noble.yaml
+- job:
+    name: openstack-helm-images-compute-kit-2026-1-ubuntu_noble
+    parent: openstack-helm-compute-kit-2026-1-ubuntu_noble
+    dependencies:
+      - name: openstack-helm-images-build-glance
+        soft: true
+      - name: openstack-helm-images-build-heat
+        soft: true
+      - name: openstack-helm-images-build-keystone
+        soft: true
+      - name: openstack-helm-images-build-neutron
+        soft: true
+      - name: openstack-helm-images-build-nova
+        soft: true
+      - name: openstack-helm-images-build-placement
+        soft: true
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+    files:
+      - glance/.*
+      - zuul.d/glance.yaml
+      - heat/.*
+      - zuul.d/heat.yaml
+      - keystone/.*
+      - zuul.d/keystone.yaml
+      - neutron/.*
+      - zuul.d/neutron.yaml
+      - nova/.*
+      - zuul.d/nova.yaml
+      - placement/.*
+      - zuul.d/placement.yaml
+      - openvswitch/.*
+      - zuul.d/openvswitch.yaml
+      - mariadb/.*
+      - zuul.d/mariadb.yaml
+      - libvirt/.*
+      - zuul.d/libvirt.yaml
+      - zuul.d/test-openstack-2026.1-ubuntu_noble.yaml
 
-# - job:
-#     name: openstack-helm-images-cinder-2026-1-ubuntu_noble
-#     parent: openstack-helm-cinder-2026-1-ubuntu_noble
-#     dependencies:
-#       - name: openstack-helm-images-build-cinder
-#         soft: true
-#       - name: openstack-helm-images-build-keystone
-#         soft: true
-#       - name: openstack-helm-images-build-mariadb
-#         soft: true
-#     files:
-#       - cinder/.*
-#       - zuul.d/cinder.yaml
-#       - zuul.d/openstack-2026.1-ubuntu_noble.yaml
+- job:
+    name: openstack-helm-images-compute-kit-ovn-2026-1-ubuntu_noble
+    parent: openstack-helm-compute-kit-ovn-2026-1-ubuntu_noble
+    voting: false
+    files:
+      - ovn/.*
+      - zuul.d/ovn.yaml
+      - roles/.*
+      - playbooks/.*
+    dependencies:
+      - name: openstack-helm-images-build-glance
+        soft: true
+      - name: openstack-helm-images-build-heat
+        soft: true
+      - name: openstack-helm-images-build-keystone
+        soft: true
+      - name: openstack-helm-images-build-neutron
+        soft: true
+      - name: openstack-helm-images-build-nova
+        soft: true
+      - name: openstack-helm-images-build-placement
+        soft: true
+      - name: openstack-helm-images-build-ovn
+        soft: true
+      - name: openstack-helm-images-build-openvswitch
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+      - name: openstack-helm-images-build-libvirt
+        soft: true
+
+- job:
+    name: openstack-helm-images-cinder-2026-1-ubuntu_noble
+    parent: openstack-helm-cinder-2026-1-ubuntu_noble
+    dependencies:
+      - name: openstack-helm-images-build-cinder
+        soft: true
+      - name: openstack-helm-images-build-keystone
+        soft: true
+      - name: openstack-helm-images-build-mariadb
+        soft: true
+    files:
+      - cinder/.*
+      - zuul.d/cinder.yaml
+      - zuul.d/test-openstack-2026.1-ubuntu_noble.yaml

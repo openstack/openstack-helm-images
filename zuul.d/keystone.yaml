@@ -70,6 +70,7 @@
     files: &keystone_files
       - keystone/.*
       - zuul.d/keystone.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

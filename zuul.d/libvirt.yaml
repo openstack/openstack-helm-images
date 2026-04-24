@@ -68,6 +68,7 @@
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml
+      - zuul.d/test-openstack.*
       - roles/.*
       - playbooks/.*
 

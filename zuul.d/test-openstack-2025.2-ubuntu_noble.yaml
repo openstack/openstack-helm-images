@@ -52,38 +52,9 @@
       - zuul.d/mariadb.yaml
       - libvirt/.*
       - zuul.d/libvirt.yaml
-      - zuul.d/openstack-2025.2-ubuntu_noble.yaml
-
-- job:
-    name: openstack-helm-images-compute-kit-ovn-2025-2-ubuntu_noble
-    parent: openstack-helm-compute-kit-ovn-2025-2-ubuntu_noble
-    voting: false
-    files:
-      - ovn/.*
-      - zuul.d/ovn.yaml
+      - zuul.d/test-openstack-2025.2-ubuntu_noble.yaml
       - roles/.*
       - playbooks/.*
-    dependencies:
-      - name: openstack-helm-images-build-glance
-        soft: true
-      - name: openstack-helm-images-build-heat
-        soft: true
-      - name: openstack-helm-images-build-keystone
-        soft: true
-      - name: openstack-helm-images-build-neutron
-        soft: true
-      - name: openstack-helm-images-build-nova
-        soft: true
-      - name: openstack-helm-images-build-placement
-        soft: true
-      - name: openstack-helm-images-build-ovn
-        soft: true
-      - name: openstack-helm-images-build-openvswitch
-        soft: true
-      - name: openstack-helm-images-build-mariadb
-        soft: true
-      - name: openstack-helm-images-build-libvirt
-        soft: true
 
 - job:
     name: openstack-helm-images-cinder-2025-2-ubuntu_noble
@@ -98,4 +69,4 @@
     files:
       - cinder/.*
       - zuul.d/cinder.yaml
-      - zuul.d/openstack-2025.2-ubuntu_noble.yaml
+      - zuul.d/test-openstack-2025.2-ubuntu_noble.yaml

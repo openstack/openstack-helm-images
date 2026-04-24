@@ -52,7 +52,9 @@
       - zuul.d/mariadb.yaml
       - libvirt/.*
       - zuul.d/libvirt.yaml
-      - zuul.d/openstack-2025.1-ubuntu_noble.yaml
+      - zuul.d/test-openstack-2025.1-ubuntu_noble.yaml
+      - roles/.*
+      - playbooks/.*
 
 - job:
     name: openstack-helm-images-cinder-2025-1-ubuntu_noble
@@ -67,4 +69,4 @@
     files:
       - cinder/.*
       - zuul.d/cinder.yaml
-      - zuul.d/openstack-2025.1-ubuntu_noble.yaml
+      - zuul.d/test-openstack-2025.1-ubuntu_noble.yaml
