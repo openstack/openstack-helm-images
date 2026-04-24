@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG FROM=quay.io/airshipit/ubuntu:bionic
 FROM ${FROM}
 

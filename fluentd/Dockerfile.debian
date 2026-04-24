@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG FROM=fluent/fluentd-kubernetes-daemonset:v1.19-debian-elasticsearch8-1
 FROM ${FROM}
 
