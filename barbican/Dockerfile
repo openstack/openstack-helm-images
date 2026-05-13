@@ -27,8 +27,8 @@ RUN sed -i '/^barbican===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/barbican \
          -r /etc/image_info/python_packages.txt \
+         /tmp/barbican \
     && git -C /tmp/barbican log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/barbican \
     && uv pip freeze > /etc/image_info/pip.txt

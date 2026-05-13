@@ -27,8 +27,8 @@ RUN sed -i '/^horizon===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/horizon \
          -r /etc/image_info/python_packages.txt \
+         /tmp/horizon \
     && git -C /tmp/horizon log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/horizon \
     && uv pip freeze > /etc/image_info/pip.txt
@@ -53,9 +53,7 @@ RUN if [ -s /etc/image_info/bindep_runtime.txt ]; then \
         && rm -rf /var/lib/apt/lists/*; \
     fi
 
-RUN sed -i 's/include-system-site-packages = false/include-system-site-packages = true/' \
-      /var/lib/openstack/pyvenv.cfg \
-    && find /var/lib/openstack \( -name "*.pyc" -o -name "__pycache__" \) -delete \
+RUN find /var/lib/openstack \( -name "*.pyc" -o -name "__pycache__" \) -delete \
     && rm -rf /tmp/* /root/.cache /etc/machine-id
 
 RUN groupadd -g 42424 horizon \

@@ -27,6 +27,7 @@ RUN sed -i '/^cyborg===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
+         -r /etc/image_info/python_packages.txt \
          /tmp/cyborg \
     && git -C /tmp/cyborg log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/cyborg \

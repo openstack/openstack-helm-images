@@ -27,8 +27,8 @@ RUN sed -i '/^zaqar===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/zaqar \
          -r /etc/image_info/python_packages.txt \
+         /tmp/zaqar \
     && git -C /tmp/zaqar log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/zaqar \
     && uv pip freeze > /etc/image_info/pip.txt

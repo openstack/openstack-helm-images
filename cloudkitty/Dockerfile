@@ -27,8 +27,8 @@ RUN sed -i '/^cloudkitty===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/cloudkitty \
          -r /etc/image_info/python_packages.txt \
+         /tmp/cloudkitty \
     && git -C /tmp/cloudkitty log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/cloudkitty \
     && uv pip freeze > /etc/image_info/pip.txt

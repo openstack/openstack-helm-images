@@ -25,9 +25,9 @@ RUN if [ -s /etc/image_info/bindep_build.txt ]; then \
 RUN sed -i '/^tempest===/d' /upper-constraints.txt \
     && git clone --filter=blob:none -b ${TEMPEST_REF} ${TEMPEST_REPO} /tmp/tempest \
     && uv pip install \
-         --no-build-isolation \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
+         -r /etc/image_info/python_packages.txt \
          /tmp/tempest \
          barbican-tempest-plugin \
          cinder-tempest-plugin \

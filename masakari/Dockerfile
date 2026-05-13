@@ -27,8 +27,8 @@ RUN sed -i '/^masakari===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/masakari \
          -r /etc/image_info/python_packages.txt \
+         /tmp/masakari \
     && git -C /tmp/masakari log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/masakari \
     && uv pip freeze > /etc/image_info/pip.txt

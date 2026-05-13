@@ -27,8 +27,8 @@ RUN sed -i '/^designate===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/designate \
          -r /etc/image_info/python_packages.txt \
+         /tmp/designate \
     && git -C /tmp/designate log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/designate \
     && uv pip freeze > /etc/image_info/pip.txt

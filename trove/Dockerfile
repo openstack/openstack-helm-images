@@ -27,8 +27,8 @@ RUN sed -i '/^trove===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/trove \
          -r /etc/image_info/python_packages.txt \
+         /tmp/trove \
     && git -C /tmp/trove log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/trove \
     && uv pip freeze > /etc/image_info/pip.txt

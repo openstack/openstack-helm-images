@@ -27,8 +27,8 @@ RUN sed -i '/^ceilometer===/d' /upper-constraints.txt \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
-         /tmp/ceilometer \
          -r /etc/image_info/python_packages.txt \
+         /tmp/ceilometer \
     && git -C /tmp/ceilometer log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/ceilometer \
     && uv pip freeze > /etc/image_info/pip.txt
