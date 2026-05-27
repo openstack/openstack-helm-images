@@ -72,6 +72,7 @@
         - openstack-helm-images-build-openvswitch
         - openstack-helm-images-build-osh-selenium
         - openstack-helm-images-build-ovn
+        - openstack-helm-images-build-ovn-bgp-agent
         - openstack-helm-images-build-tempest
 
         # Test jobs
@@ -180,6 +181,8 @@
         - openstack-helm-images-upload-osh-selenium
         - openstack-helm-images-build-ovn
         - openstack-helm-images-upload-ovn
+        - openstack-helm-images-build-ovn-bgp-agent
+        - openstack-helm-images-upload-ovn-bgp-agent
         - openstack-helm-images-build-tempest
         - openstack-helm-images-upload-tempest
 
@@ -236,6 +239,7 @@
         - openstack-helm-images-promote-openvswitch
         - openstack-helm-images-promote-osh-selenium
         - openstack-helm-images-promote-ovn
+        - openstack-helm-images-promote-ovn-bgp-agent
         - openstack-helm-images-promote-tempest
 
     periodic:
