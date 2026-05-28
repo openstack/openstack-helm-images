@@ -7,7 +7,7 @@ ENV PATH=/var/lib/openstack/bin:$PATH
 
 ARG MANILA_REPO=https://opendev.org/openstack/manila
 ARG MANILA_REF=stable/2026.1
-ARG PROFILES=""
+ARG PROFILES="fluent ceph"
 
 # Use bindep to determine packages needed for this profile set
 COPY bindep.txt pydep.txt /opt/
