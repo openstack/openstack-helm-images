@@ -1,4 +1,5 @@
 apache2                              [platform:dpkg apache]
+bind9-utils                          [designate]
 bridge-utils                         [(neutron linuxbridge) (nova linuxbridge)]
 bzip2                                [freezer]
 ceph-common                          [(ceph cinder) (ceph glance) (ceph nova) (ceph manila)]
