@@ -34,7 +34,7 @@ libosinfo-bin                        [nova]
 libpcre3                             [platform:ubuntu-noble]
 # libpythonx.y is installed in the base runtime image with the minor version
 # determined dynamically from the default python installed in the system.
-libvirt0                             [nova]
+libvirt0                             [nova masakari-monitors]
 lshw                                 [ironic neutron]
 lvm2                                 [(cinder lvm) (manila lvm)]
 lzop                                 [freezer]
