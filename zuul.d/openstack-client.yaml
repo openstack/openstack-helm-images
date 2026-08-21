@@ -72,6 +72,10 @@
       - zuul.d/openstack-client.yaml
       - roles/.*
       - playbooks/.*
+      # The Dockerfile picks this image's system and python packages out of
+      # these two files with bindep, so a change to either changes the image.
+      - bindep.txt
+      - pydep.txt
 
 - job:
     name: openstack-helm-images-upload-openstack-client
