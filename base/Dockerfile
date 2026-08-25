@@ -36,6 +36,14 @@ RUN apt-get update \
 # To use a custom APT mirror, build a custom base image rather than passing
 # APT_MIRROR_HOST — override BASE_RUNTIME in Zuul build_args to point at it.
 RUN if [ -n "${CEPH_REPO}" ]; then \
-        wget -qO /usr/share/keyrings/ceph-release.gpg "${CEPH_KEY}" \
-        && echo "${CEPH_REPO}" > /etc/apt/sources.list.d/ceph.list; \
+        set -ex \
+        && mkdir -p /etc/apt/keyrings \
+        && curl -fsSL "${CEPH_KEY}" -o /tmp/ceph-release.asc \
+        && gpg --batch --dearmor -o /etc/apt/keyrings/ceph.gpg /tmp/ceph-release.asc \
+        && rm -f /tmp/ceph-release.asc \
+        && . /etc/os-release \
+        && echo "deb [signed-by=/etc/apt/keyrings/ceph.gpg] ${CEPH_REPO} ${VERSION_CODENAME} main" \
+             > /etc/apt/sources.list.d/ceph.list \
+        && apt-get update \
+        && rm -rf /var/lib/apt/lists/*; \
     fi

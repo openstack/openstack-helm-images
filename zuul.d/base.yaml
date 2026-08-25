@@ -101,6 +101,8 @@
             - "2025.1-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
           build_args:
+            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble'"
+            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc'"
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
         - context: .
           registry: quay.io
@@ -112,6 +114,8 @@
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
           build_args:
+            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble'"
+            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc'"
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
         - context: .
           registry: quay.io
@@ -123,6 +127,8 @@
             - "2026.1-ubuntu_noble"
             - "2026.1-ubuntu_noble-{{ currentdate }}"
           build_args:
+            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble'"
+            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc'"
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
 
 - job:
