@@ -15,6 +15,10 @@ ARG REQUIREMENTS_REF=master
 # Not needed since 2026.1.
 ARG SETUPTOOLS_CONSTRAINT="<81"
 
+# apt has no network timeout by default, so a stalled connection to a mirror
+# hangs the build until the job times out. Fail fast and retry instead.
+RUN printf 'Acquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nAcquire::Retries "3";\n' > /etc/apt/apt.conf.d/99-timeout
+
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
          bind9-host \

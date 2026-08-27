@@ -3,3 +3,8 @@ container_command: podman
 container_build_extra_env: {}
 # synced with roles/build-docker-image/defaults/main.yaml
 container_builder_image: quay.io/opendevmirror/buildkit:buildx-stable-1
+# Wall clock cap for a single image build. Builds take about 10 minutes and
+# the slowest observed is 22, so this is a stall detector, not a budget.
+container_image_build_timeout: 2700
+# Same, for pushing a built image to the buildset registry.
+container_image_push_timeout: 600

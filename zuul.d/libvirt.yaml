@@ -26,7 +26,6 @@
           container_filename: Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "epoxy-ubuntu_noble-{{ currentdate }}"
             - "epoxy-ubuntu_noble"
@@ -41,7 +40,6 @@
           container_filename: Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "flamingo-ubuntu_noble-{{ currentdate }}"
             - "flamingo-ubuntu_noble"
@@ -56,7 +54,6 @@
           container_filename: Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "gazpacho-ubuntu_noble-{{ currentdate }}"
             - "gazpacho-ubuntu_noble"

@@ -26,7 +26,6 @@
           container_filename: Dockerfile.debian
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-debian
             - "debian-{{ currentdate }}"

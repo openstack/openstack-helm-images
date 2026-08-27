@@ -31,7 +31,6 @@
           container_filename: mistral/Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "2025.1-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
@@ -45,7 +44,6 @@
           container_filename: mistral/Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
@@ -59,7 +57,6 @@
           container_filename: mistral/Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "2026.1-ubuntu_noble"
             - "2026.1-ubuntu_noble-{{ currentdate }}"
@@ -72,6 +69,14 @@
       - zuul.d/mistral.yaml
       - roles/.*
       - playbooks/.*
+      # Built on top of the base and venv_builder images, and the Dockerfile
+      # reads its system and python package lists from bindep.txt/pydep.txt.
+      - base/.*
+      - zuul.d/base.yaml
+      - venv_builder/.*
+      - zuul.d/venv_builder.yaml
+      - bindep.txt
+      - pydep.txt
 
 - job:
     name: openstack-helm-images-upload-mistral

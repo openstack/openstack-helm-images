@@ -8,9 +8,11 @@
   loop_control:
     loop_var: zj_image_tag
 
+# A stall in a registry operation never returns, so the retry below is never
+# evaluated. Cap it so a stall exits 124 and the retry actually happens.
 - name: Push tag to buildset registry
   command: >-
-    {{ container_command }} push {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ zj_image.repository }}:{{ zj_image_tag }}
+    timeout {{ container_image_push_timeout }} {{ container_command }} push {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ zj_image.repository }}:{{ zj_image_tag }}
   register: result
   until: result is succeeded
   retries: 3

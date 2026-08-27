@@ -34,6 +34,8 @@
     files: &ceph_files
       - ceph.*
       - zuul.d/ceph.*
+      - roles/.*
+      - playbooks/.*
 
 - job:
     name: openstack-helm-images-build-ceph-config-helper

@@ -1,2 +1,4 @@
 zuul_work_dir: "{{ zuul.project.src_dir }}"
+# Wall clock cap for a single registry operation, for the same reason.
+promote_container_image_timeout: 600
 promote_container_image_query: "change={{ zuul.change }}&patchset={{ zuul.patchset }}&pipeline={{ promote_container_image_pipeline }}&job_name={{ promote_container_image_job }}"

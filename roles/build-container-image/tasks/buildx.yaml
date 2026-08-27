@@ -41,8 +41,15 @@
       --label "org.zuul-ci.change_url={{ zuul.change_url }}"
       --progress=plain
 
+# A stalled buildx run never returns, so the retries below are never
+# evaluated and the job sits idle until the job timeout kills the whole
+# buildset. Cap the command instead: on a stall it exits 124, which is a
+# non zero rc, and the next attempt starts from scratch.
 - name: Build and push images for all arches
-  command: "{{ docker_buildx_command }} {% if _multiarch %}--platform={{ zj_image.arch | join(',') }}{% endif %} --push"
+  command: >-
+    timeout {{ container_image_build_timeout }}
+    {{ docker_buildx_command }}
+    {% if _multiarch %}--platform={{ zj_image.arch | join(',') }}{% endif %} --push
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
   register: result

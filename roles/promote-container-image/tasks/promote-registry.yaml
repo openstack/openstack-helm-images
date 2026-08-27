@@ -1,7 +1,9 @@
+# A stall in a registry operation never returns, so the retry below is never
+# evaluated. Cap it so a stall exits 124 and the retry actually happens.
 - name: Log in to registry
   no_log: true
   command: >-
-    skopeo login {{ zj_image.registry }} -u {{ container_registry_credentials[zj_image.registry].username }} -p {{ container_registry_credentials[zj_image.registry].password }}
+    timeout {{ promote_container_image_timeout }} skopeo login {{ zj_image.registry }} -u {{ container_registry_credentials[zj_image.registry].username }} -p {{ container_registry_credentials[zj_image.registry].password }}
   register: result
   until: result.rc == 0
   retries: 3
@@ -14,7 +16,7 @@
       loop_control:
         loop_var: zj_image_tag
       command: >-
-        skopeo --insecure-policy copy --all {{ zj_artifact_map[zj_image.repository + ':' + zj_image_tag] }} docker://{{ zj_image.repository }}:{{ zj_image_tag }}
+        timeout {{ promote_container_image_timeout }} skopeo --insecure-policy copy --all {{ zj_artifact_map[zj_image.repository + ':' + zj_image_tag] }} docker://{{ zj_image.repository }}:{{ zj_image_tag }}
       register: result
       until: result.rc == 0
       retries: 3

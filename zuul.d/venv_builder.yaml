@@ -24,7 +24,6 @@
           container_filename: venv_builder/Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "2025.1-ubuntu_noble"
             - "2025.1-ubuntu_noble-{{ currentdate }}"
@@ -37,7 +36,6 @@
           container_filename: venv_builder/Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
@@ -50,7 +48,6 @@
           container_filename: venv_builder/Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - "2026.1-ubuntu_noble"
             - "2026.1-ubuntu_noble-{{ currentdate }}"

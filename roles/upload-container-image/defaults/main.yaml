@@ -1,2 +1,5 @@
 zuul_work_dir: "{{ zuul.project.src_dir }}"
 upload_container_image_promote: true
+# Wall clock cap for a single registry operation. These take seconds; this
+# is a stall detector, not a budget.
+upload_container_image_timeout: 600

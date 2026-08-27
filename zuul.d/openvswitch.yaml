@@ -26,7 +26,6 @@
           container_filename: Dockerfile.ubuntu
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-ubuntu_jammy
             - "ubuntu_jammy-{{ currentdate }}"
@@ -38,7 +37,6 @@
           container_filename: Dockerfile.ubuntu
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-ubuntu_noble
             - "ubuntu_noble-{{ currentdate }}"
@@ -50,7 +48,6 @@
           container_filename: Dockerfile.ubuntu-dpdk
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-ubuntu_jammy-dpdk
             - "ubuntu_jammy-dpdk-{{ currentdate }}"
@@ -62,7 +59,6 @@
           container_filename: Dockerfile.ubuntu-dpdk
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-ubuntu_noble-dpdk
             - "ubuntu_noble-dpdk-{{ currentdate }}"

@@ -2,9 +2,11 @@
   set_fact:
     promote_tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}_"
 
+# A stall in a registry operation never returns, so the retry below is never
+# evaluated. Cap it so a stall exits 124 and the retry actually happens.
 - name: Upload tag to registry
   command: >-
-    docker buildx imagetools create
+    timeout {{ promote_container_image_timeout }} docker buildx imagetools create
       -t {{ zj_image.repository }}:{{ zj_image_tag }}
       {{ zj_image.repository }}:{{ promote_tag_prefix }}{{ zj_image_tag }}
   register: result

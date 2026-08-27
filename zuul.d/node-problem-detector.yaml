@@ -26,7 +26,6 @@
           container_filename: Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-ubuntu_jammy
             - "ubuntu_jammy-{{ currentdate }}"
@@ -38,7 +37,6 @@
           container_filename: Dockerfile
           arch:
             - linux/amd64
-            - linux/arm64
           tags:
             - latest-ubuntu_noble
             - "ubuntu-noble-{{ currentdate }}"
