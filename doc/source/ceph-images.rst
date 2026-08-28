@@ -11,11 +11,11 @@ Ceph Config Helper
 .. code-block:: shell
 
    docker build -f ceph-config-helper/Dockerfile.ubuntu \
-     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
-     --build-arg CEPH_REPO=https://download.ceph.com/debian-reef/ \
-     --build-arg CEPH_KEY=https://download.ceph.com/keys/release.asc \
-     --build-arg CEPH_RELEASE=reef \
-     --build-arg CEPH_RELEASE_TAG='18.2.7-1jammy' \
+     --build-arg FROM=quay.io/airshipit/ubuntu:noble \
+     --build-arg CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/ \
+     --build-arg CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc \
+     --build-arg CEPH_RELEASE=tentacle \
+     --build-arg CEPH_RELEASE_TAG='20.2.4-1+mirantis1' \
      -t quay.io/airshipit/ceph-config-helper:local \
      ceph-config-helper
 
@@ -25,11 +25,11 @@ Ceph Daemon
 .. code-block:: shell
 
    docker build -f ceph-daemon/Dockerfile.ubuntu \
-     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
-     --build-arg CEPH_REPO=https://download.ceph.com/debian-reef/ \
-     --build-arg CEPH_KEY=https://download.ceph.com/keys/release.asc \
-     --build-arg CEPH_RELEASE=reef \
-     --build-arg CEPH_RELEASE_TAG='18.2.7-1jammy' \
+     --build-arg FROM=quay.io/airshipit/ubuntu:noble \
+     --build-arg CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/ \
+     --build-arg CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc \
+     --build-arg CEPH_RELEASE=tentacle \
+     --build-arg CEPH_RELEASE_TAG='20.2.4-1+mirantis1' \
      -t quay.io/airshipit/ceph-daemon:local \
      ceph-daemon
 
@@ -39,10 +39,10 @@ Ceph Utility
 .. code-block:: shell
 
    docker build -f ceph-utility/Dockerfile.ubuntu \
-     --build-arg FROM=quay.io/airshipit/ubuntu:jammy \
-     --build-arg CEPH_REPO=https://download.ceph.com/debian-reef/ \
-     --build-arg CEPH_KEY=https://download.ceph.com/keys/release.asc \
-     --build-arg CEPH_RELEASE=reef \
-     --build-arg CEPH_RELEASE_TAG='18.2.7-1jammy' \
+     --build-arg FROM=quay.io/airshipit/ubuntu:noble \
+     --build-arg CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/ \
+     --build-arg CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc \
+     --build-arg CEPH_RELEASE=tentacle \
+     --build-arg CEPH_RELEASE_TAG='20.2.4-1+mirantis1' \
      -t quay.io/airshipit/ceph-utility:local \
      ceph-utility
