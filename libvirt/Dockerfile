@@ -30,6 +30,29 @@ EOF
 FROM ${FROM} AS runtime
 COPY --from=cloudarchive-generator --link /etc/apt/sources.list.d/cloudarchive.list /etc/apt/sources.list.d/cloudarchive.list
 COPY ubuntu-keyring-2012-cloud-archive.gpg /etc/apt/trusted.gpg.d/ubuntu-keyring-2012-cloud-archive.gpg
+
+ARG CEPH_REPO=""
+ARG CEPH_KEY="https://download.ceph.com/keys/release.asc"
+
+# Optionally configure a Ceph APT repository so that ceph-common is taken from
+# there instead of the Ubuntu Cloud Archive.
+RUN <<EOF
+  set -xe
+  if [ -n "${CEPH_REPO}" ]; then
+    apt-get update
+    apt-get install -y --no-install-recommends ca-certificates curl gnupg2
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL "${CEPH_KEY}" -o /tmp/ceph-release.asc
+    gpg --batch --dearmor -o /etc/apt/keyrings/ceph.gpg /tmp/ceph-release.asc
+    rm -f /tmp/ceph-release.asc
+    . /etc/os-release
+    echo "deb [signed-by=/etc/apt/keyrings/ceph.gpg] ${CEPH_REPO} ${VERSION_CODENAME} main" \
+      > /etc/apt/sources.list.d/ceph.list
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+  fi
+EOF
+
 RUN <<EOF
   set -xe
   apt-get update

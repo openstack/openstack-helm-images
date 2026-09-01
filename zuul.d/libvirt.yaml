@@ -32,6 +32,8 @@
             - "2025.1-ubuntu_noble-{{ currentdate }}"
             - "2025.1-ubuntu_noble"
           build_args:
+            - CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble
+            - CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc
             - FROM=quay.io/airshipit/ubuntu:noble
             - RELEASE=epoxy
         - context: libvirt
@@ -46,6 +48,8 @@
             - "2025.2-ubuntu_noble-{{ currentdate }}"
             - "2025.2-ubuntu_noble"
           build_args:
+            - CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble
+            - CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc
             - FROM=quay.io/airshipit/ubuntu:noble
             - RELEASE=flamingo
         - context: libvirt
@@ -60,6 +64,8 @@
             - "2026.1-ubuntu_noble-{{ currentdate }}"
             - "2026.1-ubuntu_noble"
           build_args:
+            - CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble
+            - CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc
             - FROM=quay.io/airshipit/ubuntu:noble
             - RELEASE=gazpacho
     files: &libvirt_files
