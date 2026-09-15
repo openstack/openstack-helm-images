@@ -15,6 +15,9 @@
     name: openstack-helm-images-compute-kit-2025-2-ubuntu_noble
     parent: openstack-helm-compute-kit-2025-2-ubuntu_noble
     dependencies:
+      # The compute kit now deploys rook and cinder too.
+      - name: openstack-helm-images-build-cinder
+        soft: true
       - name: openstack-helm-images-build-glance
         soft: true
       - name: openstack-helm-images-build-heat
@@ -36,6 +39,8 @@
       - name: openstack-helm-images-build-openstack-client
         soft: true
     files:
+      - cinder/.*
+      - zuul.d/cinder.yaml
       - glance/.*
       - zuul.d/glance.yaml
       - heat/.*
@@ -57,31 +62,6 @@
       - zuul.d/test-openstack-2025.2-ubuntu_noble.yaml
       - roles/.*
       - playbooks/.*
-      # Built on top of the base and venv_builder images, and the Dockerfile
-      # reads its system and python package lists from bindep.txt/pydep.txt.
-      - base/.*
-      - zuul.d/base.yaml
-      - venv_builder/.*
-      - zuul.d/venv_builder.yaml
-      - bindep.txt
-      - pydep.txt
-
-- job:
-    name: openstack-helm-images-cinder-2025-2-ubuntu_noble
-    parent: openstack-helm-cinder-2025-2-ubuntu_noble
-    dependencies:
-      - name: openstack-helm-images-build-cinder
-        soft: true
-      - name: openstack-helm-images-build-keystone
-        soft: true
-      - name: openstack-helm-images-build-mariadb
-        soft: true
-      - name: openstack-helm-images-build-openstack-client
-        soft: true
-    files:
-      - cinder/.*
-      - zuul.d/cinder.yaml
-      - zuul.d/test-openstack-2025.2-ubuntu_noble.yaml
       # Built on top of the base and venv_builder images, and the Dockerfile
       # reads its system and python package lists from bindep.txt/pydep.txt.
       - base/.*
