@@ -32,20 +32,6 @@
           arch:
             - linux/amd64
           tags:
-            - "2025.1-ubuntu_noble"
-            - "2025.1-ubuntu_noble-{{ currentdate }}"
-          build_args:
-            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.1-ubuntu_noble"
-            - "BASE_RUNTIME=quay.io/airshipit/base:2025.1-ubuntu_noble"
-            - "SKYLINE_APISERVER_REF=stable/2025.1"
-            - "SKYLINE_CONSOLE_REF=stable/2025.1"
-        - context: .
-          registry: quay.io
-          repository: quay.io/airshipit/skyline
-          container_filename: skyline/Dockerfile
-          arch:
-            - linux/amd64
-          tags:
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -67,6 +53,20 @@
             - "BASE_RUNTIME=quay.io/airshipit/base:2026.1-ubuntu_noble"
             - "SKYLINE_APISERVER_REF=stable/2026.1"
             - "SKYLINE_CONSOLE_REF=stable/2026.1"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/skyline
+          container_filename: skyline/Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "2026.2-ubuntu_resolute"
+            - "2026.2-ubuntu_resolute-{{ currentdate }}"
+          build_args:
+            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.2-ubuntu_resolute"
+            - "BASE_RUNTIME=quay.io/airshipit/base:2026.2-ubuntu_resolute"
+            - "SKYLINE_APISERVER_REF=stable/2026.2"
+            - "SKYLINE_CONSOLE_REF=stable/2026.2"
     files: &skyline_files
       - skyline/.*
       - zuul.d/skyline.yaml

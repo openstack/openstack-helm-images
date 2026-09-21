@@ -12,19 +12,29 @@ RUN <<EOF
   rm -rf /var/lib/apt/lists/*
 EOF
 ARG RELEASE
-RUN <<EOF /bin/bash
+# Note: no interpreter is given after <<EOF on purpose. Naming one makes
+# BuildKit wrap the whole block in an outer `/bin/sh -c` heredoc, which expands
+# ${...} before the inner shell runs, so variables set in here come out empty.
+RUN <<EOF
   set -xe
-  if [ "$(lsb_release -sc)" = "noble" ]; then
-    if [[ "${RELEASE}" = "dalmatian" || "${RELEASE}" = "epoxy" || "${RELEASE}" = "flamingo" || "${RELEASE}" = "gazpacho" ]]; then
-      echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu $(lsb_release -sc)-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
-    else
-      echo "${RELEASE} is not supported on $(lsb_release -sc)"
+  CODENAME="$(lsb_release -sc)"
+  case "${CODENAME}" in
+    noble)    SUPPORTED="dalmatian epoxy flamingo gazpacho" ;;
+    resolute) SUPPORTED="hibiscus" ;;
+    *)
+      echo "Unable to detect correct Ubuntu Cloud Archive repository for ${CODENAME}"
       exit 1
-    fi
-  else
-    echo "Unable to detect correct Ubuntu Cloud Archive repository for $(lsb_release -sc)"
-    exit 1
-  fi
+      ;;
+  esac
+  case " ${SUPPORTED} " in
+    *" ${RELEASE} "*)
+      echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu ${CODENAME}-updates/${RELEASE} main" > /etc/apt/sources.list.d/cloudarchive.list
+      ;;
+    *)
+      echo "${RELEASE} is not supported on ${CODENAME}"
+      exit 1
+      ;;
+  esac
 EOF
 
 FROM ${FROM} AS runtime

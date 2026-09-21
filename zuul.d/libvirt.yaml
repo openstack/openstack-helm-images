@@ -27,22 +27,6 @@
           arch:
             - linux/amd64
           tags:
-            - "epoxy-ubuntu_noble-{{ currentdate }}"
-            - "epoxy-ubuntu_noble"
-            - "2025.1-ubuntu_noble-{{ currentdate }}"
-            - "2025.1-ubuntu_noble"
-          build_args:
-            - CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble
-            - CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc
-            - FROM=quay.io/airshipit/ubuntu:noble
-            - RELEASE=epoxy
-        - context: libvirt
-          registry: quay.io
-          repository: quay.io/airshipit/libvirt
-          container_filename: Dockerfile
-          arch:
-            - linux/amd64
-          tags:
             - "flamingo-ubuntu_noble-{{ currentdate }}"
             - "flamingo-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
@@ -68,6 +52,24 @@
             - CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc
             - FROM=quay.io/airshipit/ubuntu:noble
             - RELEASE=gazpacho
+        - context: libvirt
+          registry: quay.io
+          repository: quay.io/airshipit/libvirt
+          container_filename: Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "hibiscus-ubuntu_resolute-{{ currentdate }}"
+            - "hibiscus-ubuntu_resolute"
+            - "2026.2-ubuntu_resolute-{{ currentdate }}"
+            - "2026.2-ubuntu_resolute"
+          build_args:
+            - CEPH_REPO=https://mirror.mirantis.com/acicd/ceph-20.2.x/resolute
+            - CEPH_KEY=https://mirror.mirantis.com/acicd/ceph-20.2.x/resolute/release.asc
+            # There is no resolute image in quay.io/airshipit/ubuntu, so pull
+            # Ubuntu upstream like the base image does.
+            - FROM=public.ecr.aws/ubuntu/ubuntu:resolute
+            - RELEASE=hibiscus
     files: &libvirt_files
       - libvirt/.*
       - zuul.d/libvirt.yaml

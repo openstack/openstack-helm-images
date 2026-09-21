@@ -32,19 +32,6 @@
           arch:
             - linux/amd64
           tags:
-            - "2025.1-ubuntu_noble"
-            - "2025.1-ubuntu_noble-{{ currentdate }}"
-          build_args:
-            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.1-ubuntu_noble"
-            - "BASE_RUNTIME=quay.io/airshipit/base:2025.1-ubuntu_noble"
-            - "OPENSTACKCLIENT_REF=stable/2025.1"
-        - context: .
-          registry: quay.io
-          repository: quay.io/airshipit/openstack-client
-          container_filename: openstack-client/Dockerfile
-          arch:
-            - linux/amd64
-          tags:
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -64,6 +51,19 @@
             - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.1-ubuntu_noble"
             - "BASE_RUNTIME=quay.io/airshipit/base:2026.1-ubuntu_noble"
             - "OPENSTACKCLIENT_REF=stable/2026.1"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/openstack-client
+          container_filename: openstack-client/Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "2026.2-ubuntu_resolute"
+            - "2026.2-ubuntu_resolute-{{ currentdate }}"
+          build_args:
+            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.2-ubuntu_resolute"
+            - "BASE_RUNTIME=quay.io/airshipit/base:2026.2-ubuntu_resolute"
+            - "OPENSTACKCLIENT_REF=stable/2026.2"
     files: &openstack_client_files
       - openstack-client/.*
       - zuul.d/openstack-client.yaml

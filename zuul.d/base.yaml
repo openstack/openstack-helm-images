@@ -98,19 +98,6 @@
           arch:
             - linux/amd64
           tags:
-            - "2025.1-ubuntu_noble"
-            - "2025.1-ubuntu_noble-{{ currentdate }}"
-          build_args:
-            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble'"
-            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc'"
-            - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
-        - context: .
-          registry: quay.io
-          repository: quay.io/airshipit/base
-          container_filename: base/Dockerfile
-          arch:
-            - linux/amd64
-          tags:
             - "2025.2-ubuntu_noble"
             - "2025.2-ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -130,6 +117,19 @@
             - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble'"
             - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/noble/release.asc'"
             - "FROM='public.ecr.aws/ubuntu/ubuntu:noble'"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/base
+          container_filename: base/Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "2026.2-ubuntu_resolute"
+            - "2026.2-ubuntu_resolute-{{ currentdate }}"
+          build_args:
+            - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/resolute'"
+            - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/resolute/release.asc'"
+            - "FROM='public.ecr.aws/ubuntu/ubuntu:resolute'"
 
 - job:
     name: openstack-helm-images-upload-base

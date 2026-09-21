@@ -16,8 +16,6 @@ RUN apt-get update \
          curl \
          git \
          gnupg2 \
-         libpcre3 \
-         libxml2 \
          lsb-release \
          netbase \
          patch \
@@ -27,10 +25,27 @@ RUN apt-get update \
          wget \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-         "libpython3.$(python3 -c 'import sys; print(sys.version_info.minor)')" \
-    && rm -rf /var/lib/apt/lists/*
+# Some runtime libraries are named after a version that moves between Ubuntu
+# releases: libpython3.x follows the interpreter, and after Noble libxml2 was
+# renamed to libxml2-16 and PCRE1 was dropped in favour of PCRE2. Resolve those
+# names from the image being built.
+#
+# Note: no interpreter is given after <<EOF on purpose. Naming one makes
+# BuildKit wrap the whole block in an outer `/bin/sh -c` heredoc, which expands
+# ${...} before the inner shell runs, so variables set in here come out empty.
+RUN <<EOF
+  set -xe
+  . /etc/os-release
+  if [ "${VERSION_CODENAME}" = "noble" ]; then
+    RENAMED="libxml2 libpcre3"
+  else
+    RENAMED="libxml2-16 libpcre2-8-0"
+  fi
+  apt-get update
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    "libpython3.$(python3 -c 'import sys; print(sys.version_info.minor)')" ${RENAMED}
+  rm -rf /var/lib/apt/lists/*
+EOF
 
 # Optionally configure a Ceph APT repository for services that need Ceph packages.
 # To use a custom APT mirror, build a custom base image rather than passing

@@ -35,14 +35,12 @@ RUN apt-get update \
          libldap2-dev \
          libmysqlclient-dev \
          libnss3-dev \
-         libpcre3-dev \
          libpq-dev \
          librdkafka-dev \
          libsasl2-dev \
          libssl-dev \
          libsystemd-dev \
          libvirt-dev \
-         libxml2 \
          libxml2-dev \
          libxslt1-dev \
          libyaml-dev \
@@ -58,6 +56,25 @@ RUN apt-get update \
          wget \
     && rm -rf /var/lib/apt/lists/*
 
+# PCRE1 was dropped after Noble in favour of PCRE2, so install whichever
+# development package this release carries.
+#
+# Note: no interpreter is given after <<EOF on purpose. Naming one makes
+# BuildKit wrap the whole block in an outer `/bin/sh -c` heredoc, which expands
+# ${...} before the inner shell runs, so variables set in here come out empty.
+RUN <<EOF
+  set -xe
+  . /etc/os-release
+  if [ "${VERSION_CODENAME}" = "noble" ]; then
+    PCRE_DEV=libpcre3-dev
+  else
+    PCRE_DEV=libpcre2-dev
+  fi
+  apt-get update
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${PCRE_DEV}
+  rm -rf /var/lib/apt/lists/*
+EOF
+
 # install uv from container image
 COPY --from=uv /uv /uvx /bin/
 
@@ -65,7 +82,7 @@ COPY --from=uv /uv /uvx /bin/
 RUN uv venv --system-site-packages /var/lib/openstack
 
 # Map REQUIREMENTS_REF to version for constraints URL
-# stable/2025.1 -> 2025.1, stable/2025.2 -> 2025.2, stable/2026.1 -> 2026.1, master -> master
+# stable/2025.2 -> 2025.2, stable/2026.1 -> 2026.1, stable/2026.2 -> 2026.2, master -> master
 RUN <<EOF bash -xe
 wget -q -O /upper-constraints.txt "https://releases.openstack.org/constraints/upper/$(echo ${REQUIREMENTS_REF} | sed 's/stable\///')"
 if [ -n "${SETUPTOOLS_CONSTRAINT}" ]; then echo "setuptools${SETUPTOOLS_CONSTRAINT}" >> /upper-constraints.txt; fi
