@@ -44,6 +44,7 @@ RUN sed -i '/^python-openstackclient===/d' /upper-constraints.txt \
          python-keystoneclient \
          python-magnumclient \
          python-manilaclient \
+         python-masakariclient \
          python-mistralclient \
          python-neutronclient \
          python-novaclient \
