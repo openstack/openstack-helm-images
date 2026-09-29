@@ -78,7 +78,6 @@
         # Test jobs
         - openstack-helm-images-monitoring
         - openstack-helm-images-logging
-        - openstack-helm-images-compute-kit-2025-1-ubuntu_noble
         - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
         - openstack-helm-images-compute-kit-2026-1-ubuntu_noble
         - openstack-helm-images-ovn-2026-1-ubuntu_noble
