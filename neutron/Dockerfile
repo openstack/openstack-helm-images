@@ -37,7 +37,6 @@ FROM ${BASE_RUNTIME} AS runtime
 
 ENV PATH=/var/lib/openstack/bin:$PATH
 
-
 COPY --from=build --link /var/lib/openstack /var/lib/openstack
 COPY --from=build /etc/image_info /etc/image_info
 COPY --from=build /upper-constraints.txt /
