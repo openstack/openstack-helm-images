@@ -80,7 +80,8 @@
         - openstack-helm-images-logging
         - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
         - openstack-helm-images-compute-kit-2026-1-ubuntu_noble
-        - openstack-helm-images-ovn-2026-1-ubuntu_noble
+        - openstack-helm-images-compute-kit-2026-2-ubuntu_resolute
+        - openstack-helm-images-ovn-2026-2-ubuntu_resolute
 
     gate:
       jobs:
@@ -247,7 +248,8 @@
         - openstack-helm-images-monitoring
         - openstack-helm-images-compute-kit-2025-2-ubuntu_noble
         - openstack-helm-images-compute-kit-2026-1-ubuntu_noble
-        - openstack-helm-images-ovn-2026-1-ubuntu_noble
+        - openstack-helm-images-compute-kit-2026-2-ubuntu_resolute
+        - openstack-helm-images-ovn-2026-2-ubuntu_resolute
 
         # Ceph
         - openstack-helm-images-build-ceph-config-helper
@@ -342,7 +344,7 @@
         - openstack-helm-images-upload-ovn:
             dependencies:
               - name: openstack-helm-images-build-ovn
-              - name: openstack-helm-images-ovn-2026-1-ubuntu_noble
+              - name: openstack-helm-images-ovn-2026-2-ubuntu_resolute
         - openstack-helm-images-promote-ovn:
             dependencies:
               - name: openstack-helm-images-upload-ovn
