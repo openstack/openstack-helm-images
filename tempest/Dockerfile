@@ -31,9 +31,13 @@ RUN sed -i '/^tempest===/d' /upper-constraints.txt \
          /tmp/tempest \
          barbican-tempest-plugin \
          cinder-tempest-plugin \
+         designate-tempest-plugin \
          heat-tempest-plugin \
+         ironic-tempest-plugin \
          keystone-tempest-plugin \
+         manila-tempest-plugin \
          neutron-tempest-plugin \
+         octavia-tempest-plugin \
     && git -C /tmp/tempest log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/tempest \
     && uv pip freeze > /etc/image_info/pip.txt
