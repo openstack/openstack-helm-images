@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG FROM=quay.io/airshipit/ubuntu:jammy
+ARG FROM=quay.io/airshipit/ubuntu:noble
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive

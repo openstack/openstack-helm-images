@@ -12,6 +12,7 @@ go build -o /usr/bin/ovn-kube-util ./cmd/ovn-kube-util
 EOF
 
 FROM ${FROM} AS base
+ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETPLATFORM=linux/amd64
 ADD --chmod=755 https://dl.k8s.io/release/v1.29.3/bin/${TARGETPLATFORM}/kubectl /usr/local/bin/kubectl
 ADD --chmod=755 https://github.com/krallin/tini/releases/download/v0.19.0/tini /tini
