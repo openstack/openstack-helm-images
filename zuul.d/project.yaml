@@ -29,6 +29,7 @@
         - openstack-helm-images-build-venv-builder
 
         # Build OpenStack images
+        - openstack-helm-images-build-aodh
         - openstack-helm-images-build-barbican
         - openstack-helm-images-build-blazar
         - openstack-helm-images-build-ceilometer
@@ -94,6 +95,8 @@
         - openstack-helm-images-upload-venv-builder
 
         # Build and upload OpenStack images
+        - openstack-helm-images-build-aodh
+        - openstack-helm-images-upload-aodh
         - openstack-helm-images-build-barbican
         - openstack-helm-images-upload-barbican
         - openstack-helm-images-build-blazar
@@ -193,6 +196,7 @@
         - openstack-helm-images-promote-venv-builder
 
         # Promote OpenStack images
+        - openstack-helm-images-promote-aodh
         - openstack-helm-images-promote-barbican
         - openstack-helm-images-promote-blazar
         - openstack-helm-images-promote-ceilometer
@@ -427,6 +431,13 @@
         - openstack-helm-images-promote-cinder:
             dependencies:
               - name: openstack-helm-images-upload-cinder
+
+        # Aodh
+        - openstack-helm-images-build-aodh
+        - openstack-helm-images-upload-aodh
+        - openstack-helm-images-promote-aodh:
+            dependencies:
+              - name: openstack-helm-images-upload-aodh
 
         # Barbican
         - openstack-helm-images-build-barbican

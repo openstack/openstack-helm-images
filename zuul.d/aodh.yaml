@@ -1,0 +1,96 @@
+---
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- job:
+    name: openstack-helm-images-build-aodh
+    parent: openstack-helm-images-build
+    description: Build aodh images
+    nodeset: openstack-helm-images-ubuntu-noble
+    dependencies:
+      - name: openstack-helm-images-buildset-registry
+      - name: openstack-helm-images-build-base
+        soft: true
+      - name: openstack-helm-images-build-venv-builder
+        soft: true
+    vars: &aodh_vars
+      currentdate: "{{ now(utc=True,fmt='%Y%m%d') }}"
+      container_images:
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/aodh
+          container_filename: aodh/Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "2025.2-ubuntu_noble"
+            - "2025.2-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2025.2-ubuntu_noble"
+            - "BASE_RUNTIME=quay.io/airshipit/base:2025.2-ubuntu_noble"
+            - "AODH_REF=stable/2025.2"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/aodh
+          container_filename: aodh/Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "2026.1-ubuntu_noble"
+            - "2026.1-ubuntu_noble-{{ currentdate }}"
+          build_args:
+            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.1-ubuntu_noble"
+            - "BASE_RUNTIME=quay.io/airshipit/base:2026.1-ubuntu_noble"
+            - "AODH_REF=stable/2026.1"
+        - context: .
+          registry: quay.io
+          repository: quay.io/airshipit/aodh
+          container_filename: aodh/Dockerfile
+          arch:
+            - linux/amd64
+          tags:
+            - "2026.2-ubuntu_resolute"
+            - "2026.2-ubuntu_resolute-{{ currentdate }}"
+          build_args:
+            - "BASE_VENV_BUILDER=quay.io/airshipit/venv_builder:2026.2-ubuntu_resolute"
+            - "BASE_RUNTIME=quay.io/airshipit/base:2026.2-ubuntu_resolute"
+            - "AODH_REF=stable/2026.2"
+    files: &aodh_files
+      - aodh/.*
+      - zuul.d/aodh.yaml
+      - roles/.*
+      - playbooks/.*
+      # Built on top of the base and venv_builder images, and the Dockerfile
+      # reads its system and python package lists from bindep.txt/pydep.txt.
+      - base/.*
+      - zuul.d/base.yaml
+      - venv_builder/.*
+      - zuul.d/venv_builder.yaml
+      - bindep.txt
+      - pydep.txt
+
+- job:
+    name: openstack-helm-images-upload-aodh
+    parent: openstack-helm-images-upload
+    description: Build and upload aodh images
+    dependencies:
+      - name: openstack-helm-images-buildset-registry
+      - name: openstack-helm-images-build-aodh
+    vars: *aodh_vars
+    files: *aodh_files
+
+- job:
+    name: openstack-helm-images-promote-aodh
+    parent: openstack-helm-images-promote
+    description: Promote a previously published aodh image to latest.
+    vars: *aodh_vars
+    files: *aodh_files

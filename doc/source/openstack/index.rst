@@ -46,6 +46,7 @@ the git repo and the git reference used to fetch the source code.
 .. toctree::
    :maxdepth: 1
 
+   aodh
    barbican
    blazar
    ceilometer
