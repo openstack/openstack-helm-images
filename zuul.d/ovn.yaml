@@ -27,10 +27,10 @@
           arch:
             - linux/amd64
           tags:
-            - ubuntu_jammy
-            - "ubuntu_jammy-{{ currentdate }}"
+            - ubuntu_noble
+            - "ubuntu_noble-{{ currentdate }}"
           build_args:
-            - FROM=quay.io/airshipit/ubuntu:jammy
+            - FROM=quay.io/airshipit/ubuntu:noble
         - context: ovn
           registry: quay.io
           repository: quay.io/airshipit/ovn
@@ -38,10 +38,12 @@
           arch:
             - linux/amd64
           tags:
-            - ubuntu_noble
-            - "ubuntu_noble-{{ currentdate }}"
+            - ubuntu_resolute
+            - "ubuntu_resolute-{{ currentdate }}"
           build_args:
-            - FROM=quay.io/airshipit/ubuntu:noble
+            # There is no resolute image in quay.io/airshipit/ubuntu, so pull
+            # Ubuntu upstream like the base image does.
+            - FROM=public.ecr.aws/ubuntu/ubuntu:resolute
     files: &ovn_files
       - ovn/.*
       - zuul.d/ovn.yaml

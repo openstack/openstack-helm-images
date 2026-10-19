@@ -27,17 +27,6 @@
           arch:
             - linux/amd64
           tags:
-            - latest-ubuntu_jammy
-            - "ubuntu_jammy-{{ currentdate }}"
-          build_args:
-            - FROM=quay.io/airshipit/ubuntu:jammy
-        - context: openvswitch
-          registry: quay.io
-          repository: quay.io/airshipit/openvswitch
-          container_filename: Dockerfile.ubuntu
-          arch:
-            - linux/amd64
-          tags:
             - latest-ubuntu_noble
             - "ubuntu_noble-{{ currentdate }}"
           build_args:
@@ -45,14 +34,16 @@
         - context: openvswitch
           registry: quay.io
           repository: quay.io/airshipit/openvswitch
-          container_filename: Dockerfile.ubuntu-dpdk
+          container_filename: Dockerfile.ubuntu
           arch:
             - linux/amd64
           tags:
-            - latest-ubuntu_jammy-dpdk
-            - "ubuntu_jammy-dpdk-{{ currentdate }}"
+            - latest-ubuntu_resolute
+            - "ubuntu_resolute-{{ currentdate }}"
           build_args:
-            - FROM=quay.io/airshipit/ubuntu:jammy
+            # There is no resolute image in quay.io/airshipit/ubuntu, so pull
+            # Ubuntu upstream like the base image does.
+            - FROM=public.ecr.aws/ubuntu/ubuntu:resolute
         - context: openvswitch
           registry: quay.io
           repository: quay.io/airshipit/openvswitch
@@ -64,6 +55,17 @@
             - "ubuntu_noble-dpdk-{{ currentdate }}"
           build_args:
             - FROM=quay.io/airshipit/ubuntu:noble
+        - context: openvswitch
+          registry: quay.io
+          repository: quay.io/airshipit/openvswitch
+          container_filename: Dockerfile.ubuntu-dpdk
+          arch:
+            - linux/amd64
+          tags:
+            - latest-ubuntu_resolute-dpdk
+            - "ubuntu_resolute-dpdk-{{ currentdate }}"
+          build_args:
+            - FROM=public.ecr.aws/ubuntu/ubuntu:resolute
     files: &openvswitch_files
       - openvswitch/.*
       - zuul.d/openvswitch.yaml
