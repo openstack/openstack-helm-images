@@ -12,7 +12,6 @@ It includes:
 	OSH Selenium, and Tempest.
 - Shared build scripts in `scripts/` that implement the common image build
 	flow.
-- Package profile definitions in `bindep.txt` and `pydep.txt`.
 - Zuul job definitions in `zuul.d/` for build, upload, promote, and test
 	pipelines.
 - Sphinx documentation in `doc/source/`.

@@ -18,11 +18,23 @@ which is a multi-stage build with two stages:
    virtual environment, and the second stage copies that environment into the
    lean ``BASE_RUNTIME`` image.
 
-Package selection is driven by ``bindep`` data files:
+Each service Dockerfile lists the extra packages it needs:
 
-* ``bindep.txt`` defines OS packages installed at runtime, resolved per-image
-  in the build stage.
-* ``pydep.txt`` defines additional Python packages installed into the venv.
+* ``/etc/image_info/packages.txt`` holds the OS packages, installed in both
+  stages.
+* ``/etc/image_info/python_packages.txt`` holds the additional Python packages
+  installed into the venv together with the project.
+
+To add a package to an image, add it to the list in that image's Dockerfile.
+To add packages to a custom build without changing the Dockerfile, pass them
+space-separated in the ``EXTRA_PACKAGES`` and ``EXTRA_PYTHON_PACKAGES`` build
+arguments, for example:
+
+.. code-block:: shell
+
+   docker build -f cinder/Dockerfile \
+     --build-arg EXTRA_PYTHON_PACKAGES=purestorage \
+     .
 
 Build the shared images first:
 
