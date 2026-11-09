@@ -7,18 +7,36 @@ ENV PATH=/var/lib/openstack/bin:$PATH
 
 ARG IRONIC_REPO=https://opendev.org/openstack/ironic
 ARG IRONIC_REF=stable/2026.1
-ARG PROFILES="fluent ipxe ipmi qemu tftp"
+ARG EXTRA_PACKAGES=""
+ARG EXTRA_PYTHON_PACKAGES=""
 
-# Use bindep to determine packages needed for this profile set
-COPY bindep.txt pydep.txt /opt/
-RUN mkdir -p /etc/image_info && \
-    uvx bindep -f /opt/bindep.txt -b -l newline ironic ${PROFILES} > /etc/image_info/bindep_runtime.txt && \
-    uvx bindep -f /opt/bindep.txt -b -l newline ironic build ${PROFILES} > /etc/image_info/bindep_build.txt && \
-    uvx bindep -f /opt/pydep.txt -b -l newline ironic ${PROFILES} > /etc/image_info/python_packages.txt
+# System packages, installed in both the build and the runtime stage.
+COPY <<EOF /etc/image_info/packages.txt
+ethtool
+ipmitool
+iproute2
+ipxe
+lshw
+qemu-utils
+tftpd-hpa
+EOF
 
-RUN if [ -s /etc/image_info/bindep_build.txt ]; then \
+# Python packages installed into the venv in addition to the project.
+COPY <<EOF /etc/image_info/python_packages.txt
+fluent-logger
+pymysql
+python-memcached
+uwsgi
+EOF
+
+# EXTRA_PACKAGES and EXTRA_PYTHON_PACKAGES are space-separated packages
+# added to the lists above.
+RUN for p in ${EXTRA_PACKAGES}; do echo "$p" >> /etc/image_info/packages.txt; done \
+    && for p in ${EXTRA_PYTHON_PACKAGES}; do echo "$p" >> /etc/image_info/python_packages.txt; done
+
+RUN if [ -s /etc/image_info/packages.txt ]; then \
         apt-get update \
-        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_build.txt \
+        && DEBIAN_FRONTEND=noninteractive xargs apt-get install -y --no-install-recommends < /etc/image_info/packages.txt \
         && rm -rf /var/lib/apt/lists/*; \
     fi
 
@@ -41,10 +59,10 @@ COPY --from=build --link /var/lib/openstack /var/lib/openstack
 COPY --from=build /etc/image_info /etc/image_info
 COPY --from=build /upper-constraints.txt /
 
-# Install packages determined by bindep in build stage
-RUN if [ -s /etc/image_info/bindep_runtime.txt ]; then \
+# Install the system packages listed in the build stage.
+RUN if [ -s /etc/image_info/packages.txt ]; then \
         apt-get update \
-        && DEBIAN_FRONTEND=noninteractive xargs --no-run-if-empty apt-get install -y --no-install-recommends < /etc/image_info/bindep_runtime.txt \
+        && DEBIAN_FRONTEND=noninteractive xargs apt-get install -y --no-install-recommends < /etc/image_info/packages.txt \
         && rm -rf /var/lib/apt/lists/*; \
     fi
 
