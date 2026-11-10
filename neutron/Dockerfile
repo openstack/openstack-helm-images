@@ -29,6 +29,7 @@ keepalived
 libapache2-mod-wsgi-py3
 lshw
 openvswitch-switch
+python3-unbound
 strongswan
 uuid-runtime
 EOF
