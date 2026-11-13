@@ -7,12 +7,18 @@ ENV PATH=/var/lib/openstack/bin:$PATH
 
 ARG OCTAVIA_REPO=https://opendev.org/openstack/octavia
 ARG OCTAVIA_REF=stable/2026.1
+# The OVN provider driver follows the octavia branch.
+ARG OVN_OCTAVIA_PROVIDER_REPO=https://opendev.org/openstack/ovn-octavia-provider
+ARG OVN_OCTAVIA_PROVIDER_REF=${OCTAVIA_REF}
 ARG EXTRA_PACKAGES=""
 ARG EXTRA_PYTHON_PACKAGES=""
 
 # System packages, installed in both the build and the runtime stage.
+# python-ovs, used by the OVN provider driver, resolves the host names in
+# an OVSDB remote only with the unbound module.
 COPY <<EOF /etc/image_info/packages.txt
 isc-dhcp-client
+python3-unbound
 EOF
 
 # Python packages installed into the venv in addition to the project.
@@ -35,13 +41,16 @@ RUN if [ -s /etc/image_info/packages.txt ]; then \
 
 RUN sed -i '/^octavia===/d' /upper-constraints.txt \
     && git clone --filter=blob:none -b ${OCTAVIA_REF} ${OCTAVIA_REPO} /tmp/octavia \
+    && git clone --filter=blob:none -b ${OVN_OCTAVIA_PROVIDER_REF} ${OVN_OCTAVIA_PROVIDER_REPO} /tmp/ovn-octavia-provider \
     && uv pip install \
          --build-constraint /upper-constraints.txt \
          -c /upper-constraints.txt \
          -r /etc/image_info/python_packages.txt \
          /tmp/octavia \
+         /tmp/ovn-octavia-provider \
     && git -C /tmp/octavia log --oneline -1 > /etc/image_info/project.txt \
-    && rm -rf /tmp/octavia \
+    && git -C /tmp/ovn-octavia-provider log --oneline -1 > /etc/image_info/ovn-octavia-provider.txt \
+    && rm -rf /tmp/octavia /tmp/ovn-octavia-provider \
     && uv pip freeze > /etc/image_info/pip.txt
 
 FROM ${BASE_RUNTIME} AS runtime
