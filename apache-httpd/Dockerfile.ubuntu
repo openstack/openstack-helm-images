@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1
+ARG FROM=quay.io/airshipit/ubuntu:noble
+FROM ${FROM}
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Apache httpd to run as a sidecar in front of a uWSGI application, for
+# example keystone-api. It terminates TLS (mod_ssl) and passes the requests
+# to uWSGI with the uwsgi protocol (mod_proxy_uwsgi), which carries the
+# REMOTE_USER and the other variables that the auth modules set. The auth
+# modules are the ones keystone federation uses: mod_auth_gssapi
+# (Kerberos), mod_auth_mellon (SAML2) and mod_auth_openidc (OpenID
+# Connect). mod_ssl and mod_proxy_uwsgi are in the apache2-bin package.
+#
+# The image has no site and listens on no port: mount the configuration
+# into /etc/apache2/sites-enabled/ or start apache2 with -f. The logs go to
+# stdout and stderr.
+RUN set -ex ;\
+    apt-get update ;\
+    apt-get install -y --no-install-recommends \
+        apache2 \
+        ca-certificates \
+        libapache2-mod-auth-gssapi \
+        libapache2-mod-auth-mellon \
+        libapache2-mod-auth-openidc ;\
+    a2enmod auth_gssapi auth_mellon auth_openidc headers proxy proxy_uwsgi ssl ;\
+    a2dissite 000-default ;\
+    echo > /etc/apache2/ports.conf ;\
+    ln -sf /dev/stdout /var/log/apache2/access.log ;\
+    ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log ;\
+    ln -sf /dev/stderr /var/log/apache2/error.log ;\
+    modules="$(apache2ctl -M)" ;\
+    for module in auth_gssapi auth_mellon auth_openidc proxy_uwsgi ssl ; do \
+        echo "${modules}" | grep -q " ${module}_module " ;\
+    done ;\
+    apt-get clean ;\
+    rm -rf \
+       /var/cache/debconf/* \
+       /var/lib/apt/lists/* \
+       /tmp/* \
+       /var/tmp/*
+
+# The variables that /etc/apache2/envvars sets for apache2ctl, so that
+# apache2 runs in the foreground without a wrapper script.
+ENV APACHE_RUN_USER=www-data \
+    APACHE_RUN_GROUP=www-data \
+    APACHE_PID_FILE=/var/run/apache2/apache2.pid \
+    APACHE_RUN_DIR=/var/run/apache2 \
+    APACHE_LOCK_DIR=/var/lock/apache2 \
+    APACHE_LOG_DIR=/var/log/apache2 \
+    LANG=C
+
+CMD ["apache2", "-DFOREGROUND"]

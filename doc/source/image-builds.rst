@@ -8,6 +8,7 @@ Use these pages as minimal examples for local image builds.
    :maxdepth: 1
 
    openstack/index
+   apache-httpd
    ceph-images
    libvirt
    ovn

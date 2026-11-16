@@ -62,6 +62,7 @@
         - openstack-helm-images-build-zaqar
 
         # Build Infra images
+        - openstack-helm-images-build-apache-httpd
         - openstack-helm-images-build-ceph-config-helper
         - openstack-helm-images-build-ceph-daemon
         - openstack-helm-images-build-ceph-utility
@@ -159,6 +160,8 @@
         - openstack-helm-images-upload-zaqar
 
         # Build and upload infra images
+        - openstack-helm-images-build-apache-httpd
+        - openstack-helm-images-upload-apache-httpd
         - openstack-helm-images-build-ceph-config-helper
         - openstack-helm-images-build-ceph-daemon
         - openstack-helm-images-build-ceph-utility
@@ -229,6 +232,7 @@
         - openstack-helm-images-promote-zaqar
 
         # Promote Infra images
+        - openstack-helm-images-promote-apache-httpd
         - openstack-helm-images-promote-ceph-config-helper
         - openstack-helm-images-promote-ceph-daemon
         - openstack-helm-images-promote-ceph-utility
@@ -254,6 +258,15 @@
         - openstack-helm-images-compute-kit-2026-1-ubuntu_noble
         - openstack-helm-images-compute-kit-2026-2-ubuntu_resolute
         - openstack-helm-images-ovn-2026-2-ubuntu_resolute
+
+        # Apache httpd
+        - openstack-helm-images-build-apache-httpd
+        - openstack-helm-images-upload-apache-httpd:
+            dependencies:
+              - name: openstack-helm-images-build-apache-httpd
+        - openstack-helm-images-promote-apache-httpd:
+            dependencies:
+              - name: openstack-helm-images-upload-apache-httpd
 
         # Ceph
         - openstack-helm-images-build-ceph-config-helper
