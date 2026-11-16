@@ -130,6 +130,26 @@
             - "CEPH_REPO='https://mirror.mirantis.com/acicd/ceph-20.2.x/resolute'"
             - "CEPH_KEY='https://mirror.mirantis.com/acicd/ceph-20.2.x/resolute/release.asc'"
             - "FROM='public.ecr.aws/ubuntu/ubuntu:resolute'"
+    # Run only when the base image or an image built on it changes.
+    # The infra images (apache-httpd, libvirt, mariadb, openvswitch, ...)
+    # do not use it. A new image built on it must be added to the list.
+    files: &base_files
+      - base/.*
+      - zuul.d/base.yaml
+      - roles/.*
+      - playbooks/.*
+      - zuul.d/test-openstack.*
+      - (aodh|barbican|blazar|ceilometer|cinder|cloudkitty|cyborg)/.*
+      - (designate|freezer|freezer-api|glance|heat|horizon|ironic)/.*
+      - (keystone|magnum|manila|masakari|masakari-monitors|mistral)/.*
+      - (neutron|nova|octavia|openstack-client|ovn-bgp-agent)/.*
+      - (placement|skyline|swift|tacker|tempest|trove|watcher|zaqar)/.*
+      - zuul.d/(aodh|barbican|blazar|ceilometer|cinder|cloudkitty)\.yaml
+      - zuul.d/(cyborg|designate|freezer|freezer-api|glance|heat)\.yaml
+      - zuul.d/(horizon|ironic|keystone|magnum|manila|masakari)\.yaml
+      - zuul.d/(masakari-monitors|mistral|neutron|nova|octavia)\.yaml
+      - zuul.d/(openstack-client|ovn-bgp-agent|placement|skyline)\.yaml
+      - zuul.d/(swift|tacker|tempest|trove|watcher|zaqar)\.yaml
 
 - job:
     name: openstack-helm-images-upload-base
@@ -139,9 +159,11 @@
       - name: openstack-helm-images-buildset-registry
       - name: openstack-helm-images-build-base
     vars: *base_vars
+    files: *base_files
 
 - job:
     name: openstack-helm-images-promote-base
     parent: openstack-helm-images-promote
     description: Promote a previously published base image to latest.
     vars: *base_vars
+    files: *base_files
