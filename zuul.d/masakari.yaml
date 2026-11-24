@@ -91,3 +91,4 @@
     description: Promote a previously published masakari image to latest.
     vars: *masakari_vars
     files: *masakari_files
+...

@@ -1,3 +1,4 @@
+---
 - name: Verify repository names
   when: |
     container_registry_credentials is defined
@@ -28,3 +29,4 @@
 - name: Promote container image with intermediate registry
   when: promote_container_image_method|default('tag') == 'intermediate-registry'
   include_tasks: promote-from-intermediate-registry.yaml
+...

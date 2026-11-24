@@ -91,3 +91,4 @@
     description: Promote a previously published ceilometer image to latest.
     vars: *ceilometer_vars
     files: *ceilometer_files
+...

@@ -91,3 +91,4 @@
     description: Promote a previously published aodh image to latest.
     vars: *aodh_vars
     files: *aodh_files
+...

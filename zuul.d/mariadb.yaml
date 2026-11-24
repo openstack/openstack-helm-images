@@ -65,3 +65,4 @@
     description: Promote a previously published mariadb image to latest.
     vars: *mariadb_vars
     files: *mariadb_files
+...

@@ -94,3 +94,4 @@
     description: Promote a previously published skyline image to latest.
     vars: *skyline_vars
     files: *skyline_files
+...

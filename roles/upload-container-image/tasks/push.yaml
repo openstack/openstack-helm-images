@@ -1,3 +1,4 @@
+---
 - name: Log in to registry
   command: "docker login -u {{ container_registry_credentials[zj_image.registry].username }} -p {{ container_registry_credentials[zj_image.registry].password }} {{ zj_image.registry }}"
   no_log: true
@@ -24,3 +25,4 @@
   always:
     - name: Log out of registry
       command: "docker logout {{ zj_image.registry }}"
+...

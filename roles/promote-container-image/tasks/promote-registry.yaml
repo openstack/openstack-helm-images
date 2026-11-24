@@ -1,3 +1,4 @@
+---
 # A stall in a registry operation never returns, so the retry below is never
 # evaluated. Cap it so a stall exits 124 and the retry actually happens.
 - name: Log in to registry
@@ -24,3 +25,4 @@
   always:
     - name: Log out of registry
       command: "skopeo logout {{ zj_image.registry }}"
+...

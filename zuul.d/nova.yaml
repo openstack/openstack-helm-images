@@ -92,3 +92,4 @@
     description: Promote a previously published nova image to latest.
     vars: *nova_vars
     files: *nova_files
+...

@@ -1,3 +1,4 @@
+---
 - name: Return artifact to Zuul
   zuul_return:
     data:
@@ -12,3 +13,4 @@
   loop: "{{ zj_image.tags | default(['latest']) }}"
   loop_control:
     loop_var: zj_image_tag
+...

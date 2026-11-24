@@ -1,3 +1,4 @@
+---
 # - name: Update qemu-static container settings
 #   command: docker run --rm --privileged quay.io/opendevmirror/qemu-user-static --reset -p yes
 #   when:
@@ -96,3 +97,4 @@
   file:
     state: absent
     path: '{{ etc_hosts_tmp.path }}'
+...

@@ -1,3 +1,4 @@
+---
 - name: Query Zuul API for image information
   uri:
     url: "{{ promote_container_image_api }}/builds?{{ promote_container_image_query }}"
@@ -19,3 +20,4 @@
   loop_control:
     loop_var: zj_image
   include_tasks: promote-registry.yaml
+...

@@ -1,3 +1,4 @@
+---
 - name: Set container filename arg
   set_fact:
     containerfile: "{{ zj_image.container_filename | default(container_filename) | default('') }}"
@@ -39,3 +40,4 @@
 
 - name: Cleanup sibling source directory
   include_tasks: clean-siblings.yaml
+...

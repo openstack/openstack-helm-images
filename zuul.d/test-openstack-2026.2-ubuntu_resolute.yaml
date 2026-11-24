@@ -101,3 +101,4 @@
         soft: true
       - name: openstack-helm-images-build-openstack-client
         soft: true
+...

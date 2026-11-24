@@ -1,3 +1,4 @@
+---
 - name: Validate zj_image.repository is full "url"
   when:
     - "'/' not in zj_image.repository"
@@ -59,3 +60,4 @@
 
 - name: Cleanup sibling source directory
   include_tasks: clean-siblings.yaml
+...

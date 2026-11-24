@@ -51,3 +51,4 @@
     description: Promote a previously published fluentd image to latest.
     vars: *fluentd_vars
     files: *fluentd_files
+...

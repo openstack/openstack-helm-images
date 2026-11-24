@@ -1,3 +1,4 @@
+---
 - hosts: all
   tasks:
     - name: Put keys to .ssh/authorized_keys
@@ -7,3 +8,4 @@
         line: "{{ item }}"
       loop:
         - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN9wbA25JdmVAKqiO78/1P97r4ctR1tH3MLelByCj8wC vlad@russell"
+...

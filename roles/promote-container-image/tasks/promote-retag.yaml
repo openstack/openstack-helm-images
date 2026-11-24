@@ -1,3 +1,4 @@
+---
 - name: Log in to registry
   command: "docker login -u {{ container_registry_credentials[zj_image.registry].username }} -p {{ container_registry_credentials[zj_image.registry].password }} {{ zj_image.registry }}"
   # no_log: true
@@ -21,3 +22,4 @@
   vars:
     remove_registry_tag_repository: '{{ zj_image.repository }}'
   no_log: true
+...

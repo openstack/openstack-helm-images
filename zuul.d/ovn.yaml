@@ -67,5 +67,4 @@
     description: Promote a previously published ovn image to latest.
     vars: *ovn_vars
     files: *ovn_files
-
-
+...

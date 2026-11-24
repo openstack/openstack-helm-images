@@ -1,3 +1,4 @@
+---
 zuul_work_dir: "{{ zuul.project.src_dir }}"
 container_command: podman
 container_build_extra_env: {}
@@ -8,3 +9,4 @@ container_builder_image: quay.io/opendevmirror/buildkit:buildx-stable-1
 container_image_build_timeout: 2700
 # Same, for pushing a built image to the buildset registry.
 container_image_push_timeout: 600
+...

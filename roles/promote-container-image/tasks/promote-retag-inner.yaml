@@ -1,3 +1,4 @@
+---
 - name: Set promote_tag_prefix
   set_fact:
     promote_tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}_"
@@ -21,3 +22,4 @@
     remove_registry_tag_repository: '{{ zj_image.repository }}'
     remove_registry_tag_tag: '{{ promote_tag_prefix }}{{ zj_image_tag }}'
   no_log: true
+...

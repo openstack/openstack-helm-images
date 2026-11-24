@@ -1,3 +1,4 @@
+---
 - name: Check sibling directory
   stat:
     path: '{{ zuul_work_dir }}/{{ zj_image.context }}/.zuul-siblings'
@@ -24,3 +25,4 @@
   loop_control:
     loop_var: zj_sibling
   when: zj_image.siblings is defined
+...

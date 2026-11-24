@@ -91,3 +91,4 @@
     description: Promote a previously published tacker image to latest.
     vars: *tacker_vars
     files: *tacker_files
+...

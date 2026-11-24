@@ -1,3 +1,4 @@
+---
 # Required vars:
 #  registry:
 #      host: "{{ ansible_host }}"
@@ -50,3 +51,4 @@
     quay.io/opendevmirror/registry:2
   args:
     chdir: "{{ registry_tempdir.path }}"
+...

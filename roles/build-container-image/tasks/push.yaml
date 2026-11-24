@@ -1,3 +1,4 @@
+---
 - name: Tag image for buildset registry
   command: >-
     {{ container_command }} tag {{ zj_image.repository }}:{{ zj_image_tag }} {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ zj_image.repository }}:{{ zj_image_tag }}
@@ -19,3 +20,4 @@
   loop: "{{ zj_image.tags | default(['latest']) }}"
   loop_control:
     loop_var: zj_image_tag
+...

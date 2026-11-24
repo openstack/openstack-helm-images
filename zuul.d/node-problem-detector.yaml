@@ -64,3 +64,4 @@
     description: Promote a previously published Node Problem Detector image.
     vars: *node-problem-detector_vars
     files: *node-problem-detector_files
+...

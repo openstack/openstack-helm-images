@@ -92,4 +92,4 @@
     description: Promote a previously published ovn-bgp-agent image to latest.
     vars: *ovn_bgp_agent_vars
     files: *ovn_bgp_agent_files
-
+...

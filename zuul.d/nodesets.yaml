@@ -1,5 +1,7 @@
+---
 - nodeset:
     name: openstack-helm-images-ubuntu-noble
     nodes:
       - name: node-0
         label: ubuntu-noble
+...

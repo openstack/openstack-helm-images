@@ -91,3 +91,4 @@
     description: Promote a previously published zaqar image to latest.
     vars: *zaqar_vars
     files: *zaqar_files
+...

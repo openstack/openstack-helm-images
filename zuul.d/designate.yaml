@@ -91,3 +91,4 @@
     description: Promote a previously published designate image to latest.
     vars: *designate_vars
     files: *designate_files
+...

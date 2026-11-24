@@ -64,3 +64,4 @@
     description: Promote a previously published tempest image to latest.
     vars: *tempest_vars
     files: *tempest_files
+...
