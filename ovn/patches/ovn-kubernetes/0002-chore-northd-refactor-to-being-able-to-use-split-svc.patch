@@ -12,19 +12,19 @@ index 720b3e14d..1d3059cf8 100755
 --- a/dist/images/ovnkube.sh
 +++ b/dist/images/ovnkube.sh
 @@ -200,6 +200,9 @@ metrics_exporter_port=${OVN_METRICS_EXPORTER_PORT:-9310}
- 
+
  ovn_kubernetes_namespace=${OVN_KUBERNETES_NAMESPACE:-ovn-kubernetes}
  ovn_kubernetes_statefulset=${OVN_KUBERNETES_STATEFULSET:-ovnkube-db}
 +ovn_kubernetes_cluster_domain=${OVN_KUBERNETES_CLUSTER_DOMAIN:-cluster.local}
 +ovn_kubernetes_nb_statefulset=${OVN_KUBERNETES_NB_STATEFULSET:-ovnkube-db}
 +ovn_kubernetes_sb_statefulset=${OVN_KUBERNETES_SB_STATEFULSET:-ovnkube-db}
- 
+
  # namespace used for classifying host network traffic
  ovn_host_network_namespace=${OVN_HOST_NETWORK_NAMESPACE:-ovn-host-network}
 @@ -374,6 +376,24 @@ wait_for_event() {
    done
  }
- 
+
 +wait_for_db () {
 +  local db=$1
 +  local ep=$(get_ovnkube_zone_db_ep ${db})
@@ -49,7 +49,7 @@ index 720b3e14d..1d3059cf8 100755
 @@ -384,15 +404,18 @@ ready_to_start_node() {
      return 0
    fi
- 
+
 -  ovnkube_db_ep=$(get_ovnkube_zone_db_ep)
 -  echo "Getting the ${ovnkube_db_ep} ep"
 -  # See if ep is available ...
@@ -73,7 +73,7 @@ index 720b3e14d..1d3059cf8 100755
  # wait_for_event ready_to_start_node
 @@ -410,17 +433,29 @@ check_ovn_daemonset_version() {
  }
- 
+
  get_ovn_db_vars() {
 +
 +  index=0
@@ -108,7 +108,7 @@ index 720b3e14d..1d3059cf8 100755
    ovn_sbdb=${OVN_SOUTH:-$ovn_sbdb_str}
 @@ -730,7 +765,7 @@ set_ovnkube_db_ep() {
    ips=("$@")
- 
+
    ovn_zone=$(get_node_zone)
 -  ovnkube_db_ep=$(get_ovnkube_zone_db_ep)
 +  ovnkube_db_ep=$(get_ovnkube_zone_db_ep sb)
@@ -117,7 +117,7 @@ index 720b3e14d..1d3059cf8 100755
    kubectl --server=${K8S_APISERVER} --token=${k8s_token} --certificate-authority=${K8S_CACERT} apply -f - <<EOF
 @@ -779,12 +814,20 @@ function get_node_zone() {
  }
- 
+
  function get_ovnkube_zone_db_ep() {
 -  zone=$(get_node_zone)
 -  if [ "$zone" == "global" ]; then
@@ -138,8 +138,8 @@ index 720b3e14d..1d3059cf8 100755
 +
 +  echo "${ep}"
  }
- 
+
  # v3 - run nb_ovsdb in a separate container
--- 
+--
 2.42.0
 

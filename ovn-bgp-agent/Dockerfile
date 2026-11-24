@@ -47,7 +47,7 @@ RUN sed -i '/^ovn-bgp-agent===/d' /upper-constraints.txt \
     && git -C /tmp/ovn-bgp-agent log --oneline -1 > /etc/image_info/project.txt \
     && rm -rf /tmp/ovn-bgp-agent \
     && uv pip freeze > /etc/image_info/pip.txt
- 
+
 FROM ${BASE_RUNTIME} AS runtime
 
 ENV PATH=/var/lib/openstack/bin:$PATH
