@@ -14,13 +14,13 @@ index 1d3059cf8..069d36648 100755
 @@ -908,9 +908,6 @@ sb-ovsdb() {
    }
    ovn-sbctl --inactivity-probe=0 set-connection p${transport}:${ovn_sb_port}:$(bracketify ${ovn_db_host})
- 
+
 -  # create the ovnkube-db endpoints
 -  wait_for_event attempts=10 check_ovnkube_db_ep ${ovn_db_host} ${ovn_nb_port}
 -  set_ovnkube_db_ep ${ovn_db_host}
    if memory_trim_on_compaction_supported "sbdb"
    then
      # Enable SBDB memory trimming on DB compaction, Every 10mins DBs are compacted
--- 
+--
 2.43.0
 
